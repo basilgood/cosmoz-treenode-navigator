@@ -1,0 +1,48 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<!--
+`cosmoz-treenode-navigator`
+Navigator through object with treelike datastructure.  
+ 
+@demo demo/index.html 
+-->
+
+<dom-module id="cosmoz-treenode-navigator">
+	<template>
+		<style>
+			:host {
+				/*display: block;
+				width: inherit;*/
+				height: 200px;;
+			}
+		</style>
+		<div class="horizontal-section">
+			<h3>{{ currentBranchPathName }}{{ selectedNodeName }}</h3>
+			<paper-input class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]" id="searchInput"
+					value="{{ inputValue }}">
+			</paper-input>
+			<paper-button hidden$="{{ checkForParent(_locationPath) }}" on-click="openParentNode">
+				<iron-icon icon="icons:arrow-upward"></iron-icon>
+			</paper-button>
+			<paper-listbox >
+				<template is="dom-repeat" items="{{dataPlane}}" as="node">
+					<div class="vertical-section">
+						<template is="dom-if" if="{{ checkSection(node.sectionName) }}">
+							<div>{{node.sectionName}}</div>
+						</template>
+						<template is="dom-if" if="{{ childrenExist(node) }}">
+							<paper-item node-Object="[[ node ]]" on-click="nodeSelect">
+								<iron-icon node-Object="[[ node ]]" icon="icons:add" on-click="openNode"></iron-icon>{{node.name}}</paper-item>
+						</template>
+						<template is="dom-if" if="{{ !childrenExist(node) }}">
+							<paper-item node-Object="[[ node ]]" on-click="nodeSelect">
+								<iron-icon node-Object="[[ node ]]" icon="icons:remove"></iron-icon>{{node.name}}</paper-item>
+						</template>
+					</div>
+				</template>
+				<paper-item hidden="[[ !searchFailed ]]" searchWord="[[ inputValue ]]" on-click="tryGlobalSearch">{{noResultFound}}</paper-item>
+			</paper-listbox>
+		</div>
+	</template>
+	<script type="text/javascript" src="cosmoz-treenode-navigator.js"></script>
+
+</dom-module>
