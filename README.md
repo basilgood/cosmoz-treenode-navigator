@@ -5,6 +5,7 @@ cosmoz-treenode-navigator is a Polymer component that lets you navigate and sear
 
 It needs an object structure which looks for example like this in JSON:
 
+```json
 {
 	"1": {
 		"name": "Root",
@@ -29,6 +30,7 @@ It needs an object structure which looks for example like this in JSON:
 		}
 	}
 }
+```
 
 The property names "name" and "children" are configurable in the component through the setting of "childProperty" and "comparisonProperty". 
 

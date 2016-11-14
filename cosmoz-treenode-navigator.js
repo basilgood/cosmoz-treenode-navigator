@@ -8,29 +8,31 @@
 
 		properties: {
 			/*
-			 * original node structure
+			Node structure object
+			that component shows
 			 */
 			data: {
 				type: Object
 			},
 			/*
-			 * current node structure
+			 Current node structure
 			 */
-			dataPlane: {
+			_dataPlane: {
 				type: Array,
 				value: function (){
 					return [];
 				}
 			},
 			/*
-			 * current path to displayed node/folder
+			 Current path to displayed
+			 node/folder
 			 */
 			_locationPath: {
 				type: String,
 				value: ''
 			},
 			/*
-			 * currently selected node object
+			 Currently selected node object
 			 */
 			chosenNode: {
 				type: Array,
@@ -40,7 +42,7 @@
 				notify: true
 			},
 			/*
-			 * currently selected node name
+			Currently selected node name
 			 */
 			selectedNodeName: {
 				type: String,
@@ -48,57 +50,58 @@
 				notify: true
 			},
 			/*
-			 * current selected path expressed in node names.
-			 */
+			 Current selected path expressed
+			 in node names.
+			*/
 			currentBranchPathName: {
 				type: String,
 				value: '',
 				notify: true
 			},
 			/*
-			 * Placeholder for search field.
+			Placeholder for search field.
 			 */
 			searchPlaceholder: {
 				type: String,
 				value: 'search'
 			},
 			/*
-			 * current section(parent) of node.
+			Current section(parent) of node.
 			 */
 			_currentSectionName: {
 				type: String
 			},
 			/*
-			 * input value for searches
+			Input value for searches
 			 */
 			inputValue: {
 				type: String
 			},
 			/*
-			 * Property name that searches will compare too.
-			 * Defaults to name
+			 Settable name for property which
+			 houses childobjects.
 			 */
 			childProperty: {
 				type: String,
 				value: 'children'
 			},
 			/*
-			 * Property name that searches will compare too.
-			 * Defaults to name
+			 Settable property name that
+			 searches will be compared too.
 			 */
 			comparisonProperty: {
 				type: String,
 				value: 'name'
 			},
 			/*
-			 * Current position in structure.
+			 Current position in structure.
 			 */
 			_currentBranchPath: {
 				type: String,
 				value: ''
 			},
 			/*
-			 * Array of search results.
+			Search results.
 			 */
 			_searchNodes: {
 				type: Array,
@@ -107,58 +110,61 @@
 				}
 			},
 			/*
-			 * Chosen seperator to denote navigation paths.
-			 * Defaults to .
+			Chosen seperator to denote
+			navigation path.
 			 */
 			seperatorSign: {
 				type: String,
 				value: '.'
 			},
 			/*
-			 * Whether search is based on currently selected node.
-			 * Defaults to local
+			 Whether search is based on
+			 currently selected node.
 			 */
-			globalSearch: {
+			_globalSearch: {
 				type: Boolean,
 				value: false
 			},
 			/*
 			 * Reset failed global search.
 			 */
-			resetSearch: {
+			_resetSearch: {
 				type: Boolean,
 				value: false
 			},
 			/*
 			 * Whether search is currently being done.
 			 */
-			searchInProgress: {
+			_searchInProgress: {
 				type: Boolean,
 				value: false
 			},
 			/*
 			 * True if search results turns up empty.
 			 */
-			searchFailed: {
+			__searchFailed: {
 				type: Boolean,
 				value: false
 			},
 			/*
-			 * Text given to user when local search fails.
+			 Text bound value container.
+			 Is set by other values.
 			 */
-			noResultFound: {
+			_noResultFound: {
 				type: String
 			},
 			/*
-			 * Text given to user when local search fails.
+			 Settable text given to user
+			 when local search fails.
 			 */
 			noResultLocalFound: {
 				type: String,
 				value: 'No result found. Click to expand to global search.'
 			},
 			/*
-			 * Text given to user when global search fails.
-			 */
+			Settable text given to user
+			when global search fails.
+			*/
 			noResultGlobalFound: {
 				type: String,
 				value: 'No result found in global search. Click to reset.'
@@ -187,11 +193,11 @@
 				tempParentNodes = [],
 				tempNodes = [],
 				tempPathName = '';
-			that.searchInProgress = false;
+			that._searchInProgress = false;
 			that.currentBranchPathName = '';
 			if (pl === '') {
 				// root case (hoho)
-				that.set('dataPlane', that.getRootLevels(nodes));
+				that.set('_dataPlane', that.getRootLevels(nodes));
 				return;
 			}
 			path = pl.split(that.seperatorSign);
@@ -223,7 +229,7 @@
 			});
 			tempParentNodes.push(tempNodes);
 
-			that.set('dataPlane', tempNodes);
+			that.set('_dataPlane', tempNodes);
 		},
 		searchHandler: function (searchWord, currentObject) {
 			var that = this,
@@ -235,8 +241,8 @@
 				// should existing results of previous navigation/searches be cleared away?
 				return;
 			}
-			that.searchInProgress = true;
-			this.searchFailed = false;
+			that._searchInProgress = true;
+			this._searchFailed = false;
 			if(that._locationPath.indexOf(that.seperatorSign) === -1) {
 				currentPath = that._locationPath;
 			} else {
@@ -253,7 +259,7 @@
 					currentPath = Object.keys(currentObject)[0];
 				}
 
-				if (!that.globalSearch) {
+				if (!that._globalSearch) {
 					parentNode = that.getCurrentTree(that._currentBranchPath);
 				} else {
 					parentNode = currentObject[currentPath];
@@ -263,15 +269,15 @@
 			}
 
 			if (that._searchNodes && that._searchNodes.length === 0) {
-				that.noResultFound = that.noResultLocalFound;
-				if (that.globalSearch === true) {
-					that.noResultFound = that.noResultGlobalFound;
-					that.globalSearch = false;
-					that.resetSearch = true;
+				that._noResultFound = that.noResultLocalFound;
+				if (that._globalSearch === true) {
+					that._noResultFound = that.noResultGlobalFound;
+					that._globalSearch = false;
+					that._resetSearch = true;
 				}
-				that.searchFailed = true;
+				that._searchFailed = true;
 			}
-			that.set('dataPlane', that._searchNodes);
+			that.set('_dataPlane', that._searchNodes);
 
 		},
 		searchAllBranches: function (searchWord, parentNode, currentPath) {
@@ -341,7 +347,7 @@
 
 		},
 		checkSection: function (section) {
-			if (this.searchInProgress && section !== this._currentSectionName) {
+			if (this._searchInProgress && section !== this._currentSectionName) {
 				this._currentSectionName = section;
 				return true;
 			}
@@ -397,18 +403,18 @@
 		},
 		clearSearch: function () {
 			this._searchNodes = [];
-			this.set('dataPlane', []);
+			this.set('_dataPlane', []);
 		},
-		tryGlobalSearch: function (event) {
-			if (this.resetSearch) {
-				this.resetSearch = false;
-				this.noResultFound = this.noResultLocalFound;
-				this.searchFailed = false;
+		tryglobalSearch: function (event) {
+			if (this._resetSearch) {
+				this._resetSearch = false;
+				this._noResultFound = this.noResultLocalFound;
+				this._searchFailed = false;
 				this.inputValue = '';
 				this.renderLevel('', this.data);
 
 			} else {
-				this.globalSearch = true;
+				this._globalSearch = true;
 				this._locationPath = '';
 				this.searchHandler(event.target.searchword, this.data);
 			}

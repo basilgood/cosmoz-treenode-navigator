@@ -24,7 +24,7 @@ Navigator through object with treelike datastructure.
 				<iron-icon icon="icons:arrow-upward"></iron-icon>
 			</paper-button>
 			<paper-listbox >
-				<template is="dom-repeat" items="{{dataPlane}}" as="node">
+				<template is="dom-repeat" items="{{_dataPlane}}" as="node">
 					<div class="vertical-section">
 						<template is="dom-if" if="{{ checkSection(node.sectionName) }}">
 							<div>{{node.sectionName}}</div>
@@ -39,7 +39,7 @@ Navigator through object with treelike datastructure.
 						</template>
 					</div>
 				</template>
-				<paper-item hidden="[[ !searchFailed ]]" searchWord="[[ inputValue ]]" on-click="tryGlobalSearch">{{noResultFound}}</paper-item>
+				<paper-item hidden="[[ !_searchFailed ]]" searchWord="[[ inputValue ]]" on-click="tryGlobalSearch">{{_noResultFound}}</paper-item>
 			</paper-listbox>
 		</div>
 	</template>
