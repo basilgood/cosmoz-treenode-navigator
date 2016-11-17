@@ -175,12 +175,14 @@
 			'searchHandler(inputValue, data)'
 		],
 		getRootLevels: function (nodes) {
-			var tempChild,
+			var that = this,
+				tempChild,
 				tempNodes = [];
 			Object.keys(nodes).forEach(function (rootNode) {
 				tempChild = nodes[rootNode];
 				tempChild.generatedNodeId = rootNode;
 				tempChild.generatedPath = rootNode;
+				tempChild.generatedName = tempChild[that.comparisonProperty];
 				tempNodes.push(tempChild);
 			});
 			return tempNodes;
@@ -225,6 +227,7 @@
 			Object.keys(tempChild).forEach(function (child) {
 				tempChild[child].generatedNodeId = child;
 				tempChild[child].generatedPathName = tempPathName;
+				tempChild[child].generatedName = tempChild[child][that.comparisonProperty];
 				tempNodes.push(tempChild[child]);
 			});
 			tempParentNodes.push(tempNodes);
@@ -291,6 +294,7 @@
 					if (hasItemIndex > -1) {
 						parentNode[that.childProperty][index].generatedPathName = sectionName + '/' + parentNode[that.childProperty][index][that.comparisonProperty] + '/';
 						parentNode[that.childProperty][index].generatedPath = currentPath + that.seperatorSign + index;
+						parentNode[that.childProperty][index].generatedName = parentNode[that.childProperty][index][that.comparisonProperty];
 						parentNode[that.childProperty][index].sectionName = sectionName;
 						that._searchNodes.push(parentNode[that.childProperty][index]);
 					}
@@ -309,6 +313,7 @@
 					if (hasItemIndex > -1) {
 						parentNode[that.childProperty][index].generatedPathName = parentNode.generatedPathName + '/' + parentNode[that.childProperty][index][that.comparisonProperty] + '/';
 						parentNode[that.childProperty][index].generatedPath = currentPath + that.seperatorSign + index;
+						parentNode[that.childProperty][index].generatedName = parentNode[that.childProperty][index][that.comparisonProperty];
 						parentNode[that.childProperty][index].sectionName = sectionName;
 						that._searchNodes.push(parentNode[that.childProperty][index]);
 					}

@@ -31,13 +31,13 @@ Navigator through object with treelike datastructure.
 						</template>
 						<template is="dom-if" if="{{ childrenExist(node) }}">
 							<paper-item node-Object="[[ node ]]" on-click="nodeSelect">
-								<paper-tooltip animation-delay="0">[[ currentBranchPathName ]][[ node.name ]]</paper-tooltip>
-								<iron-icon node-Object="[[ node ]]" icon="icons:add" on-click="openNode"></iron-icon>[[ node.name ]]</paper-item>
+								<paper-tooltip animation-delay="0">[[ currentBranchPathName ]][[ node.generatedName ]]</paper-tooltip>
+								<iron-icon node-Object="[[ node ]]" icon="icons:add" on-click="openNode"></iron-icon>[[ node.generatedName ]]</paper-item>
 						</template>
 						<template is="dom-if" if="{{ !childrenExist(node) }}">
 							<paper-item node-Object="[[ node ]]" on-click="nodeSelect">
-								<paper-tooltip animation-delay="0">[[ currentBranchPathName ]][[ node.name ]]</paper-tooltip>
-								<iron-icon node-Object="[[ node ]]" icon="icons:remove"></iron-icon>[[ node.name ]]</paper-item>
+								<paper-tooltip animation-delay="0">[[ currentBranchPathName ]][[ node.generatedName ]]</paper-tooltip>
+								<iron-icon node-Object="[[ node ]]" icon="icons:remove"></iron-icon>[[ node.generatedName ]]</paper-item>
 						</template>
 					</div>
 				</template>
