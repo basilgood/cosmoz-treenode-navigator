@@ -126,21 +126,21 @@
 				value: false
 			},
 			/*
-			 * Reset failed global search.
+			 Reset failed global search.
 			 */
 			_resetSearch: {
 				type: Boolean,
 				value: false
 			},
 			/*
-			 * Whether search is currently being done.
+			 Whether search is currently being done.
 			 */
 			_searchInProgress: {
 				type: Boolean,
 				value: false
 			},
 			/*
-			 * True if search results turns up empty.
+			 True if search results turns up empty.
 			 */
 			__searchFailed: {
 				type: Boolean,
@@ -382,12 +382,6 @@
 				return;
 			}
 			nodeObject = event.target.nodeObject;
-			/* not needed anymore?
-			if (!nodeObject.generatedPath) {
-				this.selectedNode = this._locationPath + this.seperatorSign + nodeObject.generatedNodeId;
-			} else {
-				this.selectedNode = nodeObject.generatedPath;
-			}*/
 			this.selectedNodeName = nodeObject[this.comparisonProperty];
 			this.currentBranchPathName = nodeObject.generatedPathName;
 			this.chosenNode = {
@@ -405,8 +399,7 @@
 			this._searchNodes = [];
 			this.set('_dataPlane', []);
 		},
-		tryglobalSearch: function (event) {
-			//console.log('tryglobalSearch', event);
+		tryGlobalSearch: function (event) {
 			if (this._resetSearch) {
 				this._resetSearch = false;
 				this._noResultFound = this.noResultLocalFound;
