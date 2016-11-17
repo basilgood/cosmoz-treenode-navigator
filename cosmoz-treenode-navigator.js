@@ -406,6 +406,7 @@
 			this.set('_dataPlane', []);
 		},
 		tryglobalSearch: function (event) {
+			//console.log('tryglobalSearch', event);
 			if (this._resetSearch) {
 				this._resetSearch = false;
 				this._noResultFound = this.noResultLocalFound;
