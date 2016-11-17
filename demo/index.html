@@ -21,12 +21,10 @@
 	<style is="custom-style" include="demo-pages-shared-styles">
     .treeNodeWrapper {
       height:500px;
-      /*width:inherit;
-      overflow:auto;*/
     }
 
 	.treeDialog {
-	  padding: 30px;
+	  padding: 60px;
     }
 
 	.treeScroll {
@@ -36,7 +34,7 @@
     }
 
 	.pathToNode {
-		max-width: 350px;
+		max-width: 320px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -53,14 +51,19 @@
 		<demo-snippet>
 			<template is="dom-bind">
 				<iron-ajax url="data/tree.json" handle-as="json" last-response="{{treeData}}" auto></iron-ajax>
-				<paper-button placeholder="urban" raised onclick="dialogTree.open()">
-					<div class="pathToNode">{{ nodeChosen.folderPath }}{{ nodeChosen.name }}</div>
+				<paper-button raised onclick="dialogTree.open()">
+					<template is="dom-if" if="[[ nodeChosen.name ]]">
+						<div class="pathToNode">{{ nodeChosen.folderPath }}{{ nodeChosen.name }}</div>
+					</template>
+					<template is="dom-if" if="[[ !nodeChosen.name ]]">
+						<div class="pathToNode">No selection made</div>
+					</template>
 				</paper-button>
 				<div class="treeNodeWrapper">
 					<paper-dialog id="dialogTree" class="treeDialog" modal>
   						<paper-dialog-scrollable>
 							<div class="treeScroll">
-								<cosmoz-treenode-navigator comparison-property="description"  child-property="spawn" chosen-node="{{ nodeChosen }}" data="{{treeData}}"></cosmoz-treenode-navigator>
+								<cosmoz-treenode-navigator comparison-property="description"  child-property="spawn" chosen-node="{{ nodeChosen }}" data="[[ treeData ]]"></cosmoz-treenode-navigator>
 							</div>
   						</paper-dialog-scrollable>
 						<div class="buttons">
@@ -78,7 +81,7 @@
 			<template is="dom-bind">
 				<iron-ajax url="data/tree.json" handle-as="json" last-response="{{treeData2}}" auto></iron-ajax>
 				<div class="treeNodeWrapper">
-					<cosmoz-treenode-navigator comparison-property="description"  child-property="spawn" chosen-node="{{ nodeChosen2 }}" data="{{treeData2}}"></cosmoz-treenode-navigator>
+					<cosmoz-treenode-navigator comparison-property="description"  child-property="spawn" chosen-node="{{ nodeChosen2 }}" data="[[ treeData2 ]]"></cosmoz-treenode-navigator>
 				</div>
 			</template>
 		</demo-snippet>
