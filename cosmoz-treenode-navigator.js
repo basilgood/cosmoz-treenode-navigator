@@ -181,6 +181,7 @@
 			Object.keys(nodes).forEach(function (rootNode) {
 				tempChild = nodes[rootNode];
 				tempChild.generatedNodeId = rootNode;
+				tempChild.generatedPathName = '/';
 				tempChild.generatedPath = rootNode;
 				tempChild.generatedName = tempChild[that.comparisonProperty];
 				tempNodes.push(tempChild);
