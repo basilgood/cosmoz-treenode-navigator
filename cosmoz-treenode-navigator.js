@@ -304,7 +304,6 @@
 		},
 		getCurrentTree: function (pl) {
 			var path,
-				that = this,
 				tempChild;
 			if(pl.indexOf(this.seperatorSign) === -1) {
 				path = pl;
