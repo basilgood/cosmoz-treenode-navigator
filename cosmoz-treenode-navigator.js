@@ -175,179 +175,157 @@
 			'searchHandler(inputValue, data)'
 		],
 		getRootLevels: function (nodes) {
-			var that = this,
-				tempChild,
+			var tempChild,
 				tempNodes = [];
 			Object.keys(nodes).forEach(function (rootNode) {
 				tempChild = nodes[rootNode];
 				tempChild.generatedNodeId = rootNode;
 				tempChild.generatedPathName = '/';
 				tempChild.generatedPath = rootNode;
-				tempChild.generatedName = tempChild[that.comparisonProperty];
+				tempChild.generatedName = tempChild[this.comparisonProperty];
 				tempNodes.push(tempChild);
-			});
+			}, this);
 			return tempNodes;
 		},
 		renderLevel: function (pl, nodes) {
 			var path,
-				that = this,
 				tempChild,
 				tempPath,
 				tempParentNodes = [],
 				tempNodes = [],
 				tempPathName = '';
-			that._searchInProgress = false;
-			that.currentBranchPathName = '';
+			this._searchInProgress = false;
+			this.currentBranchPathName = '';
 			if (pl === '') {
 				// root case (hoho)
-				that.set('_dataPlane', that.getRootLevels(nodes));
+				this.set('_dataPlane', this.getRootLevels(nodes));
 				return;
 			}
-			path = pl.split(that.seperatorSign);
+			path = pl.split(this.seperatorSign);
 			tempPath = path.splice(0, 1)[0];
 			tempChild = nodes[tempPath];
-			tempPathName = tempChild[that.comparisonProperty] + '/';
-			that._currentBranchPath = tempPath;
+			tempPathName = tempChild[this.comparisonProperty] + '/';
+			this._currentBranchPath = tempPath;
 			if (path.length > 0) {
 				path.some(function (key) {
-					if (tempChild[that.childProperty] && tempChild[that.childProperty][key]) {
-						tempChild = tempChild[that.childProperty][key];
-						tempPathName = tempPathName + tempChild[that.comparisonProperty] + '/';
-						that._currentBranchPath = that._currentBranchPath + that.seperatorSign + key;
+					if (tempChild[this.childProperty] && tempChild[this.childProperty][key]) {
+						tempChild = tempChild[this.childProperty][key];
+						tempPathName = tempPathName + tempChild[this.comparisonProperty] + '/';
+						this._currentBranchPath = this._currentBranchPath + this.seperatorSign + key;
 					} else {
 						console.log('Error: children/path doesnt exist ', path);
 						return false;
 					}
-				});
+				}, this);
 			}
 
-			tempChild = tempChild[that.childProperty];
+			tempChild = tempChild[this.childProperty];
 
-			that.currentBranchPathName = tempPathName;
+			this.currentBranchPathName = tempPathName;
 
 			Object.keys(tempChild).forEach(function (child) {
 				tempChild[child].generatedNodeId = child;
 				tempChild[child].generatedPathName = tempPathName;
-				tempChild[child].generatedName = tempChild[child][that.comparisonProperty];
+				tempChild[child].generatedName = tempChild[child][this.comparisonProperty];
 				tempNodes.push(tempChild[child]);
-			});
+			}, this);
 			tempParentNodes.push(tempNodes);
 
-			that.set('_dataPlane', tempNodes);
+			this.set('_dataPlane', tempNodes);
 		},
 		searchHandler: function (searchWord, currentObject) {
-			var that = this,
-				parentNode,
+			var parentNode,
 				currentPath = '';
-			that._searchNodes = [];
-			that._currentSectionName = '';
+			this._searchNodes = [];
+			this._currentSectionName = '';
 			if(searchWord.length < 3) {
 				// should existing results of previous navigation/searches be cleared away?
 				return;
 			}
-			that._searchInProgress = true;
+			this._searchInProgress = true;
 			this._searchFailed = false;
-			if(that._locationPath.indexOf(that.seperatorSign) === -1) {
-				currentPath = that._locationPath;
+			if(this._locationPath.indexOf(this.seperatorSign) === -1) {
+				currentPath = this._locationPath;
 			} else {
-				currentPath = that._locationPath.substring(0,that._locationPath.indexOf(that.seperatorSign));
+				currentPath = this._locationPath.substring(0,this._locationPath.indexOf(this.seperatorSign));
 			}
 
 			if (Object.keys(currentObject).length > 1 && currentPath === '') {
 				Object.keys(currentObject).forEach(function (rootNode) {
-					that.searchAllBranches(searchWord, currentObject[rootNode], rootNode);
-				});
+					this.searchAllBranches(searchWord, currentObject[rootNode], rootNode, currentObject[rootNode][this.comparisonProperty]);
+				}, this);
 
 			} else {
 				if (currentPath === '') {
 					currentPath = Object.keys(currentObject)[0];
 				}
 
-				if (!that._globalSearch) {
-					parentNode = that.getCurrentTree(that._currentBranchPath);
+				if (!this._globalSearch) {
+					parentNode = this.getCurrentTree(this._currentBranchPath);
 				} else {
 					parentNode = currentObject[currentPath];
 				}
 
-				that.searchAllBranches(searchWord, parentNode, currentPath);
+				this.searchAllBranches(searchWord, parentNode, currentPath, parentNode[this.comparisonProperty]);
 			}
 
-			if (that._searchNodes && that._searchNodes.length === 0) {
-				that._noResultFound = that.noResultLocalFound;
-				if (that._globalSearch === true) {
-					that._noResultFound = that.noResultGlobalFound;
-					that._globalSearch = false;
-					that._resetSearch = true;
+			if (this._searchNodes && this._searchNodes.length === 0) {
+				this._noResultFound = this.noResultLocalFound;
+				if (this._globalSearch === true) {
+					this._noResultFound = this.noResultGlobalFound;
+					this._globalSearch = false;
+					this._resetSearch = true;
 				}
-				that._searchFailed = true;
+				this._searchFailed = true;
 			}
-			that.set('_dataPlane', that._searchNodes);
+			this.set('_dataPlane', this._searchNodes);
 
 		},
-		searchAllBranches: function (searchWord, parentNode, currentPath) {
-			var sectionName = '',
-				hasItemIndex,
-				that = this;
-			sectionName = parentNode[that.comparisonProperty];
-			if (parentNode[that.childProperty] && Object.keys(parentNode[that.childProperty]).length > 0 && parentNode[that.childProperty].constructor === Object) {
-				Object.keys(parentNode[that.childProperty]).forEach(function (index) {
-					hasItemIndex = parentNode[that.childProperty][index][that.comparisonProperty].toLowerCase().indexOf(searchWord.toLowerCase());
+		searchAllBranches: function (searchWord, parentNode, currentPath, sectionName) {
+			var hasItemIndex,
+				children = parentNode[this.childProperty],
+				child;
+			if (children && Object.keys(children).length > 0 && children.constructor === Object) {
+				Object.keys(children).forEach(function (index) {
+					child = children[index];
+					hasItemIndex = child[this.comparisonProperty].toLowerCase().indexOf(searchWord.toLowerCase());
 					if (hasItemIndex > -1) {
-						parentNode[that.childProperty][index].generatedPathName = sectionName + '/' + parentNode[that.childProperty][index][that.comparisonProperty] + '/';
-						parentNode[that.childProperty][index].generatedPath = currentPath + that.seperatorSign + index;
-						parentNode[that.childProperty][index].generatedName = parentNode[that.childProperty][index][that.comparisonProperty];
-						parentNode[that.childProperty][index].sectionName = sectionName;
-						that._searchNodes.push(parentNode[that.childProperty][index]);
+						child.generatedPathName = sectionName + '/' + child[this.comparisonProperty] + '/';
+						child.generatedPath = currentPath + this.seperatorSign + index;
+						child.generatedName = child[this.comparisonProperty];
+						child.sectionName = sectionName;
+						this._searchNodes.push(child);
 					}
-					if (Object.keys(parentNode[that.childProperty][index][that.childProperty]).length > 0 && parentNode[that.childProperty][index].constructor === Object) {
-						that.searchInnerBranches(searchWord, parentNode[that.childProperty][index], currentPath + that.seperatorSign + index);
+					if (Object.keys(child[this.childProperty]).length > 0 && child.constructor === Object) {
+						this.searchAllBranches(searchWord, child, currentPath + this.seperatorSign + index, child.generatedPathName);
 					}
-				});
-			}
-		},
-		searchInnerBranches: function (searchWord, parentNode, currentPath) {
-			var that = this,
-				sectionName = parentNode[that.comparisonProperty];
-			if (parentNode[that.childProperty] && Object.keys(parentNode[that.childProperty]).length > 0 && parentNode[that.childProperty].constructor === Object) {
-				Object.keys(parentNode[that.childProperty]).forEach(function (index) {
-					var hasItemIndex = parentNode[that.childProperty][index][that.comparisonProperty].toLowerCase().indexOf(searchWord.toLowerCase());
-					if (hasItemIndex > -1) {
-						parentNode[that.childProperty][index].generatedPathName = parentNode.generatedPathName + '/' + parentNode[that.childProperty][index][that.comparisonProperty] + '/';
-						parentNode[that.childProperty][index].generatedPath = currentPath + that.seperatorSign + index;
-						parentNode[that.childProperty][index].generatedName = parentNode[that.childProperty][index][that.comparisonProperty];
-						parentNode[that.childProperty][index].sectionName = sectionName;
-						that._searchNodes.push(parentNode[that.childProperty][index]);
-					}
-					if (Object.keys(parentNode[that.childProperty][index][that.childProperty]).length > 0 && parentNode[that.childProperty][index].constructor === Object) {
-						that.searchInnerBranches(searchWord, parentNode[that.childProperty][index], currentPath + that.seperatorSign + index);
-					}
-				});
+				}, this);
 			}
 		},
 		getCurrentTree: function (pl) {
 			var path,
 				that = this,
 				tempChild;
-			if(pl.indexOf(that.seperatorSign) === -1) {
+			if(pl.indexOf(this.seperatorSign) === -1) {
 				path = pl;
 				if (pl === '') {
-					return that.data[Object.keys(that.data)[0]];
+					return this.data[Object.keys(this.data)[0]];
 				}
-				return that.data[path];
+				return this.data[path];
 			}
 
-			path = pl.split(that.seperatorSign);
+			path = pl.split(this.seperatorSign);
 
-			tempChild = that.data[path[0]];
+			tempChild = this.data[path[0]];
 			path = path.slice(1);
 			if (path.length > 0) {
 				path.forEach(function (key) {
-					if (tempChild[that.childProperty] && tempChild[that.childProperty][key]) {
-						tempChild = tempChild[that.childProperty][key];
+					if (tempChild[this.childProperty] && tempChild[this.childProperty][key]) {
+						tempChild = tempChild[this.childProperty][key];
 					} else {
 						console.log('Error: children/path doesnt exist ', tempChild, path);
 					}
-				});
+				}, this);
 			}
 			return tempChild;
 
