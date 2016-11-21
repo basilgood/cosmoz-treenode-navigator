@@ -369,6 +369,7 @@
 			this.currentBranchPathName = nodeObject.generatedPathName;
 			this.chosenNode = {
 				folderPath: nodeObject.generatedPathName,
+				pathToNode: nodeObject.generatedPath,
 				name: nodeObject[this.comparisonProperty]
 			};
 		},

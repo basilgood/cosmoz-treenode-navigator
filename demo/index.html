@@ -50,7 +50,7 @@
 		<h3>Cosmoz-treenode-navigator button dialog demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
-				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{treeData}}" auto></iron-ajax>
+				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
 				<paper-button raised onclick="dialogTree.open()">
 					<template is="dom-if" if="[[ nodeChosen.name ]]">
 						<div class="pathToNode">{{ nodeChosen.folderPath }}{{ nodeChosen.name }}</div>
@@ -79,7 +79,7 @@
 		<h3>Cosmoz-treenode-navigator Single Root Demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
-				<iron-ajax url="data/tree.json" handle-as="json" last-response="{{treeData2}}" auto></iron-ajax>
+				<iron-ajax url="data/tree.json" handle-as="json" last-response="{{ treeData2 }}" auto></iron-ajax>
 				<div class="treeNodeWrapper">
 					<cosmoz-treenode-navigator comparison-property="description"  child-property="spawn" chosen-node="{{ nodeChosen2 }}" data="[[ treeData2 ]]"></cosmoz-treenode-navigator>
 				</div>
@@ -89,9 +89,9 @@
 		<h3>Cosmoz-treenode-navigator Multiple Roots Demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
-				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{treeDataMulti}}" auto></iron-ajax>
+				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeDataMulti }}" auto></iron-ajax>
 				<div class="treeNodeWrapper">
-					<cosmoz-treenode-navigator  chosen-node="{{ nodeChosen3 }}" data="{{treeDataMulti}}"></cosmoz-treenode-navigator>
+					<cosmoz-treenode-navigator  chosen-node="{{ nodeChosen3 }}" data="{{ treeDataMulti }}"></cosmoz-treenode-navigator>
 				</div>
 			</template>
 		</demo-snippet>
