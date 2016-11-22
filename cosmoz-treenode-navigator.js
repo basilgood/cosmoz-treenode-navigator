@@ -9,19 +9,22 @@
 		properties: {
 			/*
 			Node structure object
-			that component shows
+			that component is given
 			 */
 			data: {
 				type: Object
 			},
 			/*
 			 Current node structure
+			 that is displayed
 			 */
 			_dataPlane: {
 				type: Array,
-				value: function (){
-					return [];
-				}
+				computed: '_computeDataPlane(inputValue, data, _renderedLevel)'
+			},
+			_renderedLevel: {
+				type: Array,
+				computed: '_computedRenderLevel(_locationPath, data)'
 			},
 			/*
 			 Current path to displayed
@@ -75,7 +78,8 @@
 			Input value for searches
 			 */
 			inputValue: {
-				type: String
+				type: String,
+				value: ''
 			},
 			/*
 			 Settable name for property which
@@ -94,13 +98,6 @@
 				value: 'name'
 			},
 			/*
-			 Current position in structure.
-			 */
-			_currentBranchPath: {
-				type: String,
-				value: ''
-			},
-			/*
 			Search results.
 			 */
 			_searchNodes: {
@@ -110,10 +107,10 @@
 				}
 			},
 			/*
-			Chosen seperator to denote
+			Chosen separator to denote
 			navigation path.
 			 */
-			seperatorSign: {
+			separatorSign: {
 				type: String,
 				value: '.'
 			},
@@ -168,107 +165,85 @@
 			noResultGlobalFound: {
 				type: String,
 				value: 'No result found in global search. Click to reset.'
+			},
+			/*
+			Minimum length before an search
+			starts.
+			*/
+			searchMinLength: {
+				type: Number,
+				value: 1
 			}
 		},
-		observers: [
-			'renderLevel(_locationPath, data)',
-			'searchHandler(inputValue, data)'
-		],
-		getRootLevels: function (nodes) {
-			var tempChild,
-				tempNodes = [];
-			Object.keys(nodes).forEach(function (rootNode) {
-				tempChild = nodes[rootNode];
-				tempChild.generatedNodeId = rootNode;
-				tempChild.generatedPathName = '/';
-				tempChild.generatedPath = rootNode;
-				tempChild.generatedName = tempChild[this.comparisonProperty];
-				tempNodes.push(tempChild);
-			}, this);
-			return tempNodes;
+		_computeDataPlane: function (inputValue, data) {
+			if (inputValue.length > this.searchMinLength) {
+				return this.searchHandler(inputValue, data);
+			}
+			return this._renderedLevel;
 		},
-		renderLevel: function (pl, nodes) {
-			var path,
-				tempChild,
-				tempPath,
-				tempParentNodes = [],
-				tempNodes = [],
-				tempPathName = '';
+		_computedRenderLevel: function (pl, nodes) {
+			var children,
+				path,
+				nodeOnPath,
+				pathNameParts = [];
 			this._searchInProgress = false;
 			this.currentBranchPathName = '';
-			if (pl === '') {
-				// root case (hoho)
-				this.set('_dataPlane', this.getRootLevels(nodes));
-				return;
-			}
-			path = pl.split(this.seperatorSign);
-			tempPath = path.splice(0, 1)[0];
-			tempChild = nodes[tempPath];
-			tempPathName = tempChild[this.comparisonProperty] + '/';
-			this._currentBranchPath = tempPath;
-			if (path.length > 0) {
-				path.some(function (key) {
-					if (tempChild[this.childProperty] && tempChild[this.childProperty][key]) {
-						tempChild = tempChild[this.childProperty][key];
-						tempPathName = tempPathName + tempChild[this.comparisonProperty] + '/';
-						this._currentBranchPath = this._currentBranchPath + this.seperatorSign + key;
-					} else {
-						console.log('Error: children/path doesnt exist ', path);
-						return false;
-					}
-				}, this);
-			}
-
-			tempChild = tempChild[this.childProperty];
-
-			this.currentBranchPathName = tempPathName;
-
-			Object.keys(tempChild).forEach(function (child) {
-				tempChild[child].generatedNodeId = child;
-				tempChild[child].generatedPathName = tempPathName;
-				tempChild[child].generatedName = tempChild[child][this.comparisonProperty];
-				tempNodes.push(tempChild[child]);
+			path = pl.split(this.separatorSign);
+			children = nodes;
+			path.some(function (key) {
+				if (key === '') {
+					return true;
+				}
+				nodeOnPath = children[key];
+				if (!nodeOnPath) {
+					console.error('Children/path doesnt exist ', path);
+					return true;
+				}
+				children = nodeOnPath[this.childProperty];
+				pathNameParts.push(nodeOnPath[this.comparisonProperty]);
 			}, this);
-			tempParentNodes.push(tempNodes);
-
-			this.set('_dataPlane', tempNodes);
+			this.currentBranchPathName = pathNameParts.join(' / ');
+			return Object.keys(children).map(function (childKey) {
+				var child = children[childKey];
+				return {
+					generatedNodeId: childKey,
+					generatedName: child[this.comparisonProperty],
+					generatedPathName: this.currentBranchPathName,
+					children: child[this.childProperty]
+				};
+			}, this);
 		},
 		searchHandler: function (searchWord, currentObject) {
 			var parentNode,
 				currentPath = '';
 			this._searchNodes = [];
 			this._currentSectionName = '';
-			if(searchWord.length < 3) {
+			if(searchWord.length < this.searchMinLength) {
 				// should existing results of previous navigation/searches be cleared away?
 				return;
 			}
 			this._searchInProgress = true;
 			this._searchFailed = false;
-			if(this._locationPath.indexOf(this.seperatorSign) === -1) {
+			if(this._locationPath.indexOf(this.separatorSign) === -1) {
 				currentPath = this._locationPath;
 			} else {
-				currentPath = this._locationPath.substring(0,this._locationPath.indexOf(this.seperatorSign));
+				currentPath = this._locationPath.substring(0,this._locationPath.indexOf(this.separatorSign));
 			}
-
 			if (Object.keys(currentObject).length > 1 && currentPath === '') {
 				Object.keys(currentObject).forEach(function (rootNode) {
 					this.searchAllBranches(searchWord, currentObject[rootNode], rootNode, currentObject[rootNode][this.comparisonProperty]);
 				}, this);
-
 			} else {
 				if (currentPath === '') {
 					currentPath = Object.keys(currentObject)[0];
 				}
-
 				if (!this._globalSearch) {
-					parentNode = this.getCurrentTree(this._currentBranchPath);
+					parentNode = this.getCurrentTree(this._locationPath);
 				} else {
 					parentNode = currentObject[currentPath];
 				}
-
 				this.searchAllBranches(searchWord, parentNode, currentPath, parentNode[this.comparisonProperty]);
 			}
-
 			if (this._searchNodes && this._searchNodes.length === 0) {
 				this._noResultFound = this.noResultLocalFound;
 				if (this._globalSearch === true) {
@@ -278,8 +253,7 @@
 				}
 				this._searchFailed = true;
 			}
-			this.set('_dataPlane', this._searchNodes);
-
+			return this._searchNodes;
 		},
 		searchAllBranches: function (searchWord, parentNode, currentPath, sectionName) {
 			var hasItemIndex,
@@ -291,13 +265,13 @@
 					hasItemIndex = child[this.comparisonProperty].toLowerCase().indexOf(searchWord.toLowerCase());
 					if (hasItemIndex > -1) {
 						child.generatedPathName = sectionName + '/' + child[this.comparisonProperty] + '/';
-						child.generatedPath = currentPath + this.seperatorSign + index;
+						child.generatedPath = currentPath + this.separatorSign + index;
 						child.generatedName = child[this.comparisonProperty];
 						child.sectionName = sectionName;
 						this._searchNodes.push(child);
 					}
 					if (Object.keys(child[this.childProperty]).length > 0 && child.constructor === Object) {
-						this.searchAllBranches(searchWord, child, currentPath + this.seperatorSign + index, child.generatedPathName);
+						this.searchAllBranches(searchWord, child, currentPath + this.separatorSign + index, child.generatedPathName);
 					}
 				}, this);
 			}
@@ -305,29 +279,30 @@
 		getCurrentTree: function (pl) {
 			var path,
 				tempChild;
-			if(pl.indexOf(this.seperatorSign) === -1) {
+			if(pl.indexOf(this.separatorSign) === -1) {
 				path = pl;
 				if (pl === '') {
 					return this.data[Object.keys(this.data)[0]];
 				}
 				return this.data[path];
 			}
-
-			path = pl.split(this.seperatorSign);
-
+			path = pl.split(this.separatorSign);
 			tempChild = this.data[path[0]];
 			path = path.slice(1);
 			if (path.length > 0) {
 				path.forEach(function (key) {
 					if (tempChild[this.childProperty] && tempChild[this.childProperty][key]) {
 						tempChild = tempChild[this.childProperty][key];
-					} else {
-						console.log('Error: children/path doesnt exist ', tempChild, path);
 					}
 				}, this);
 			}
 			return tempChild;
-
+		},
+		noChildrenFound: function (node) {
+			if (Object.keys(node.children).length === 0 && node.children.constructor === Object) {
+				return true;
+			}
+			return false;
 		},
 		checkSection: function (section) {
 			if (this._searchInProgress && section !== this._currentSectionName) {
@@ -339,25 +314,21 @@
 		openNode: function (event) {
 			var nodeClicked,
 				nodeObject;
-			nodeObject = event.target.nodeObject;
-			if (!nodeObject.generatedPath) {
-				nodeClicked = this._locationPath + this.seperatorSign + nodeObject.generatedNodeId;
+			console.log(event);
+			nodeObject = event.model.node;
+			if (this._locationPath !== '') {
+				nodeClicked = this._locationPath + this.separatorSign + nodeObject.generatedNodeId;
 			} else {
-				nodeClicked = nodeObject.generatedPath;
+				nodeClicked = nodeObject.generatedNodeId;
 			}
 			this.selectedNodeName = '';
 			this._locationPath = nodeClicked;
 			this.inputValue = '';
-			this.renderLevel(nodeClicked, this.data);
 		},
 		openParentNode: function () {
-			var parentNodePath = this._locationPath.substring(0, this._locationPath.lastIndexOf(this.seperatorSign));
-			if (parentNodePath === '') {
-				this._currentBranchPath = '';
-			}
+			var parentNodePath = this._locationPath.substring(0, this._locationPath.lastIndexOf(this.separatorSign));
 			this.selectedNodeName = '';
 			this._locationPath = parentNodePath;
-			this.renderLevel(parentNodePath, this.data);
 		},
 		nodeSelect: function (event) {
 			var nodeObject;
@@ -365,12 +336,12 @@
 				return;
 			}
 			nodeObject = event.target.nodeObject;
-			this.selectedNodeName = nodeObject[this.comparisonProperty];
+			this.selectedNodeName = ' / ' + nodeObject.generatedName;
 			this.currentBranchPathName = nodeObject.generatedPathName;
 			this.chosenNode = {
 				folderPath: nodeObject.generatedPathName,
-				pathToNode: nodeObject.generatedPath,
-				name: nodeObject[this.comparisonProperty]
+				pathToNode: this._locationPath + '.' + nodeObject.generatedNodeId,
+				name: nodeObject.generatedName
 			};
 		},
 		checkForParent: function (path) {
@@ -380,25 +351,24 @@
 			return true;
 		},
 		clearSearch: function () {
-			this._searchNodes = [];
-			this.set('_dataPlane', []);
+			this.inputValue = '';
+			this._locationPath = '';
 		},
-		tryGlobalSearch: function (event) {
+		tryGlobalSearch: function () {
 			if (this._resetSearch) {
 				this._resetSearch = false;
 				this._noResultFound = this.noResultLocalFound;
 				this._searchFailed = false;
 				this.inputValue = '';
-				this.renderLevel('', this.data);
+				this._locationPath = '';
 
 			} else {
 				this._globalSearch = true;
 				this._locationPath = '';
-				this.searchHandler(event.target.searchword, this.data);
 			}
 		},
 		childrenExist: function (node) {
-			if (Object.keys(node[this.childProperty]).length === 0 && node[this.childProperty].constructor === Object) {
+			if (Object.keys(node.children).length === 0 && node.children.constructor === Object) {
 				return false;
 			}
 			return true;
