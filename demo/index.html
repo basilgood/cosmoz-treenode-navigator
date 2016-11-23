@@ -53,7 +53,7 @@
 				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
 				<paper-button raised onclick="dialogTree.open()">
 					<template is="dom-if" if="[[ nodeChosen.name ]]">
-						<div class="pathToNode">{{ nodeChosen.folderPath }}{{ nodeChosen.name }}</div>
+						<div class="pathToNode">[[ nodeChosen.folderPath ]]</div>
 					</template>
 					<template is="dom-if" if="[[ !nodeChosen.name ]]">
 						<div class="pathToNode">No selection made</div>
@@ -63,7 +63,7 @@
 					<paper-dialog id="dialogTree" class="treeDialog" modal>
   						<paper-dialog-scrollable>
 							<div class="treeScroll"><!-- comparison-property="description"  child-property="spawn"-->
-								<cosmoz-treenode-navigator  chosen-node="{{ nodeChosen }}" data="[[ treeData ]]"></cosmoz-treenode-navigator>
+								<cosmoz-treenode-navigator chosen-node="{{ nodeChosen }}" data="[[ treeData ]]"></cosmoz-treenode-navigator>
 							</div>
   						</paper-dialog-scrollable>
 						<div class="buttons">
