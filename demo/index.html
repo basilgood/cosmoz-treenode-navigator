@@ -62,7 +62,7 @@
 				<div class="treeNodeWrapper">
 					<paper-dialog id="dialogTree" class="treeDialog" modal>
   						<paper-dialog-scrollable>
-							<div class="treeScroll"><!-- comparison-property="description"  child-property="spawn"-->
+							<div class="treeScroll">
 								<cosmoz-treenode-navigator chosen-node="{{ nodeChosen }}" data="[[ treeData ]]"></cosmoz-treenode-navigator>
 							</div>
   						</paper-dialog-scrollable>
@@ -75,13 +75,13 @@
 			</template>
 		</demo-snippet>
 	</div>
-<!-- 	<div class="vertical-section-container centered">
+ 	<div class="vertical-section-container centered">
 		<h3>Cosmoz-treenode-navigator Single Root Demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
 				<iron-ajax url="data/tree.json" handle-as="json" last-response="{{ treeData2 }}" auto></iron-ajax>
 				<div class="treeNodeWrapper">
-					<cosmoz-treenode-navigator comparison-property="description"  child-property="spawn" chosen-node="{{ nodeChosen2 }}" data="[[ treeData2 ]]"></cosmoz-treenode-navigator>
+					<cosmoz-treenode-navigator comparison-property="description" child-property="spawn" chosen-node="{{ nodeChosen2 }}" data="[[ treeData2 ]]"></cosmoz-treenode-navigator>
 				</div>
 			</template>
 		</demo-snippet>
@@ -95,7 +95,7 @@
 				</div>
 			</template>
 		</demo-snippet>
-	</div> -->
+	</div> 
 </body>
 
 </html>
