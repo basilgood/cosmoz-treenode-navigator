@@ -46,11 +46,14 @@
 </head> 
 
 <body>
+	<div class="horizontal-section-container centered">
+		<h1>Cosmoz-treenode-navigator</h1>
+	</div>
 	<div class="vertical-section-container centered">
-		<h3>Cosmoz-treenode-navigator button dialog demo</h3>
+		<h3>Button Dialog Multiple Roots Demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
-				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
+				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData1 }}" auto></iron-ajax>
 				<paper-button raised onclick="dialogTree.open()">
 					<template is="dom-if" if="[[ nodeChosen.name ]]">
 						<div class="pathToNode">[[ nodeChosen.folderPath ]]</div>
@@ -63,7 +66,7 @@
 					<paper-dialog id="dialogTree" class="treeDialog" modal>
   						<paper-dialog-scrollable>
 							<div class="treeScroll">
-								<cosmoz-treenode-navigator chosen-node="{{ nodeChosen }}" data="[[ treeData ]]"></cosmoz-treenode-navigator>
+								<cosmoz-treenode-navigator chosen-node="{{ nodeChosen }}" data="[[ treeData1 ]]"></cosmoz-treenode-navigator>
 							</div>
   						</paper-dialog-scrollable>
 						<div class="buttons">
@@ -76,7 +79,7 @@
 		</demo-snippet>
 	</div>
  	<div class="vertical-section-container centered">
-		<h3>Cosmoz-treenode-navigator Single Root Demo</h3>
+		<h3>Single Root Demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
 				<iron-ajax url="data/tree.json" handle-as="json" last-response="{{ treeData2 }}" auto></iron-ajax>
@@ -85,13 +88,14 @@
 				</div>
 			</template>
 		</demo-snippet>
-	</div><div class="vertical-section-container centered">
-		<h3>Cosmoz-treenode-navigator Multiple Roots Demo</h3>
+	</div>
+	<div class="vertical-section-container centered">
+		<h3>Multiple Roots Demo</h3>
 		<demo-snippet>
 			<template is="dom-bind">
-				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeDataMulti }}" auto></iron-ajax>
+				<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData3 }}" auto></iron-ajax>
 				<div class="treeNodeWrapper">
-					<cosmoz-treenode-navigator  chosen-node="{{ nodeChosen3 }}" data="{{ treeDataMulti }}"></cosmoz-treenode-navigator>
+					<cosmoz-treenode-navigator chosen-node="{{ nodeChosen3 }}" data="{{ treeData3 }}"></cosmoz-treenode-navigator>
 				</div>
 			</template>
 		</demo-snippet>

@@ -45,14 +45,6 @@
 				notify: true
 			},
 			/*
-			Currently selected node name
-			 
-			selectedNodeName: {
-				type: String,
-				value: '',
-				notify: true
-			},*/
-			/*
 			 Current selected path expressed
 			 in node names.
 			*/
@@ -234,19 +226,11 @@
 			} else {
 				currentPath = this._locationPath.substring(0,this._locationPath.indexOf(this.separatorSign));
 			}
-			if (Object.keys(currentObject).length > 1) {
-				parentNode = {
-					children: currentObject
-				};
+			if (!this._globalSearch) {
+				parentNode = this.getCurrentTree(this._locationPath);
 			} else {
-				if (currentPath === '') {
-					currentPath = Object.keys(currentObject)[0];
-				}
-				if (!this._globalSearch) {
-					parentNode = this.getCurrentTree(this._locationPath);
-				} else {
-					parentNode = currentObject[currentPath];
-				}
+				parentNode = {};
+				parentNode[this.childProperty] = this.data;
 			}
 			nodes = this.searchAllBranches(searchWord, parentNode, currentPath);
 			if (nodes && nodes.length === 0) {
@@ -287,6 +271,7 @@
 						child.generatedPath = localPath + localIndex;
 						child.generatedName = comparison;
 						child.sectionName = sectionName;
+						child.children = child[this.childProperty];
 						nodes.push(child);
 					}
 					if (Object.keys(child[this.childProperty]).length > 0 && child.constructor === Object) {
@@ -344,7 +329,8 @@
 			return namesOnPath;
 		},
 		noChildrenFound: function (node) {
-			if (Object.keys(node.children).length === 0 && node.children.constructor === Object) {
+			var child = node.children;
+			if (Object.keys(child).length === 0 && child.constructor === Object) {
 				return true;
 			}
 			return false;
