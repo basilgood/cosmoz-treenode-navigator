@@ -61,12 +61,6 @@
 				value: 'search'
 			},
 			/*
-			Current section(parent) of node.
-			 */
-			_currentSectionName: {
-				type: String
-			},
-			/*
 			Input value for searches
 			 */
 			inputValue: {
@@ -124,7 +118,7 @@
 			/*
 			 Whether search is currently being done.
 			 */
-			_searchInProgress: {
+			_searchDone: {
 				type: Boolean,
 				value: false
 			},
@@ -179,7 +173,7 @@
 				nodeOnPath,
 				childPath,
 				pathNameParts = [];
-			this._searchInProgress = false;
+			this._searchDone = false;
 			path = pl.split(this.separatorSign);
 			children = nodes;
 			path.some(function (key) {
@@ -232,23 +226,26 @@
 				this._searchFailed = false;
 
 			}
+			this._searchDone = true;
 			return results;
 		},
 		searchAllBranches: function (searchWord, parentStat, nodeList) {
 			var localPath = parentStat.currentPath,
+				localSection = parentStat.sectionName,
 				results = [];
 			if (parentStat.currentPath !== '') {
 				localPath += this.separatorSign;
+				localSection += ' / ';
 			}
 			nodeList.forEach(function (node) {
 				if (node.name.toLowerCase().indexOf(searchWord.toLowerCase()) > -1) {
-					node.sectionName = parentStat.sectionName;
+					node.sectionName = localSection;
 					node.path = localPath +  node.id;
 					results.push(node);
 				}
 				var children = node[this.childProperty];
 				if (children) {
-					parentStat.sectionName = node.name;
+					parentStat.sectionName =localSection + node.name;
 					parentStat.currentPath = localPath +  node.id;
 					results = results.concat(this.searchAllBranches(searchWord, parentStat, this._computedRenderLevel('', children)));
 				}
@@ -287,18 +284,10 @@
 			}
 			return false;
 		},
-		checkSection: function (section) {
-			if (this._searchInProgress && section !== this._currentSectionName) {
-				this._currentSectionName = section;
-				return true;
-			}
-			return false;
-		},
 		openNode: function (event) {
 			var nodeClicked,
 				node;
 			node = event.model.node;
-			console.log('nodeSelect', node);
 			if (this._locationPath !== '') {
 				nodeClicked = this._locationPath + this.separatorSign + node.id;
 			} else {
@@ -322,9 +311,7 @@
 			if (event.target._iconName) {
 				return;
 			}
-			console.log('nodeSelect event', event);
 			node = event.model.node;
-			console.log('nodeSelect', node);
 			this.currentBranchPathName = this.getPathName(node.path);
 			this.chosenNode = {
 				folderPath: this.currentBranchPathName,
