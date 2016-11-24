@@ -2,9 +2,7 @@
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html"> 
 <link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">  
-<link rel="import" href="../paper-button/paper-button.html">  
-<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <!--
 `cosmoz-treenode-navigator`
 Navigator through object with treelike datastructure.  
@@ -34,8 +32,7 @@ Navigator through object with treelike datastructure.
 				<template is="dom-repeat" items="{{ _dataPlane }}" as="node">
 					<div class="vertical-section">
 						<div hidden$="[[ checkSection(node.sectionName) ]]">[[ node.sectionName ]]</div>
-						<paper-item class="nodeItem" node-object="[[ node ]]" on-click="nodeSelect">
-							<paper-tooltip animation-delay="0">[[ currentBranchPathName ]][[ node.generatedName ]]</paper-tooltip>[[ node.generatedName ]]
+						<paper-item class="nodeItem" title="[[ currentBranchPathName ]]" node-object="[[ node ]]" on-click="nodeSelect">[[ node.name ]]
 							<iron-icon hidden$="[[ noChildrenFound(node) ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
 						</paper-item>
 					</div>

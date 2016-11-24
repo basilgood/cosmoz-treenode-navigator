@@ -188,7 +188,7 @@
 				}
 				nodeOnPath = children[key];
 				if (!nodeOnPath) {
-					console.error('Children/path doesnt exist ', path);
+					console.error('Children/path doesnt exist for the given nodes at least', path, children, key);
 					return true;
 				}
 				children = nodeOnPath[this.childProperty];
@@ -202,38 +202,23 @@
 					childPath = pl  + this.separatorSign + childKey;
 				}
 				return {
-					generatedNodeId: childKey,
-					generatedName: child[this.comparisonProperty],
-					generatedPath: childPath,
+					id: childKey,
+					name: child[this.comparisonProperty],
+					path: childPath,
 					children: child[this.childProperty]
 				};
 			}, this);
 		},
-		searchHandler: function (searchWord, currentObject) {
-			var parentNode,
-				nodes= [],
-				currentPath = '';
-			this._currentSectionName = '';
-			this.currentBranchPathName = '';
-			if(searchWord.length < this.searchMinLength) {
-				// should existing results of previous navigation/searches be cleared away?
-				return;
-			}
-			this._searchInProgress = true;
-			this._searchFailed = false;
-			if(this._locationPath.indexOf(this.separatorSign) === -1) {
-				currentPath = this._locationPath;
-			} else {
-				currentPath = this._locationPath.substring(0,this._locationPath.indexOf(this.separatorSign));
-			}
-			if (!this._globalSearch) {
-				parentNode = this.getCurrentTree(this._locationPath);
-			} else {
-				parentNode = {};
-				parentNode[this.childProperty] = this.data;
-			}
-			nodes = this.searchAllBranches(searchWord, parentNode, currentPath);
-			if (nodes && nodes.length === 0) {
+		searchHandler: function (searchWord, renderedLevel) {
+			var results = [],
+				parentStat,
+				nodes = renderedLevel;
+			parentStat = {
+				sectionName: '',
+				currentPath: ''
+			};
+			results = this.searchAllBranches(searchWord, parentStat , nodes);
+			if (results && results.length === 0) {
 				this._noResultFound = this.noResultLocalFound;
 				if (this._globalSearch === true) {
 					this._noResultFound = this.noResultGlobalFound;
@@ -241,67 +226,34 @@
 					this._resetSearch = true;
 				}
 				this._searchFailed = true;
+			} else {
+				this._noResultFound = this.noResultLocalFound;
+				this._globalSearch = false;
+				this._searchFailed = false;
+
 			}
-			return nodes;
+			return results;
 		},
-		searchAllBranches: function (searchWord, nodeList, currentPath) {
-			var hasItemIndex,
-				children = nodeList[this.childProperty],
-				comparison,
-				sectionName = '',
-				child,
-				nodes = [],
-				localIndex,
-				localPath = '';
-			if (currentPath !== '') {
-				localPath = currentPath + this.separatorSign;
+		searchAllBranches: function (searchWord, parentStat, nodeList) {
+			var localPath = parentStat.currentPath,
+				results = [];
+			if (parentStat.currentPath !== '') {
+				localPath += this.separatorSign;
 			}
-			if (children && Object.keys(children).length > 0) {
-				Object.keys(children).forEach(function (index) {
-					child = children[index];
-					comparison = child[this.comparisonProperty];
-					localIndex = index;
-					if (!comparison) {
-						comparison = child.generatedName;
-						localIndex = child.generatedNodeId;
-					}
-					hasItemIndex = comparison.toLowerCase().indexOf(searchWord.toLowerCase());
-					if (hasItemIndex > -1) {
-						sectionName = child[this.comparisonProperty];
-						child.generatedPath = localPath + localIndex;
-						child.generatedName = comparison;
-						child.sectionName = sectionName;
-						child.children = child[this.childProperty];
-						nodes.push(child);
-					}
-					if (Object.keys(child[this.childProperty]).length > 0 && child.constructor === Object) {
-						nodes = nodes.concat(this.searchAllBranches(searchWord, child, localPath + localIndex));
-					}
-				}, this);
-			}
-			return nodes;
-		},
-		getCurrentTree: function (pl) {
-			var path,
-				nodeOnPath;
-			if(pl.indexOf(this.separatorSign) === -1) {
-				path = pl;
-				if (pl === '') {
-					return this.data[Object.keys(this.data)[0]];
+			nodeList.forEach(function (node) {
+				if (node.name.toLowerCase().indexOf(searchWord.toLowerCase()) > -1) {
+					node.sectionName = parentStat.sectionName;
+					node.path = localPath +  node.id;
+					results.push(node);
 				}
-				return this.data[path];
-			}
-			path = pl.split(this.separatorSign);
-			nodeOnPath = this.data[path[0]];
-			path = path.slice(1);
-			if (path.length > 0) {
-				path.forEach(function (key) {
-					if (nodeOnPath[this.childProperty] && nodeOnPath[this.childProperty][key]) {
-						nodeOnPath = nodeOnPath[this.childProperty][key];
-					}
-				}, this);
-			}
-			return nodeOnPath;
+				var children = node[this.childProperty];
+				if (children) {
+					parentStat.sectionName = node.name;
+					parentStat.currentPath = localPath +  node.id;
+					results = results.concat(this.searchAllBranches(searchWord, parentStat, this._computedRenderLevel('', children)));
+				}
+			}, this);
+			return results;
 		},
 		getPathName: function (pl) {
 			var path,
@@ -347,9 +299,9 @@
 				nodeObject;
 			nodeObject = event.model.node;
 			if (this._locationPath !== '') {
-				nodeClicked = this._locationPath + this.separatorSign + nodeObject.generatedNodeId;
+				nodeClicked = this._locationPath + this.separatorSign + nodeObject.id;
 			} else {
-				nodeClicked = nodeObject.generatedPath;
+				nodeClicked = nodeObject.path;
 			}
 			this.inputValue = '';
 			this.currentBranchPathName = this.getPathName(nodeClicked);
@@ -370,11 +322,11 @@
 				return;
 			}
 			nodeObject = event.target.nodeObject;
-			this.currentBranchPathName = this.getPathName(nodeObject.generatedPath);
+			this.currentBranchPathName = this.getPathName(nodeObject.path);
 			this.chosenNode = {
 				folderPath: this.currentBranchPathName,
-				pathToNode: nodeObject.generatedPath,
-				name: nodeObject.generatedName
+				pathToNode: nodeObject.path,
+				name: nodeObject.name
 			};
 		},
 		checkForParent: function (path) {
@@ -382,10 +334,6 @@
 				return false;
 			}
 			return true;
-		},
-		clearSearch: function () {
-			this.inputValue = '';
-			this._locationPath = '';
 		},
 		tryGlobalSearch: function () {
 			if (this._resetSearch) {
