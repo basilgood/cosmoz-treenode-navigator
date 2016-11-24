@@ -131,7 +131,7 @@
 			/*
 			 True if search results turns up empty.
 			 */
-			__searchFailed: {
+			_searchFailed: {
 				type: Boolean,
 				value: false
 			},
@@ -296,12 +296,13 @@
 		},
 		openNode: function (event) {
 			var nodeClicked,
-				nodeObject;
-			nodeObject = event.model.node;
+				node;
+			node = event.model.node;
+			console.log('nodeSelect', node);
 			if (this._locationPath !== '') {
-				nodeClicked = this._locationPath + this.separatorSign + nodeObject.id;
+				nodeClicked = this._locationPath + this.separatorSign + node.id;
 			} else {
-				nodeClicked = nodeObject.path;
+				nodeClicked = node.path;
 			}
 			this.inputValue = '';
 			this.currentBranchPathName = this.getPathName(nodeClicked);
@@ -317,16 +318,18 @@
 			}
 		},
 		nodeSelect: function (event) {
-			var nodeObject;
+			var node;
 			if (event.target._iconName) {
 				return;
 			}
-			nodeObject = event.target.nodeObject;
-			this.currentBranchPathName = this.getPathName(nodeObject.path);
+			console.log('nodeSelect event', event);
+			node = event.model.node;
+			console.log('nodeSelect', node);
+			this.currentBranchPathName = this.getPathName(node.path);
 			this.chosenNode = {
 				folderPath: this.currentBranchPathName,
-				pathToNode: nodeObject.path,
-				name: nodeObject.name
+				pathToNode: node.path,
+				name: node.name
 			};
 		},
 		checkForParent: function (path) {

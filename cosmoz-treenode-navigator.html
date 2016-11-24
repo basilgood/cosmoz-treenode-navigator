@@ -3,6 +3,8 @@
 <link rel="import" href="../paper-item/paper-item.html"> 
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <!--
 `cosmoz-treenode-navigator`
 Navigator through object with treelike datastructure.  
@@ -30,12 +32,11 @@ Navigator through object with treelike datastructure.
 			<iron-icon icon="icons:arrow-upward"  hidden$="{{ checkForParent(_locationPath) }}" on-click="openParentNode"></iron-icon>
 			<paper-listbox >
 				<template is="dom-repeat" items="{{ _dataPlane }}" as="node">
-					<div class="vertical-section">
-						<div hidden$="[[ checkSection(node.sectionName) ]]">[[ node.sectionName ]]</div>
-						<paper-item class="nodeItem" title="[[ currentBranchPathName ]]" node-object="[[ node ]]" on-click="nodeSelect">[[ node.name ]]
-							<iron-icon hidden$="[[ noChildrenFound(node) ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
-						</paper-item>
-					</div>
+					<div hidden$="[[ checkSection(node.sectionName) ]]">[[ node.sectionName ]]</div>
+					<paper-item class="nodeItem" title="[[ currentBranchPathName ]]" node-object="[[ node ]]" on-click="nodeSelect">
+						<span>[[ node.name ]]</span>
+						<iron-icon hidden$="[[ noChildrenFound(node) ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
+					</paper-item>
 				</template>
 				<paper-item hidden$="[[ !_searchFailed ]]" search-word="[[ inputValue ]]" on-click="tryGlobalSearch">{{_noResultFound}}</paper-item>
 			</paper-listbox>
