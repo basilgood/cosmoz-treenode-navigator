@@ -101,56 +101,35 @@
 				value: '.'
 			},
 			/*
-			 Whether search is based on
-			 currently selected node.
+			 Whether an search has been done.
 			 */
-			_globalSearch: {
+			_noSearch: {
 				type: Boolean,
-				value: false
-			},
-			/*
-			 Reset failed global search.
-			 */
-			_resetSearch: {
-				type: Boolean,
-				value: false
-			},
-			/*
-			 Whether search is currently being done.
-			 */
-			_searchDone: {
-				type: Boolean,
-				value: false
-			},
-			/*
-			 True if search results turns up empty.
-			 */
-			_searchFailed: {
-				type: Boolean,
-				value: false
+				computed: '_computeNoSearch(inputValue)'
 			},
 			/*
 			 Text bound value container.
 			 Is set by other values.
 			 */
-			_noResultFound: {
+			_searchText: {
 				type: String
 			},
 			/*
 			 Settable text given to user
-			 when local search fails.
+			 when local search has
+			 been done.
 			 */
-			noResultLocalFound: {
+			localSearchDoneText: {
 				type: String,
-				value: 'No result found. Click to expand to global search.'
+				value: 'Click to search again but globally.'
 			},
 			/*
 			Settable text given to user
-			when global search fails.
+			when after an global search.
 			*/
-			noResultGlobalFound: {
+			resetText: {
 				type: String,
-				value: 'No result found in global search. Click to reset.'
+				value: 'Click to reset.'
 			},
 			/*
 			Minimum length before an search
@@ -158,11 +137,11 @@
 			*/
 			searchMinLength: {
 				type: Number,
-				value: 1
+				value: 2
 			}
 		},
 		_computeDataPlane: function (inputValue, renderedLevel) {
-			if (inputValue.length > this.searchMinLength) {
+			if (inputValue.length >= this.searchMinLength) {
 				return this.searchHandler(inputValue, renderedLevel);
 			}
 			return this._renderedLevel;
@@ -173,7 +152,6 @@
 				nodeOnPath,
 				childPath,
 				pathNameParts = [];
-			this._searchDone = false;
 			path = pl.split(this.separatorSign);
 			children = nodes;
 			path.some(function (key) {
@@ -212,21 +190,6 @@
 				currentPath: ''
 			};
 			results = this.searchAllBranches(searchWord, parentStat , nodes);
-			if (results && results.length === 0) {
-				this._noResultFound = this.noResultLocalFound;
-				if (this._globalSearch === true) {
-					this._noResultFound = this.noResultGlobalFound;
-					this._globalSearch = false;
-					this._resetSearch = true;
-				}
-				this._searchFailed = true;
-			} else {
-				this._noResultFound = this.noResultLocalFound;
-				this._globalSearch = false;
-				this._searchFailed = false;
-
-			}
-			this._searchDone = true;
 			return results;
 		},
 		searchAllBranches: function (searchWord, parentStat, nodeList) {
@@ -293,6 +256,8 @@
 			} else {
 				nodeClicked = node.path;
 			}
+			this._searchText = this.localSearchDoneText;
+			console.log('tryGlobalSearch', this._searchText);
 			this.inputValue = '';
 			this.currentBranchPathName = this.getPathName(nodeClicked);
 			this._locationPath = nodeClicked;
@@ -326,15 +291,21 @@
 			return true;
 		},
 		tryGlobalSearch: function () {
-			if (this._resetSearch) {
-				this._resetSearch = false;
-				this._noResultFound = this.noResultLocalFound;
-				this._searchFailed = false;
+			if (this._searchText === this.resetText) {
+				this._searchText = this.localSearchDoneText;
+				this.currentBranchPathName = '';
 				this.inputValue = '';
 			} else {
-				this._globalSearch = true;
+				this._searchText = this.resetText;
 			}
+			console.log('tryGlobalSearch', this._searchText);
 			this._locationPath = '';
+		},
+		_computeNoSearch: function (inputeValue) {
+			if (!inputeValue || inputeValue === '') {
+				return true;
+			}
+			return false;
 		}
 	});
 }());

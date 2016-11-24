@@ -37,13 +37,13 @@ Navigator through object with treelike datastructure.
 			<iron-icon icon="icons:arrow-upward"  hidden$="{{ checkForParent(_locationPath) }}" on-click="openParentNode"></iron-icon>
 			<paper-listbox class="listTree">
 				<template is="dom-repeat" items="{{ _dataPlane }}" as="node">
-					<div hidden$="[[ !_searchDone ]]">[[ node.sectionName ]]</div>
+					<div hidden$="[[ _noSearch ]]">[[ node.sectionName ]]</div>
 					<paper-item class="nodeItem" title="[[ currentBranchPathName ]]" node-object="[[ node ]]" on-click="nodeSelect">
 						<span class="flex">[[ node.name ]]</span>
 						<iron-icon hidden$="[[ noChildrenFound(node) ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
 					</paper-item>
 				</template>
-				<paper-item hidden$="[[ !_searchFailed ]]" search-word="[[ inputValue ]]" on-click="tryGlobalSearch">{{_noResultFound}}</paper-item>
+				<paper-item hidden$="[[ _noSearch ]]" search-word="[[ inputValue ]]" on-click="tryGlobalSearch">{{ _searchText }}</paper-item>
 			</paper-listbox>
 		</div>
 	</template>
