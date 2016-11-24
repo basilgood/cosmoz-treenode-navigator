@@ -257,7 +257,6 @@
 				nodeClicked = node.path;
 			}
 			this._searchText = this.localSearchDoneText;
-			console.log('tryGlobalSearch', this._searchText);
 			this.inputValue = '';
 			this.currentBranchPathName = this.getPathName(nodeClicked);
 			this._locationPath = nodeClicked;
@@ -298,7 +297,6 @@
 			} else {
 				this._searchText = this.resetText;
 			}
-			console.log('tryGlobalSearch', this._searchText);
 			this._locationPath = '';
 		},
 		_computeNoSearch: function (inputeValue) {
