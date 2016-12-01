@@ -37,7 +37,7 @@ Navigator through object with treelike datastructure.
 		}
 	</style>
 	<template>
-		<paper-button raised onclick="dialogTree.open()">
+		<paper-button raised on-tap="openDialogTree">
 			<template is="dom-if" if="[[ chosenNode.name ]]">
 				<div class="pathToNode">[[ chosenNode.folderPath ]]</div>
 			</template>

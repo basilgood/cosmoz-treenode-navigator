@@ -118,6 +118,9 @@
 				type: Number,
 				value: 2
 			}
+		},
+		openDialogTree: function (event) {
+			this.$.dialogTree.open();
 		}
 	});
 }());
