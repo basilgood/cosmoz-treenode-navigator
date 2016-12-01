@@ -1,0 +1,71 @@
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-listbox/paper-listbox.html">
+<link rel="import" href="../paper-item/paper-item.html"> 
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">  
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
+<link rel="import" href="cosmoz-treenode-navigator.html">
+<!--
+`cosmoz-treenode-navigator`
+Navigator through object with treelike datastructure.  
+ 
+@demo demo/index.html 
+-->
+<dom-module id="cosmoz-treenode-button-view">
+	<style is="custom-style" include="demo-pages-shared-styles">
+
+		.treeScroll {
+			max-height:600px;
+			width:inherit;
+			overflow:auto;
+		}
+
+		.treeDialog {
+			padding: 60px;
+		}
+
+		.pathToNode {
+			max-width: 320px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			direction: rtl;
+			text-align:left;
+		}
+	</style>
+	<template>
+		<paper-button raised onclick="dialogTree.open()">
+			<template is="dom-if" if="[[ chosenNode.name ]]">
+				<div class="pathToNode">[[ chosenNode.folderPath ]]</div>
+			</template>
+			<template is="dom-if" if="[[ !chosenNode.name ]]">
+				<div class="pathToNode">[[ _('No selection made', t) ]]</div>
+			</template>
+		</paper-button>
+		<div class="treeNodeWrapper">
+			<paper-dialog id="dialogTree" class="treeDialog" modal>
+				<h2>[[ dialogText ]]</h2>
+				<paper-dialog-scrollable>
+					<div class="treeScroll">
+						<cosmoz-treenode-navigator chosen-node="{{ chosenNode }}" data="[[ data ]]"
+						 location-path="{{ locationPath }}" child-property="[[ childProperty ]]"
+						  comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"
+						  separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
+						  reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
+						  value="{{ value }}">
+							<content></content>
+						</cosmoz-treenode-navigator>
+					</div>
+				</paper-dialog-scrollable>
+				<div class="buttons">
+					<paper-button dialog-confirm autofocus>[[ _('Select', t) ]]</paper-button>
+					<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
+				</div>
+			</paper-dialog>
+		</div>
+	</template>
+	<script type="text/javascript" src="cosmoz-treenode-button-view.js"></script>
+</dom-module>

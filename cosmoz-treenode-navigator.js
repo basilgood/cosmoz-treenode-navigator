@@ -4,19 +4,21 @@
 
 	Polymer({
 
+		behaviors: [
+			Cosmoz.TranslatableBehavior
+		],
 		is: 'cosmoz-treenode-navigator',
 
 		properties: {
 			/*
-			Node structure object
-			that component is given
+			Object to be shown in component
 			 */
 			data: {
 				type: Object
 			},
 			/*
-			 Current node structure
-			 that is displayed
+			Node structure object
+			that component is given
 			 */
 			_dataPlane: {
 				type: Array,
@@ -27,8 +29,21 @@
 				computed: '_computedRenderLevel(_locationPath, data)'
 			},
 			/*
+			 path value
+			 */
+			value: {
+				type: String,
+				value: '',
+				notify: true
+			},
+			/*
 			 Current path to displayed
-			 node/folder
+			 node/folder. That is an
+			 "address" to the node.
+			 An example would be "1.5.35",
+			 where node id/indexes are put
+			 together with "." set as
+			 the seperator.
 			 */
 			_locationPath: {
 				type: String,
@@ -38,7 +53,7 @@
 			 Currently selected node object
 			 */
 			chosenNode: {
-				type: Array,
+				type: Object,
 				value: function (){
 					return {};
 				},
@@ -48,7 +63,7 @@
 			 Current selected path expressed
 			 in node names.
 			*/
-			currentBranchPathName: {
+			_currentBranchPathName: {
 				type: String,
 				value: '',
 				notify: true
@@ -58,7 +73,7 @@
 			 */
 			searchPlaceholder: {
 				type: String,
-				value: 'search'
+				value: 'Search'
 			},
 			/*
 			Input value for searches
@@ -140,6 +155,9 @@
 				value: 2
 			}
 		},
+		observers: [
+			'_valueChanged(value)'
+		],
 		_computeDataPlane: function (inputValue, renderedLevel) {
 			if (inputValue.length >= this.searchMinLength) {
 				return this.searchHandler(inputValue, renderedLevel);
@@ -238,6 +256,7 @@
 					}
 				}, this);
 			}
+			namesOnPath = namesOnPath.substring(0, namesOnPath.lastIndexOf('/') - 1);
 			return namesOnPath;
 		},
 		noChildrenFound: function (node) {
@@ -258,16 +277,16 @@
 			}
 			this._searchText = this.localSearchDoneText;
 			this.inputValue = '';
-			this.currentBranchPathName = this.getPathName(nodeClicked);
+			this._currentBranchPathName = this.getPathName(nodeClicked);
 			this._locationPath = nodeClicked;
 		},
 		openParentNode: function () {
 			if(this._locationPath.indexOf(this.separatorSign) === -1) {
-				this.currentBranchPathName = '';
+				this._currentBranchPathName = '';
 				this._locationPath = '';
 			} else {
 				this._locationPath =  this._locationPath.substring(0, this._locationPath.lastIndexOf(this.separatorSign));
-				this.currentBranchPathName = this.getPathName(this._locationPath);
+				this._currentBranchPathName = this.getPathName(this._locationPath);
 			}
 		},
 		nodeSelect: function (event) {
@@ -276,11 +295,28 @@
 				return;
 			}
 			node = event.model.node;
-			this.currentBranchPathName = this.getPathName(node.path);
+			this._currentBranchPathName = this.getPathName(node.path);
+			this.value = node.path;
 			this.chosenNode = {
-				folderPath: this.currentBranchPathName,
+				folderPath: this._currentBranchPathName,
 				pathToNode: node.path,
 				name: node.name
+			};
+		},
+		_valueChanged: function (path) {
+			var nodeName;
+			if (!path) {
+				return;
+			}
+			this._currentBranchPathName = this.getPathName(path);
+			nodeName = this._currentBranchPathName;
+			if (this._currentBranchPathName.indexOf('/') !== -1) {
+				nodeName = this._currentBranchPathName.substring(this._currentBranchPathName.lastIndexOf('/') + 1);
+			}
+			this.chosenNode = {
+				folderPath: this._currentBranchPathName,
+				pathToNode: path,
+				name: nodeName
 			};
 		},
 		checkForParent: function (path) {
@@ -292,7 +328,7 @@
 		tryGlobalSearch: function () {
 			if (this._searchText === this.resetText) {
 				this._searchText = this.localSearchDoneText;
-				this.currentBranchPathName = '';
+				this._currentBranchPathName = '';
 				this.inputValue = '';
 			} else {
 				this._searchText = this.resetText;

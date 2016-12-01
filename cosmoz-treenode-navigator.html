@@ -6,39 +6,30 @@
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<!--
-`cosmoz-treenode-navigator`
-Navigator through object with treelike datastructure.  
- 
-@demo demo/index.html 
--->
+<link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
 
 <dom-module id="cosmoz-treenode-navigator">
 	<template>
 		<style is="custom-style" include="iron-flex iron-flex-alignment">
-			:host {
-				height: 200px;
-			}
-
+			
 			.nodeItem {
 				cursor:pointer
 			}
-
+			
 			.listTree {
 				max-width: 540px;
 			}
-
 		</style>
 		<div class="horizontal-section">
-			<h3>[[ currentBranchPathName ]]</h3>
+			<h3>[[ _currentBranchPathName ]]</h3>
 			<paper-input class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]" id="searchInput"
 					value="{{ inputValue }}">
 			</paper-input>
-			<iron-icon icon="icons:arrow-upward"  hidden$="{{ checkForParent(_locationPath) }}" on-click="openParentNode"></iron-icon>
+			<iron-icon icon="icons:arrow-upward" hidden$="{{ checkForParent(_locationPath) }}" on-click="openParentNode"></iron-icon>
 			<paper-listbox class="listTree">
 				<template is="dom-repeat" items="{{ _dataPlane }}" as="node">
 					<div hidden$="[[ _noSearch ]]">[[ node.sectionName ]]</div>
-					<paper-item class="nodeItem" title="[[ currentBranchPathName ]]" node-object="[[ node ]]" on-click="nodeSelect">
+					<paper-item class="nodeItem" title="[[ _currentBranchPathName ]]" node-object="[[ node ]]" on-click="nodeSelect">
 						<span class="flex">[[ node.name ]]</span>
 						<iron-icon hidden$="[[ noChildrenFound(node) ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
 					</paper-item>
@@ -48,5 +39,4 @@ Navigator through object with treelike datastructure.
 		</div>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-navigator.js"></script>
-
 </dom-module>
