@@ -160,9 +160,9 @@
 		],
 		_computeDataPlane: function (inputValue, renderedLevel) {
 			if (inputValue.length >= this.searchMinLength) {
-				return this.searchHandler(inputValue, renderedLevel);
+				return this._sortItOut(this.searchHandler(inputValue, renderedLevel));
 			}
-			return this._renderedLevel;
+			return this._sortItOut(this._renderedLevel);
 		},
 		_computedRenderLevel: function (pl, nodes) {
 			var children,
@@ -340,6 +340,43 @@
 				return true;
 			}
 			return false;
+		},
+		_sortItOut: function (inputNodes) {
+			var childless = [],
+				hasChildren = [],
+				hasChildrenSorted,
+				childlessSorted;
+			inputNodes.forEach(function (node) {
+				if (Object.keys(node.children).length === 0 && node.children.constructor === Object) {
+					childless.push(node);
+				} else {
+					hasChildren.push(node);
+				}
+			}, this);
+
+			hasChildrenSorted = hasChildren.sort(
+				function (a, b) {
+					if (a.name > b.name) {
+						return 1;
+					}
+					if (a.name < b.name) {
+						return -1;
+					}
+					return 0;
+				});
+
+			childlessSorted = childless.sort(
+				function (a, b) {
+					if (a.name > b.name) {
+						return 1;
+					}
+					if (a.name < b.name) {
+						return -1;
+					}
+					return 0;
+				});
+
+			return hasChildrenSorted.concat(childlessSorted);
 		}
 	});
 }());
