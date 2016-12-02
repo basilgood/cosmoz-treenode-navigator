@@ -23,10 +23,6 @@ Navigator through object with treelike datastructure.
 			overflow:auto;
 		}
 
-		.treeDialog {
-			padding: 60px;
-		}
-
 		.pathToNode {
 			max-width: 320px;
 			overflow: hidden;
@@ -34,6 +30,10 @@ Navigator through object with treelike datastructure.
 			white-space: nowrap;
 			direction: rtl;
 			text-align:left;
+		}
+
+		paper-dialog .buttons {
+			@apply(--cosmoz-treenode-button-view-dialog-container);
 		}
 	</style>
 	<template>
