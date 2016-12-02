@@ -48,6 +48,13 @@
 				value: 'Search'
 			},
 			/*
+			Placeholder for button text.
+			 */
+			buttonTextPlaceholder: {
+				type: String,
+				value: 'No selection made'
+			},
+			/*
 			 path value
 			 */
 			value: {
