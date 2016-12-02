@@ -52,7 +52,7 @@
 			/*
 			 Currently selected node object
 			 */
-			chosenNode: {
+			potentiallySelectedNode: {
 				type: Object,
 				value: function (){
 					return {};
@@ -297,7 +297,7 @@
 			node = event.model.node;
 			this._currentBranchPathName = this.getPathName(node.path);
 			this.value = node.path;
-			this.chosenNode = {
+			this.potentiallySelectedNode = {
 				folderPath: this._currentBranchPathName,
 				pathToNode: node.path,
 				name: node.name
@@ -313,7 +313,7 @@
 			if (this._currentBranchPathName.indexOf('/') !== -1) {
 				nodeName = this._currentBranchPathName.substring(this._currentBranchPathName.lastIndexOf('/') + 1);
 			}
-			this.chosenNode = {
+			this.potentiallySelectedNode = {
 				folderPath: this._currentBranchPathName,
 				pathToNode: path,
 				name: nodeName

@@ -41,6 +41,15 @@
 				notify: true
 			},
 			/*
+			 Currently selected node object
+			 */
+			potentiallySelectedNode: {
+				type: Object,
+				value: function (){
+					return {};
+				}
+			},
+			/*
 			Placeholder for search field.
 			 */
 			searchPlaceholder: {
@@ -128,6 +137,9 @@
 		},
 		openDialogTree: function (event) {
 			this.$.dialogTree.open();
+		},
+		selectNode: function (event) {
+			this.chosenNode = this.potentiallySelectedNode;
 		}
 	});
 }());
