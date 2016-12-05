@@ -343,9 +343,7 @@
 		},
 		_sortItOut: function (inputNodes) {
 			var childless = [],
-				hasChildren = [],
-				hasChildrenSorted,
-				childlessSorted;
+				hasChildren = [];
 			inputNodes.forEach(function (node) {
 				if (Object.keys(node.children).length === 0 && node.children.constructor === Object) {
 					childless.push(node);
@@ -353,8 +351,12 @@
 					hasChildren.push(node);
 				}
 			}, this);
-
-			hasChildrenSorted = hasChildren.sort(
+			hasChildren = this.alphabeticalSort(hasChildren);
+			childless = this.alphabeticalSort(childless);
+			return hasChildren.concat(childless);
+		},
+		alphabeticalSort: function (inputArray) {
+			return inputArray.sort(
 				function (a, b) {
 					if (a.name > b.name) {
 						return 1;
@@ -364,19 +366,6 @@
 					}
 					return 0;
 				});
-
-			childlessSorted = childless.sort(
-				function (a, b) {
-					if (a.name > b.name) {
-						return 1;
-					}
-					if (a.name < b.name) {
-						return -1;
-					}
-					return 0;
-				});
-
-			return hasChildrenSorted.concat(childlessSorted);
 		}
 	});
 }());
