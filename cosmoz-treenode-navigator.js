@@ -341,31 +341,42 @@
 			}
 			return false;
 		},
-		_sortItOut: function (inputNodes) {
-			var childless = [],
-				hasChildren = [];
-			inputNodes.forEach(function (node) {
-				if (Object.keys(node.children).length === 0 && node.children.constructor === Object) {
-					childless.push(node);
-				} else {
-					hasChildren.push(node);
-				}
-			}, this);
-			hasChildren = this.alphabeticalSort(hasChildren);
-			childless = this.alphabeticalSort(childless);
-			return hasChildren.concat(childless);
-		},
-		alphabeticalSort: function (inputArray) {
-			return inputArray.sort(
+		_sortItOut: function (inputArray) {
+			var hasChildren = function (node) {
+				var children = node[this.childProperty]; 
+				return children && Object.keys(children).length > 0;
+			}.bind(this);
+
+			inputArray.sort(
 				function (a, b) {
-					if (a.name > b.name) {
+					/**
+					 * First sort based on "folder" status (containing children)
+					 */
+					if (hasChildren(a)) {
+						if (!hasChildren(b)) {
+							return -1;
+						}
+					} else if (hasChildren(b)) {
 						return 1;
 					}
-					if (a.name < b.name) {
+
+					/**
+					 * Then sort on comparisonProperty
+					 */
+					var val1 = a[this.comparisonProperty],
+						val2 = b[this.comparisonProperty];
+
+					if (val1 > val2) {
+						return 1;
+					}
+					if (val1 < val2) {
 						return -1;
 					}
 					return 0;
-				});
+				}.bind(this)
+			);
+			
+			return inputArray;
 		}
 	});
 }());
