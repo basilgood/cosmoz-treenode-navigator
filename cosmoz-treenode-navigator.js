@@ -375,7 +375,7 @@
 					return 0;
 				}.bind(this)
 			);
-			
+
 			return inputArray;
 		}
 	});
