@@ -60,6 +60,16 @@
 				notify: true
 			},
 			/*
+			 Currently selected node object
+			 */
+			chosenNode: {
+				type: Object,
+				value: function (){
+					return {};
+				},
+				notify: true
+			},
+			/*
 			 Current selected path expressed
 			 in node names.
 			*/
@@ -156,7 +166,7 @@
 			}
 		},
 		observers: [
-			'_valueChanged(value)'
+			'_valueChanged(value, separatorSign, data)'
 		],
 		_computeDataPlane: function (inputValue, renderedLevel) {
 			if (inputValue.length >= this.searchMinLength) {
@@ -168,8 +178,7 @@
 			var children,
 				path,
 				nodeOnPath,
-				childPath,
-				pathNameParts = [];
+				childPath;
 			path = pl.split(this.separatorSign);
 			children = nodes;
 			path.some(function (key) {
@@ -182,7 +191,6 @@
 					return true;
 				}
 				children = nodeOnPath[this.childProperty];
-				pathNameParts.push(nodeOnPath[this.comparisonProperty]);
 			}, this);
 			return Object.keys(children).map(function (childKey) {
 				var child = children[childKey];
@@ -296,14 +304,14 @@
 			}
 			node = event.model.node;
 			this._currentBranchPathName = this.getPathName(node.path);
-			this.value = node.path;
+			//this.value = node.path;
 			this.potentiallySelectedNode = {
 				folderPath: this._currentBranchPathName,
 				pathToNode: node.path,
 				name: node.name
 			};
 		},
-		_valueChanged: function (path) {
+		_valueChanged: function (path, seperatorSign, data) {
 			var nodeName;
 			if (!path) {
 				return;
@@ -318,6 +326,16 @@
 				pathToNode: path,
 				name: nodeName
 			};
+			this.chosenNode = {
+				folderPath: this._currentBranchPathName,
+				pathToNode: path,
+				name: nodeName
+			};
+			if(path.indexOf(this.separatorSign) === -1) {
+				this._locationPath = path;
+			} else {
+				this._locationPath =  path.substring(0, path.lastIndexOf(this.separatorSign));
+			}
 		},
 		checkForParent: function (path) {
 			if (path !== '') {
@@ -343,7 +361,7 @@
 		},
 		_sortItOut: function (inputArray) {
 			var hasChildren = function (node) {
-				var children = node[this.childProperty]; 
+				var children = node[this.childProperty];
 				return children && Object.keys(children).length > 0;
 			}.bind(this);
 

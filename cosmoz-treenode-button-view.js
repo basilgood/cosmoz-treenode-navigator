@@ -139,7 +139,7 @@
 			this.$.dialogTree.open();
 		},
 		selectNode: function (event) {
-			this.chosenNode = this.potentiallySelectedNode;
+			this.value = this.potentiallySelectedNode.pathToNode;
 		}
 	});
 }());
