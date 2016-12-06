@@ -26,6 +26,7 @@
 					value="{{ inputValue }}">
 			</paper-input>
 			<iron-icon icon="icons:arrow-upward" hidden$="{{ checkForParent(_locationPath) }}" on-click="openParentNode"></iron-icon>
+			<iron-icon icon="icons:settings-backup-restore" hidden$="{{ checkForChange(_locationPath, inputValue) }}" on-click="returnToRoot"></iron-icon>
 			<paper-listbox class="listTree">
 				<template is="dom-repeat" items="{{ _dataPlane }}" as="node">
 					<div hidden$="[[ _noSearch ]]">[[ node.sectionName ]]</div>

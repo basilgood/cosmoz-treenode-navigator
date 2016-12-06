@@ -297,6 +297,12 @@
 				this._currentBranchPathName = this.getPathName(this._locationPath);
 			}
 		},
+		returnToRoot: function () {
+			this._currentBranchPathName = '';
+			this._locationPath = '';
+			this.inputValue = '';
+			this.potentiallySelectedNode = {};
+		},
 		nodeSelect: function (event) {
 			var node;
 			if (event.target._iconName) {
@@ -342,6 +348,9 @@
 				return false;
 			}
 			return true;
+		},
+		checkForChange: function (location, searchWord) {
+			return location === '' && searchWord === '';
 		},
 		tryGlobalSearch: function () {
 			if (this._searchText === this.resetText) {
