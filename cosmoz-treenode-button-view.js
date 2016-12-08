@@ -54,14 +54,14 @@
 			 */
 			searchPlaceholder: {
 				type: String,
-				value: '_("Search", t)'
+				value: 'Search'
 			},
 			/*
 			Placeholder for button text.
 			 */
 			buttonTextPlaceholder: {
 				type: String,
-				value: '_("No selection made", t)'
+				value: 'No selection made'
 			},
 			/*
 			 path value
@@ -109,7 +109,7 @@
 			 */
 			localSearchDoneText: {
 				type: String,
-				value: '_("Click to search again but globally.", t)'
+				value: 'Click to search again but globally.'
 			},
 			/*
 			Settable text given to user
@@ -117,14 +117,14 @@
 			*/
 			resetText: {
 				type: String,
-				value: '_("Click to reset.", t)'
+				value: 'Click to reset.'
 			},
 			/*
 			Settable text for dialog title.
 			*/
 			dialogText: {
 				type: String,
-				value: '_("Search or navigate to chosen destination", t)'
+				value: 'Search or navigate to chosen destination'
 			},
 			/*
 			Minimum length before an search
