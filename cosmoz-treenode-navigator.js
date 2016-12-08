@@ -302,6 +302,7 @@
 			this._locationPath = '';
 			this.inputValue = '';
 			this.potentiallySelectedNode = {};
+			this.value = null;
 		},
 		nodeSelect: function (event) {
 			var node;
@@ -341,7 +342,7 @@
 			if(path.indexOf(this.separatorSign) === -1) {
 				this._locationPath = path;
 			} else {
-				this._locationPath =  path.substring(0, path.lastIndexOf(this.separatorSign));
+				this._locationPath = path.substring(0, path.lastIndexOf(this.separatorSign));
 			}
 		},
 		checkForParent: function (path) {

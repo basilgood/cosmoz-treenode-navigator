@@ -1,6 +1,7 @@
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html"> 
 <link rel="import" href="../paper-input/paper-input.html">
@@ -43,25 +44,24 @@ Navigator through object with treelike datastructure.
 
 	</style>
 	<template>
-		<paper-button raised on-tap="openDialogTree">
-			<template is="dom-if" if="[[ chosenNode.name ]]">
-				<div class="pathToNode">[[ chosenNode.folderPath ]]</div>
-			</template>
-			<template is="dom-if" if="[[ !chosenNode.name ]]">
-				<div class="pathToNode">[[ buttonTextPlaceholder ]]</div>
-			</template>
-		</paper-button>
+		<div class="horizontal layout">
+			<paper-button class="flex" raised on-tap="openDialogTree">
+				<div class="pathToNode">[[ _getButtonLabel(chosenNode, buttonTextPlaceholder) ]]</div>
+			</paper-button>
+			<paper-icon-button icon="clear" on-tap="reset" hidden$="[[ _enableReset(value, noReset) ]]"></paper-icon-button>
+		</div>
 		<div class="treeNodeWrapper">
 			<paper-dialog id="dialogTree" class="treeDialog" modal>
 				<h2>[[ dialogText ]]</h2>
 				<paper-dialog-scrollable>
 					<div class="treeScroll">
 						<cosmoz-treenode-navigator chosen-node="{{ chosenNode }}" data="[[ data ]]"
-						 location-path="{{ locationPath }}" child-property="[[ childProperty ]]"
-						  comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"
-						  separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
-						  reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
-						  value="{{ value }}" potentially-selected-node="{{ potentiallySelectedNode }}">
+							id="treenodeNavigator"
+							location-path="{{ locationPath }}" child-property="[[ childProperty ]]"
+							comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"
+							separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
+							reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
+							value="{{ value }}" potentially-selected-node="{{ potentiallySelectedNode }}">
 							<content></content>
 						</cosmoz-treenode-navigator>
 					</div>

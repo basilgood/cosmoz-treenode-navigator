@@ -40,12 +40,19 @@
 				},
 				notify: true
 			},
+			/**
+			 * Prevent reset button
+			 */
+			noReset: {
+				type: Boolean,
+				value: false
+			},
 			/*
 			 Currently selected node object
 			 */
 			potentiallySelectedNode: {
 				type: Object,
-				value: function (){
+				value: function () {
 					return {};
 				}
 			},
@@ -135,8 +142,20 @@
 				value: 2
 			}
 		},
+		_enableReset: function (value, noReset) {
+			if (noReset) {
+				return false;
+			}
+			return !value;
+		},
+		_getButtonLabel: function (node, placeholder) {
+			return node.folderPath || placeholder;
+		},
 		openDialogTree: function (event) {
 			this.$.dialogTree.open();
+		},
+		reset: function (event) {
+			this.$.treenodeNavigator.returnToRoot();
 		},
 		selectNode: function (event) {
 			this.value = this.potentiallySelectedNode.pathToNode;
