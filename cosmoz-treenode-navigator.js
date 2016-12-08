@@ -11,22 +11,27 @@
 
 		properties: {
 			/*
-			Object to be shown in component
+			Node structure object
+			that component is given
 			 */
 			data: {
 				type: Object
 			},
-			/*
-			Node structure object
-			that component is given
-			 */
 			_dataPlane: {
 				type: Array,
 				computed: '_computeDataPlane(inputValue, _renderedLevel)'
 			},
 			_renderedLevel: {
 				type: Array,
-				computed: '_computedRenderLevel(_locationPath, data)'
+				computed: '_computedRenderLevel(_openNodeLevelPath, data)'
+			},
+			_openNodeLevelPath: {
+				type: String,
+				value: ''
+			},
+			_openNodeLevelPathParts: {
+				type: Array,
+				computed: '_getPathParts(_openNodeLevelPath, data)'
 			},
 			/*
 			 path value
@@ -34,6 +39,13 @@
 			value: {
 				type: String,
 				value: '',
+				notify: true,
+				observer: '_valueChanged'
+			},
+
+			valuePathParts: {
+				type: Array,
+				computed: '_getPathParts(value, data)',
 				notify: true
 			},
 			/*
@@ -45,37 +57,16 @@
 			 together with "." set as
 			 the seperator.
 			 */
-			_locationPath: {
-				type: String,
-				value: ''
-			},
-			/*
-			 Currently selected node object
-			 */
-			potentiallySelectedNode: {
-				type: Object,
-				value: function (){
-					return {};
-				},
-				notify: true
-			},
-			/*
-			 Currently selected node object
-			 */
-			chosenNode: {
-				type: Object,
-				value: function (){
-					return {};
-				},
-				notify: true
-			},
-			/*
-			 Current selected path expressed
-			 in node names.
-			*/
-			_currentBranchPathName: {
+			highlightedNodePath: {
 				type: String,
 				value: '',
+				observer: 'highlightedNodePathChanged',
+				notify: true
+			},
+
+			chosenNode: {
+				type: Object,
+				computed: '_getNode(value, data)',
 				notify: true
 			},
 			/*
@@ -109,15 +100,6 @@
 				value: 'name'
 			},
 			/*
-			Search results.
-			 */
-			_searchNodes: {
-				type: Array,
-				value: function () {
-					return [];
-				}
-			},
-			/*
 			Chosen separator to denote
 			navigation path.
 			 */
@@ -128,16 +110,17 @@
 			/*
 			 Whether an search has been done.
 			 */
-			_noSearch: {
+			_searching: {
 				type: Boolean,
-				computed: '_computeNoSearch(inputValue)'
+				computed: '_computeSearching(inputValue)'
 			},
 			/*
 			 Text bound value container.
 			 Is set by other values.
 			 */
 			_searchText: {
-				type: String
+				type: String,
+				computed: '_computeSearchText(_searching, _openNodeLevelPath)'
 			},
 			/*
 			 Settable text given to user
@@ -165,9 +148,18 @@
 				value: 2
 			}
 		},
-		observers: [
-			'_valueChanged(value, separatorSign, data)'
-		],
+		_computeSearchText: function (searching, path) {
+
+			if (!searching) {
+				return this.localSearchDoneText;
+			}
+
+			if (path === '') {
+				return this.resetText;
+			}
+
+			return this.localSearchDoneText;
+		},
 		_computeDataPlane: function (inputValue, renderedLevel) {
 			if (inputValue.length >= this.searchMinLength) {
 				return this._sortItOut(this.searchHandler(inputValue, renderedLevel));
@@ -175,15 +167,55 @@
 			return this._sortItOut(this._renderedLevel);
 		},
 		_computedRenderLevel: function (pl, nodes) {
-			var children,
-				path,
-				nodeOnPath,
+			var node = this._getNode(pl, nodes),
+				children = nodes,
 				childPath;
-			if (!this._searchText) {
-				this._searchText = this.localSearchDoneText;
+
+			if (node) {
+				children = node[this.childProperty];
 			}
-			path = pl.split(this.separatorSign);
-			children = nodes;
+
+			return Object.keys(children).map(function (childKey) {
+				var child = children[childKey];
+				if (pl === '') {
+					childPath = childKey;
+				} else {
+					childPath = pl + this.separatorSign + childKey;
+				}
+				return {
+					id: childKey,
+					name: child[this.comparisonProperty],
+					path: childPath,
+					children: child[this.childProperty]
+				};
+			}, this);
+		},
+		_getPathParts: function (value, data) {
+			var path = value.split(this.separatorSign),
+				parts = [],
+				newpath = [];
+
+			path.some(function (part) {
+				newpath.push(part);
+				var newPathString = newpath.join(this.separatorSign),
+					node = this._getNode(newPathString, data);
+				if (!node) {
+					return true;
+				}
+				node.path = newPathString;
+				parts.push(node);
+			}, this);
+
+			return parts;
+		},
+		_getNode: function (pl, nodes) {
+			var children = nodes,
+				path = pl.split(this.separatorSign),
+				nodeOnPath = null;
+
+			/* nodeOnPath[this.childProperty] = children;
+			nodeOnPath[this.comparisonProperty] = 'Root node'; */
+
 			path.some(function (key) {
 				if (key === '') {
 					return true;
@@ -195,34 +227,24 @@
 				}
 				children = nodeOnPath[this.childProperty];
 			}, this);
-			return Object.keys(children).map(function (childKey) {
-				var child = children[childKey];
-				if (pl === '') {
-					childPath = childKey;
-				} else {
-					childPath = pl  + this.separatorSign + childKey;
-				}
-				return {
-					id: childKey,
-					name: child[this.comparisonProperty],
-					path: childPath,
-					children: child[this.childProperty]
-				};
-			}, this);
+
+			return nodeOnPath;
+		},
+		getNodeName: function (node) {
+			return node[this.comparisonProperty];
+		},
+		highlightedNodePathChanged: function (newpath) {
+			var path = newpath.split(this.separatorSign);
+			path.pop(); // remove highlighted node
+			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
 		searchHandler: function (searchWord, renderedLevel) {
-			var results = [],
-				parentStat,
-				nodes = renderedLevel;
-			parentStat = {
+			var parentStat = {
 				sectionName: '',
 				currentPath: ''
 			};
-			if (this._searchText === this.resetText) {
-				this._searchText = this.localSearchDoneText;
-			}
-			results = this.searchAllBranches(searchWord, parentStat , nodes);
-			return results;
+
+			return this.searchAllBranches(searchWord, parentStat, renderedLevel);
 		},
 		searchAllBranches: function (searchWord, parentStat, nodeList) {
 			var localPath = parentStat.currentPath,
@@ -247,135 +269,36 @@
 			}, this);
 			return results;
 		},
-		getPathName: function (pl) {
-			var path,
-				nodeOnPath,
-				namesOnPath = '';
-			if(pl.indexOf(this.separatorSign) === -1) {
-				path = pl;
-				if (pl === '') {
-					return this.data[Object.keys(this.data)[0]][this.comparisonProperty];
-				}
-				return this.data[path][this.comparisonProperty];
-			}
-			path = pl.split(this.separatorSign);
-			nodeOnPath = this.data[path[0]];
-			namesOnPath = nodeOnPath[this.comparisonProperty] + ' / ';
-			path = path.slice(1);
-			if (path.length > 0) {
-				path.forEach(function (key) {
-					if (nodeOnPath[this.childProperty] && nodeOnPath[this.childProperty][key]) {
-						nodeOnPath = nodeOnPath[this.childProperty][key];
-						namesOnPath += nodeOnPath[this.comparisonProperty] + ' / ';
-					}
-				}, this);
-			}
-			namesOnPath = namesOnPath.substring(0, namesOnPath.lastIndexOf('/') - 1);
-			return namesOnPath;
-		},
-		noChildrenFound: function (node) {
-			var child = node.children;
-			if (Object.keys(child).length === 0 && child.constructor === Object) {
-				return true;
-			}
-			return false;
+		hasChildren: function (node) {
+			var children = node.children;
+			return children && Object.keys(children).length > 0;
 		},
 		openNode: function (event) {
-			var nodeClicked,
-				node;
-			node = event.model.node;
-			if (this._locationPath !== '') {
-				nodeClicked = this._locationPath + this.separatorSign + node.id;
-			} else {
-				nodeClicked = node.path;
-			}
-			this._searchText = this.localSearchDoneText;
+			event.path.some(function (element, index) {
+				console.log(element, element.dataset.path);
+				var path = element.dataset.path; 
+				if (path !== undefined) {
+					this._openNodeLevelPath = path;
+					return true;
+				} else if (index > 3) {
+					return true;
+				}
+			}, this);
+
 			this.inputValue = '';
-			this._currentBranchPathName = this.getPathName(nodeClicked);
-			this._locationPath = nodeClicked;
 		},
-		openParentNode: function () {
-			if(this._locationPath.indexOf(this.separatorSign) === -1) {
-				this._currentBranchPathName = '';
-				this._locationPath = '';
-			} else {
-				this._locationPath =  this._locationPath.substring(0, this._locationPath.lastIndexOf(this.separatorSign));
-				this._currentBranchPathName = this.getPathName(this._locationPath);
-			}
-		},
-		returnToRoot: function () {
-			this._currentBranchPathName = '';
-			this._searchText = this.localSearchDoneText;
-			this._locationPath = '';
-			this.inputValue = '';
-			this.potentiallySelectedNode = {};
-			this.value = null;
-		},
-		nodeSelect: function (event) {
-			var node;
-			if (event.target._iconName) {
-				return;
-			}
-			node = event.model.node;
-			this._currentBranchPathName = this.getPathName(node.path);
-			//this.value = node.path;
-			this.potentiallySelectedNode = {
-				folderPath: this._currentBranchPathName,
-				pathToNode: node.path,
-				name: node.name
-			};
-		},
-		_valueChanged: function (path, seperatorSign, data) {
-			var nodeName;
+		_valueChanged: function (path) {
 			if (!path) {
-				this.chosenNode = {};
+				this.highlightedNodePath = '';
 				return;
 			}
-			this._currentBranchPathName = this.getPathName(path);
-			nodeName = this._currentBranchPathName;
-			if (this._currentBranchPathName.indexOf('/') !== -1) {
-				nodeName = this._currentBranchPathName.substring(this._currentBranchPathName.lastIndexOf('/') + 1);
-			}
-			this.potentiallySelectedNode = {
-				folderPath: this._currentBranchPathName,
-				pathToNode: path,
-				name: nodeName
-			};
-			this.chosenNode = {
-				folderPath: this._currentBranchPathName,
-				pathToNode: path,
-				name: nodeName
-			};
-			if(path.indexOf(this.separatorSign) === -1) {
-				this._locationPath = path;
-			} else {
-				this._locationPath = path.substring(0, path.lastIndexOf(this.separatorSign));
-			}
-		},
-		checkForParent: function (path) {
-			if (path !== '') {
-				return false;
-			}
-			return true;
-		},
-		checkForChange: function (location, searchWord) {
-			return location === '' && searchWord === '';
+			this.highlightedNodePath = path;
 		},
 		tryGlobalSearch: function () {
-			if (this._searchText === this.resetText) {
-				this._searchText = this.localSearchDoneText;
-				this._currentBranchPathName = '';
-				this.inputValue = '';
-			} else {
-				this._searchText = this.resetText;
-			}
-			this._locationPath = '';
+			this.highlightedNodePath = '';
 		},
-		_computeNoSearch: function (inputeValue) {
-			if (!inputeValue || inputeValue === '') {
-				return true;
-			}
-			return false;
+		_computeSearching: function (value) {
+			return value && value !== '';
 		},
 		_sortItOut: function (inputArray) {
 			var hasChildren = function (node) {

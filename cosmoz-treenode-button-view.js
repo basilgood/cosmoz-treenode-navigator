@@ -6,6 +6,7 @@
 		behaviors: [
 			Cosmoz.TranslatableBehavior
 		],
+		
 		is: 'cosmoz-treenode-button-view',
 
 		properties: {
@@ -15,20 +16,6 @@
 			 */
 			data: {
 				type: Object
-			},
-			/*
-			 Current path to displayed
-			 node/folder. That is an
-			 "address" to the node.
-			 An example would be "1.5.35",
-			 where node id/indexes are put
-			 together with "." set as
-			 the seperator.
-			 */
-			locationPath: {
-				type: String,
-				value: '',
-				notify: true
 			},
 			/*
 			 Currently selected node object
@@ -48,20 +35,10 @@
 				value: false
 			},
 			/*
-			 Currently selected node object
-			 */
-			potentiallySelectedNode: {
-				type: Object,
-				value: function () {
-					return {};
-				}
-			},
-			/*
 			Placeholder for search field.
 			 */
 			searchPlaceholder: {
-				type: String,
-				value: 'Search'
+				type: String
 			},
 			/*
 			Placeholder for button text.
@@ -75,15 +52,17 @@
 			 */
 			value: {
 				type: String,
-				value: '',
 				notify: true
+			},
+
+			valuePathParts: {
+				type: Array
 			},
 			/*
 			Input value for searches
 			 */
 			inputValue: {
-				type: String,
-				value: ''
+				type: String
 			},
 			/*
 			 Settable name for property which
@@ -115,16 +94,14 @@
 			 been done.
 			 */
 			localSearchDoneText: {
-				type: String,
-				value: 'Click to search again but globally.'
+				type: String
 			},
 			/*
 			Settable text given to user
 			when after an global search.
 			*/
 			resetText: {
-				type: String,
-				value: 'Click to reset.'
+				type: String
 			},
 			/*
 			Settable text for dialog title.
@@ -148,17 +125,22 @@
 			}
 			return !!value;
 		},
-		_getButtonLabel: function (node, placeholder) {
-			return node.folderPath || placeholder;
+		_getButtonLabel: function (pathParts, placeholder) {
+			if (!pathParts, pathParts.length < 1) {
+				return placeholder;
+			}
+			return pathParts.map(function (part) {
+				return part[this.comparisonProperty];
+			}, this).join(' / ');
 		},
 		openDialogTree: function (event) {
 			this.$.dialogTree.open();
 		},
 		reset: function (event) {
-			this.$.treenodeNavigator.returnToRoot();
+			this.value = '';
 		},
 		selectNode: function (event) {
-			this.value = this.potentiallySelectedNode.pathToNode;
+			this.value = this.highlightedNodePath;
 		}
 	});
 }());
