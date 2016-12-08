@@ -179,6 +179,9 @@
 				path,
 				nodeOnPath,
 				childPath;
+			if (!this._searchText) {
+				this._searchText = this.localSearchDoneText;
+			}
 			path = pl.split(this.separatorSign);
 			children = nodes;
 			path.some(function (key) {
@@ -215,6 +218,9 @@
 				sectionName: '',
 				currentPath: ''
 			};
+			if (this._searchText === this.resetText) {
+				this._searchText = this.localSearchDoneText;
+			}
 			results = this.searchAllBranches(searchWord, parentStat , nodes);
 			return results;
 		},
@@ -299,6 +305,7 @@
 		},
 		returnToRoot: function () {
 			this._currentBranchPathName = '';
+			this._searchText = this.localSearchDoneText;
 			this._locationPath = '';
 			this.inputValue = '';
 			this.potentiallySelectedNode = {};
