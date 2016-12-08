@@ -320,6 +320,7 @@
 		_valueChanged: function (path, seperatorSign, data) {
 			var nodeName;
 			if (!path) {
+				this.chosenNode = {};
 				return;
 			}
 			this._currentBranchPathName = this.getPathName(path);
