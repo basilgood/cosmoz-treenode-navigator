@@ -146,7 +146,7 @@
 			if (noReset) {
 				return false;
 			}
-			return !value;
+			return !!value;
 		},
 		_getButtonLabel: function (node, placeholder) {
 			return node.folderPath || placeholder;
