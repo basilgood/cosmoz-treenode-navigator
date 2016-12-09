@@ -274,6 +274,7 @@
 			return children && Object.keys(children).length > 0;
 		},
 		openNode: function (event) {
+			event.preventDefault();
 			event.path.some(function (element, index) {
 				var path = element.dataset.path;
 				if (path !== undefined) {
