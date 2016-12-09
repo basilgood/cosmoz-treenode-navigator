@@ -17,13 +17,14 @@
 			data: {
 				type: Object
 			},
-			_dataPlane: {
+			dataPlane: {
 				type: Array,
-				computed: '_computeDataPlane(inputValue, _renderedLevel)'
+				computed: '_computeDataPlane(inputValue, _renderedLevel)',
+				notify: true
 			},
 			_renderedLevel: {
 				type: Array,
-				computed: '_computedRenderLevel(_openNodeLevelPath, data)'
+				computed: '_renderLevel(_openNodeLevelPath, data)'
 			},
 			_openNodeLevelPath: {
 				type: String,
@@ -162,20 +163,21 @@
 		},
 		_computeDataPlane: function (inputValue, renderedLevel) {
 			if (inputValue.length >= this.searchMinLength) {
-				return this._sortItOut(this.searchHandler(inputValue, renderedLevel));
+				return this.searchHandler(inputValue, renderedLevel);
 			}
-			return this._sortItOut(this._renderedLevel);
+			return this._renderedLevel;
 		},
-		_computedRenderLevel: function (pl, nodes) {
+		_renderLevel: function (pl, nodes) {
 			var node = this._getNode(pl, nodes),
 				children = nodes,
-				childPath;
+				childPath,
+				level;
 
 			if (node) {
 				children = node[this.childProperty];
 			}
 
-			return Object.keys(children).map(function (childKey) {
+			level = Object.keys(children).map(function (childKey) {
 				var child = children[childKey];
 				if (pl === '') {
 					childPath = childKey;
@@ -189,6 +191,9 @@
 					children: child[this.childProperty]
 				};
 			}, this);
+
+			this._sortItOut(level);
+			return level;
 		},
 		_getPathParts: function (value, data) {
 			var path = value.split(this.separatorSign),
@@ -234,6 +239,9 @@
 			return node[this.comparisonProperty];
 		},
 		highlightedNodePathChanged: function (newpath) {
+			if (this._searching) {
+				return;
+			}
 			var path = newpath.split(this.separatorSign);
 			path.pop(); // remove highlighted node
 			this._openNodeLevelPath = path.join(this.separatorSign);
@@ -257,14 +265,16 @@
 			nodeList.forEach(function (node) {
 				if (node.name.toLowerCase().indexOf(searchWord.toLowerCase()) > -1) {
 					node.sectionName = localSection;
-					node.path = localPath +  node.id;
+					node.path = localPath + node.id;
 					results.push(node);
 				}
+			});
+			nodeList.forEach(function (node) {
 				var children = node[this.childProperty];
 				if (children) {
-					parentStat.sectionName =localSection + node.name;
-					parentStat.currentPath = localPath +  node.id;
-					results = results.concat(this.searchAllBranches(searchWord, parentStat, this._computedRenderLevel('', children)));
+					parentStat.sectionName = localSection + node.name;
+					parentStat.currentPath = localPath + node.id;
+					results = results.concat(this.searchAllBranches(searchWord, parentStat, this._renderLevel('', children)));
 				}
 			}, this);
 			return results;
@@ -275,7 +285,6 @@
 		},
 		openNode: function (event) {
 			event.path.some(function (element, index) {
-				console.log(element, element.dataset.path);
 				var path = element.dataset.path; 
 				if (path !== undefined) {
 					this._openNodeLevelPath = path;
@@ -295,10 +304,24 @@
 			this.highlightedNodePath = path;
 		},
 		tryGlobalSearch: function () {
-			this.highlightedNodePath = '';
+			this._openNodeLevelPath = '';
 		},
 		_computeSearching: function (value) {
 			return value && value !== '';
+		},
+		_renderSection: function (_searching, index, dataPlane) {
+			if (!_searching || index >= dataPlane.length) {
+				return false;
+			}
+			if (index === 0) {
+				return true;
+			}
+			var prevItem = dataPlane[index - 1],
+				currentItem = dataPlane[index];
+			if (prevItem.sectionName === currentItem.sectionName) {
+				return false;
+			}
+			return true;
 		},
 		_sortItOut: function (inputArray) {
 			var hasChildren = function (node) {

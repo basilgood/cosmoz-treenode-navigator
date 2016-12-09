@@ -18,12 +18,6 @@ Navigator through object with treelike datastructure.
 <dom-module id="cosmoz-treenode-button-view">
 	<style is="custom-style" include="iron-flex iron-flex-alignment">
 
-		.treeScroll {
-			max-height:600px;
-			width:inherit;
-			overflow:auto;
-		}
-
 		.pathToNode {
 			max-width: 320px;
 			overflow: hidden;
@@ -50,28 +44,22 @@ Navigator through object with treelike datastructure.
 			</paper-button>
 			<paper-icon-button icon="clear" on-tap="reset" hidden$="[[ !_enableReset(value, noReset) ]]"></paper-icon-button>
 		</div>
-		<div class="treeNodeWrapper">
-			<paper-dialog id="dialogTree" class="treeDialog" modal>
-				<h2>[[ dialogText ]]</h2>
-				<paper-dialog-scrollable>
-					<div class="treeScroll">
-						<cosmoz-treenode-navigator chosen-node="{{ chosenNode }}" data="[[ data ]]"
-							id="treenodeNavigator"
-							highlighted-node-path="{{ highlightedNodePath }}" child-property="[[ childProperty ]]"
-							comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"
-							separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
-							reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
-							value="{{ value }}" value-path-parts="{{ valuePathParts }}">
-							<content></content>
-						</cosmoz-treenode-navigator>
-					</div>
-				</paper-dialog-scrollable>
-				<div class="buttons">
-					<paper-button dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
-					<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
-				</div>
-			</paper-dialog>
-		</div>
+		<paper-dialog id="dialogTree" class="treeDialog" modal>
+			<h2>[[ dialogText ]]</h2>
+			<cosmoz-treenode-navigator chosen-node="{{ chosenNode }}" data="[[ data ]]"
+				id="treenodeNavigator" on-data-plane-changed="refit"
+				highlighted-node-path="{{ highlightedNodePath }}" child-property="[[ childProperty ]]"
+				comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"
+				separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
+				reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
+				value="{{ value }}" value-path-parts="{{ valuePathParts }}">
+				<content></content>
+			</cosmoz-treenode-navigator>
+			<div class="buttons">
+				<paper-button dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
+				<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
+			</div>
+		</paper-dialog>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-button-view.js"></script>
 </dom-module>

@@ -6,7 +6,7 @@
 		behaviors: [
 			Cosmoz.TranslatableBehavior
 		],
-		
+
 		is: 'cosmoz-treenode-button-view',
 
 		properties: {
@@ -141,6 +141,11 @@
 		},
 		selectNode: function (event) {
 			this.value = this.highlightedNodePath;
+		},
+		refit: function () {
+			this.debounce('refit', function () {
+				this.$.dialogTree.fit();
+			}, 50); // 5 was enough during test
 		}
 	});
 }());

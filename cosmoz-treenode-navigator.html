@@ -12,8 +12,7 @@
 	<template>
 		<style is="custom-style" include="iron-flex iron-flex-alignment">
 
-			#header,
-			.section {
+			#header {
 				margin: 0 16px;
 			}
 
@@ -23,7 +22,7 @@
 			}
 
 			.section {
-				background-color: #eee;
+				background-color: #f5f5f5;
 				padding: 5px;
 			}
 			
@@ -33,35 +32,35 @@
 			
 			.listTree {
 				max-width: 540px;
+				max-height: var(--cosmoz-treenode-navigator-max-height, 70vh);
+				overflow-y: auto;
 			}
 
 			.slash {
 				margin: 0 2px;
 			}
 		</style>
-		<div class="horizontal-section">
-			<div id="header">
-				<h3 class="layout horizontal center wrap">
-					<a href="#" data-path="" on-click="openNode"><iron-icon icon="home"></iron-icon></a>
-					<template is="dom-repeat" items="[[ _openNodeLevelPathParts ]]" as="node">
-						<span class="slash">/</span><a href="#" data-path$="[[ node.path ]]" on-click="openNode">[[ getNodeName(node) ]]</a>
-					</template>
-				</h3>
-				<paper-input class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
-					id="searchInput" value="{{ inputValue }}">
-				</paper-input>
-			</div>
-			<paper-listbox class="listTree" attr-for-selected="location-path" selectable="paper-item" selected="{{ highlightedNodePath }}">
-				<template is="dom-repeat" items="[[ _dataPlane ]]" as="node">
-					<div class="section" hidden$="[[ !_searching ]]">[[ node.sectionName ]]</div>
-					<paper-item location-path="[[ node.path ]]" class="nodeItem" node-object="[[ node ]]">
-						<span class="flex">[[ node.name ]]</span>
-						<iron-icon hidden$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" on-click="openNode" data-path$="[[ node.path ]]"></iron-icon>
-					</paper-item>
+		<div id="header">
+			<h3 class="layout horizontal center wrap">
+				<a href="#" data-path="" on-click="openNode"><iron-icon icon="home"></iron-icon></a>
+				<template is="dom-repeat" items="[[ _openNodeLevelPathParts ]]" as="node">
+					<span class="slash">/</span><a href="#" data-path$="[[ node.path ]]" on-click="openNode">[[ getNodeName(node) ]]</a>
 				</template>
-				<paper-item hidden$="[[ !_searching ]]" search-word="[[ inputValue ]]" on-click="tryGlobalSearch">[[ _searchText ]]</paper-item>
-			</paper-listbox>
+			</h3>
+			<paper-input class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
+				id="searchInput" value="{{ inputValue }}">
+			</paper-input>
 		</div>
+		<paper-listbox class="listTree" attr-for-selected="location-path" selectable="paper-item" selected="{{ highlightedNodePath }}">
+			<template is="dom-repeat" items="[[ dataPlane ]]" as="node">
+				<div class="section" hidden$="[[ !_renderSection(_searching, index, dataPlane) ]]">[[ node.sectionName ]]</div>
+				<paper-item location-path="[[ node.path ]]" class="nodeItem" node-object="[[ node ]]">
+					<span class="flex">[[ node.name ]]</span>
+					<iron-icon hidden$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" on-click="openNode" data-path$="[[ node.path ]]"></iron-icon>
+				</paper-item>
+			</template>
+			<paper-item hidden$="[[ !_searching ]]" search-word="[[ inputValue ]]" on-click="tryGlobalSearch">[[ _searchText ]]</paper-item>
+		</paper-listbox>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-navigator.js"></script>
 </dom-module>
