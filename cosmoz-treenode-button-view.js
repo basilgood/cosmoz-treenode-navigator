@@ -115,8 +115,7 @@
 			starts.
 			*/
 			searchMinLength: {
-				type: Number,
-				value: 2
+				type: Number
 			}
 		},
 		_enableReset: function (value, noReset) {

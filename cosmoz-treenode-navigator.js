@@ -19,7 +19,7 @@
 			},
 			dataPlane: {
 				type: Array,
-				computed: '_computeDataPlane(inputValue, _renderedLevel)',
+				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data)',
 				notify: true
 			},
 			_renderedLevel: {
@@ -113,7 +113,7 @@
 			 */
 			_searching: {
 				type: Boolean,
-				computed: '_computeSearching(inputValue)'
+				computed: '_computeSearching(inputValue, searchMinLength)'
 			},
 			/*
 			 Text bound value container.
@@ -146,7 +146,7 @@
 			*/
 			searchMinLength: {
 				type: Number,
-				value: 2
+				value: 1
 			}
 		},
 		_computeSearchText: function (searching, path) {
@@ -161,11 +161,11 @@
 
 			return this.localSearchDoneText;
 		},
-		_computeDataPlane: function (inputValue, renderedLevel) {
-			if (inputValue.length >= this.searchMinLength) {
-				return this.searchHandler(inputValue, renderedLevel);
+		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, data) {
+			if (searching) {
+				return this.searchAllBranches(inputValue, openNodeLevelPathParts, renderedLevel, data);
 			}
-			return this._renderedLevel;
+			return renderedLevel;
 		},
 		_renderLevel: function (pl, nodes) {
 			var node = this._getNode(pl, nodes),
@@ -218,9 +218,6 @@
 				path = pl.split(this.separatorSign),
 				nodeOnPath = null;
 
-			/* nodeOnPath[this.childProperty] = children;
-			nodeOnPath[this.comparisonProperty] = 'Root node'; */
-
 			path.some(function (key) {
 				if (key === '') {
 					return true;
@@ -246,35 +243,28 @@
 			path.pop(); // remove highlighted node
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
-		searchHandler: function (searchWord, renderedLevel) {
-			var parentStat = {
-				sectionName: '',
-				currentPath: ''
-			};
-
-			return this.searchAllBranches(searchWord, parentStat, renderedLevel);
-		},
-		searchAllBranches: function (searchWord, parentStat, nodeList) {
-			var localPath = parentStat.currentPath,
-				localSection = parentStat.sectionName,
+		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
+			// keep our own copy
+			var pathParts = pathPartsRaw.slice(),
+				localSection = '',
 				results = [];
-			if (parentStat.currentPath !== '') {
-				localPath += this.separatorSign;
-				localSection += ' / ';
+
+			if (pathParts.length > 0) {
+				localSection = pathParts.map(function (part) {
+					return part.name;
+				}).join(' / ');
 			}
+
 			nodeList.forEach(function (node) {
 				if (node.name.toLowerCase().indexOf(searchWord.toLowerCase()) > -1) {
 					node.sectionName = localSection;
-					node.path = localPath + node.id;
 					results.push(node);
 				}
 			});
 			nodeList.forEach(function (node) {
-				var children = node[this.childProperty];
-				if (children) {
-					parentStat.sectionName = localSection + node.name;
-					parentStat.currentPath = localPath + node.id;
-					results = results.concat(this.searchAllBranches(searchWord, parentStat, this._renderLevel('', children)));
+				if (node.children && Object.keys(node.children).length > 0) {
+					pathParts.push(node);
+					results = results.concat(this.searchAllBranches(searchWord, pathParts, this._renderLevel(node.path, data), data));
 				}
 			}, this);
 			return results;
@@ -285,7 +275,7 @@
 		},
 		openNode: function (event) {
 			event.path.some(function (element, index) {
-				var path = element.dataset.path; 
+				var path = element.dataset.path;
 				if (path !== undefined) {
 					this._openNodeLevelPath = path;
 					return true;
@@ -306,8 +296,8 @@
 		tryGlobalSearch: function () {
 			this._openNodeLevelPath = '';
 		},
-		_computeSearching: function (value) {
-			return value && value !== '';
+		_computeSearching: function (value, searchMinLength) {
+			return value && value.length >= searchMinLength && value !== '';
 		},
 		_renderSection: function (_searching, index, dataPlane) {
 			if (!_searching || index >= dataPlane.length) {
