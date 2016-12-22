@@ -196,6 +196,9 @@
 			return level;
 		},
 		_getPathParts: function (value, data) {
+			if (value === null) {
+				value = '';
+			}
 			var path = value.split(this.separatorSign),
 				parts = [],
 				newpath = [];
@@ -214,6 +217,10 @@
 			return parts;
 		},
 		_getNode: function (pl, nodes) {
+			if (pl === null) {
+				pl = '';
+			}
+
 			var children = nodes,
 				path = pl.split(this.separatorSign),
 				nodeOnPath = null;
