@@ -32,7 +32,7 @@
 			},
 			_openNodeLevelPathParts: {
 				type: Array,
-				computed: '_getPathParts(_openNodeLevelPath, data)'
+				computed: '_getTreePathParts(_openNodeLevelPath, data)'
 			},
 			/*
 			 path value
@@ -46,7 +46,7 @@
 
 			valuePathParts: {
 				type: Array,
-				computed: '_getPathParts(value, data)',
+				computed: '_getTreePathParts(value, data)',
 				notify: true
 			},
 			/*
@@ -195,7 +195,7 @@
 			this._sortItOut(level);
 			return level;
 		},
-		_getPathParts: function (value, data) {
+		_getTreePathParts: function (value, data) {
 			if (value === null) {
 				value = '';
 			}
