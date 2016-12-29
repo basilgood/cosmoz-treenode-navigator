@@ -28,12 +28,17 @@ Navigator through object with treelike datastructure.
 		}
 
 		paper-dialog .buttons {
-			@apply(--cosmoz-treenode-button-view-dialog-container);
+			@apply --cosmoz-treenode-button-view-dialog-container;
 		}
 
 		#dialogTree {
 			min-width: 250px !important;
 			width: 450px;
+		}
+
+		/* FIXME: https://github.com/PolymerElements/iron-flex-layout/issues/86	*/
+		[hidden] {
+			display: none;
 		}
 
 	</style>
@@ -53,7 +58,7 @@ Navigator through object with treelike datastructure.
 				separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
 				reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
 				value="{{ value }}" value-path-parts="{{ valuePathParts }}">
-				<content></content>
+				<slot></slot>
 			</cosmoz-treenode-navigator>
 			<div class="buttons">
 				<paper-button dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
