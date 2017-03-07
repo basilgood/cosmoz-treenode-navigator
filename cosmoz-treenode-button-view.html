@@ -5,7 +5,7 @@
 <link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html"> 
 <link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-dialog/paper-dialog.html">  
+<link rel="import" href="../cosmoz-dialog/cosmoz-dialog.html">  
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
 <link rel="import" href="cosmoz-treenode-navigator.html">
@@ -49,7 +49,7 @@ Navigator through object with treelike datastructure.
 			</paper-button>
 			<paper-icon-button icon="clear" on-tap="reset" hidden$="[[ !_enableReset(value, noReset) ]]"></paper-icon-button>
 		</div>
-		<paper-dialog id="dialogTree" class="treeDialog" modal>
+		<cosmoz-dialog id="dialogTree" class="treeDialog" modal>
 			<h2>[[ dialogText ]]</h2>
 			<cosmoz-treenode-navigator chosen-node="{{ chosenNode }}" data="[[ data ]]"
 				id="treenodeNavigator" on-data-plane-changed="refit"
@@ -64,7 +64,7 @@ Navigator through object with treelike datastructure.
 				<paper-button dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
 				<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
 			</div>
-		</paper-dialog>
+		</cosmoz-dialog>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-button-view.js"></script>
 </dom-module>
