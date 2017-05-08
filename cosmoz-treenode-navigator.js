@@ -116,14 +116,6 @@
 				computed: '_computeSearching(inputValue, searchMinLength)'
 			},
 			/*
-			 Text bound value container.
-			 Is set by other values.
-			 */
-			_searchText: {
-				type: String,
-				computed: '_computeSearchText(_searching, _openNodeLevelPath)'
-			},
-			/*
 			 Settable text given to user
 			 when local search has
 			 been done.
@@ -148,18 +140,6 @@
 				type: Number,
 				value: 1
 			}
-		},
-		_computeSearchText: function (searching, path) {
-
-			if (!searching) {
-				return this.localSearchDoneText;
-			}
-
-			if (path === '') {
-				return this.resetText;
-			}
-
-			return this.localSearchDoneText;
 		},
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, data) {
 			if (searching) {
@@ -239,6 +219,11 @@
 
 			return nodeOnPath;
 		},
+		clearSearch: function (event) {
+			event.preventDefault();
+			event.stopPropagation();
+			this.inputValue = '';
+		},
 		getNodeName: function (node) {
 			return node[this.comparisonProperty];
 		},
@@ -301,22 +286,24 @@
 			}
 			this.highlightedNodePath = path;
 		},
+		showGlobalSearch: function (_searching, _openNodeLevelPath) {
+			return _searching && _openNodeLevelPath !== '';
+		},
 		tryGlobalSearch: function () {
 			this._openNodeLevelPath = '';
 		},
 		_computeSearching: function (value, searchMinLength) {
 			return value && value.length >= searchMinLength && value !== '';
 		},
-		_renderSection: function (_searching, index, dataPlane) {
-			if (!_searching || index >= dataPlane.length) {
+		_renderSection: function (_searching, index, dataPlane, node) {
+			if (!_searching || index >= dataPlane.length || !node || !node.sectionName) {
 				return false;
 			}
 			if (index === 0) {
 				return true;
 			}
-			var prevItem = dataPlane[index - 1],
-				currentItem = dataPlane[index];
-			if (prevItem.sectionName === currentItem.sectionName) {
+			var prevItem = dataPlane[index - 1];
+			if (prevItem.sectionName === node) {
 				return false;
 			}
 			return true;
