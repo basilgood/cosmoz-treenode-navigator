@@ -147,34 +147,79 @@
 			}
 			return renderedLevel;
 		},
+
+		/**
+		 * Returns a node array with the children of the given path.
+		 */
 		_renderLevel: function (pl, nodes) {
-			var node = this._getNode(pl, nodes),
-				children = nodes,
-				childPath,
-				level;
+			var pathSegment = nodes,
+				node,
+				level = [];
 
-			if (node) {
-				children = node[this.childProperty];
+			if (pl==='' || typeof pl=== 'undefined') {
+				// Return the formatted root nodes.
+				level = Object.keys(nodes).map(function (key) {
+					node = nodes[key];
+					return {
+						id: key,
+						name: node[this.comparisonProperty],
+						path: node.pathLocator,
+						children: node[this.childProperty]
+					};
+				}.bind(this));
+			} else {
+				var pathArray = pl.split(this.separatorSign),
+					child,
+					children;
+
+				pathArray.forEach(function(pathKey, i, arr) {
+					node = pathSegment[pathKey];
+					children = node[this.childProperty];
+
+					if (i == arr.length-1) {
+						level = Object.keys(children).map(function (childKey) {
+							child = children[childKey];
+							return {
+								id: child.key,
+								name: child[this.comparisonProperty],
+								path: child.pathLocator,
+								children: child[this.childProperty]
+							};
+						}.bind(this));
+					} else {
+						pathSegment = children;
+					}
+				    
+				}.bind(this));
 			}
-
-			level = Object.keys(children).map(function (childKey) {
-				var child = children[childKey];
-				if (pl === '') {
-					childPath = childKey;
-				} else {
-					childPath = pl + this.separatorSign + childKey;
-				}
-				return {
-					id: childKey,
-					name: child[this.comparisonProperty],
-					path: childPath,
-					children: child[this.childProperty]
-				};
-			}, this);
 
 			this._sortItOut(level);
 			return level;
 		},
+
+		/**
+		 * Returns an Array of notes on a given path.
+		 */
+		_getNodesOnPath: function(pl, nodes) {
+			var path = pl.split(this.separatorSign),
+				pathSegment = nodes,
+				nodesOnPath = [],
+				node,
+				children;
+
+			path.forEach(function(nodeKey) {
+				node = pathSegment[nodeKey];
+				node['key'] = nodeKey;
+			    nodesOnPath.push(node);
+			    children = node[this.childProperty];
+			    if (node && typeof children !== 'undefined' && Object.keys(children).length > 0) {
+					pathSegment = node[this.childProperty];
+				}
+			}.bind(this));
+
+			return nodesOnPath;
+		},
+
 		_getTreePathParts: function (value, data) {
 			if (value === null) {
 				value = '';
@@ -196,29 +241,34 @@
 
 			return parts;
 		},
-		_getNode: function (pl, nodes) {
-			if (pl === null) {
-				pl = '';
+
+		/**
+		 * Returns a note based on a given path locator.
+		 */
+		_getNode: function(pl, nodes) {
+			if (!pl || pl === '' || pl === null) {
+				return null;
 			}
-
-			var children = nodes,
-				path = pl.split(this.separatorSign),
-				nodeOnPath = null;
-
-			path.some(function (key) {
-				if (key === '') {
-					return true;
+			var pathArray = pl.split(this.separatorSign),
+				pathSegment = nodes,
+				node,
+				children;
+			
+			pathArray.forEach(function(path) {
+				node = pathSegment[path];
+				if (typeof node !== 'undefined') {
+					children = node[this.childProperty];
+					if (typeof children !== 'undefined' && Object.keys(children).length > 0) {
+						pathSegment = node[this.childProperty];
+					}
+				} else {
+					console.error('Path does not exist.', pathArray, path, nodes);
 				}
-				nodeOnPath = children[key];
-				if (!nodeOnPath) {
-					console.error('Children/path doesnt exist for the given nodes at least', path, children, key);
-					return true;
-				}
-				children = nodeOnPath[this.childProperty];
-			}, this);
+			}.bind(this));
 
-			return nodeOnPath;
+			return node;
 		},
+
 		clearSearch: function (event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -227,6 +277,7 @@
 		getNodeName: function (node) {
 			return node[this.comparisonProperty];
 		},
+		
 		highlightedNodePathChanged: function (newpath) {
 			if (this._searching) {
 				return;
@@ -235,32 +286,68 @@
 			path.pop(); // remove highlighted node
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
+
 		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
-			// keep our own copy
-			var pathParts = pathPartsRaw.slice(),
-				localSection = '',
-				results = [];
+			var results = [];
 
-			if (pathParts.length > 0) {
-				localSection = pathParts.map(function (part) {
-					return part.name;
-				}).join(' / ');
-			}
+			// Make result a element propery and push async
+			this.getObject(nodeList, searchWord, this.comparisonProperty, results);
 
-			nodeList.forEach(function (node) {
-				if (node.name.toLowerCase().indexOf(searchWord.toLowerCase()) > -1) {
-					node.sectionName = localSection;
-					results.push(node);
-				}
-			});
-			nodeList.forEach(function (node) {
-				if (node.children && Object.keys(node.children).length > 0) {
-					pathParts.push(node);
-					results = results.concat(this.searchAllBranches(searchWord, pathParts, this._renderLevel(node.path, data), data));
-				}
+			results.forEach(function(node, i, results) {
+				var pl = node.pathLocator || node.path;
+				node.sectionName = this._getPathString(pl, data);
 			}, this);
 			return results;
 		},
+
+		_getPathString: function(pl, nodeList) {
+			var nodesOnPath = this._getNodesOnPath(pl, nodeList);
+			var path = '';
+			nodesOnPath.forEach(function(node) {
+				path += node[this.comparisonProperty] + '/';
+			}, this);
+			return path;
+		},
+
+
+		getObject: function(nodes, searchStr, attr, results) {
+		    var result = null;
+		    var arr;
+
+		    if(nodes instanceof Array) {
+		        for(var i = 0; i < nodes.length; i++) {
+		            result = this.getObject(nodes[i], searchStr, attr, results);
+		            if (result) {
+		                break;
+		            }   
+		        }
+		    }
+		    else
+		    {
+		        for(var prop in nodes) {
+		            if(prop == attr) {
+		                if(nodes[prop].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
+		                    results.push(nodes);
+		                }
+		            }
+		            if(nodes[prop] instanceof Object) {
+		            	arr = Object.keys(nodes[prop]).map(function(key) { return nodes[prop][key]; });
+		                result = this.getObject(arr, searchStr, attr, results);
+		                if (result) {
+		                    break;
+		                }
+		            }
+
+		            if(nodes[prop] instanceof Array) {
+		                result = this.getObject(nodes[prop], searchStr, attr, results);
+		                if (result) {
+		                    break;
+		                }
+		            } 
+		        }
+		    }
+		},
+
 		hasChildren: function (node) {
 			var children = node.children;
 			return children && Object.keys(children).length > 0;
