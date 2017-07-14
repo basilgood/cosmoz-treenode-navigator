@@ -35,19 +35,13 @@ Navigator through object with treelike datastructure.
 			.nodeItem {
 				cursor:pointer
 			}
-			
-			.listTree {
-				max-width: 540px;
-				max-height: var(--cosmoz-treenode-navigator-max-height, 70vh);
-				overflow-y: auto;
-			}
 
 			.slash {
 				margin: 0 2px;
 			}
 
 			iron-list {
-				max-height: 50vh;
+				max-height: var(--cosmoz-treenode-navigator-max-list-height, 50vh);;
 			}
 		</style>
 		<div id="header">
