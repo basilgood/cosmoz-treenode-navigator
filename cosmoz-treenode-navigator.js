@@ -151,7 +151,14 @@
 		},
 
 		/**
-		 * Gets called if a user selects a node.
+		 * Focusses the search input.
+		 */
+		focus: function() {
+			this.$.searchInput.inputElement.focus();
+		},
+
+		/**
+		 * Sets highlightedNodePath if a user selects a node.
 		 */
 		_nodeSelected: function(e) {
 			this.highlightedNodePath = e.currentTarget.locationPath;

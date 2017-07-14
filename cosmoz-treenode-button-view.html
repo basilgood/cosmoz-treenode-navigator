@@ -51,7 +51,7 @@ Navigator through object with treelike datastructure.
 		</div>
 		<cosmoz-dialog id="dialogTree" class="treeDialog" modal>
 			<h2>[[ dialogText ]]</h2>
-			<cosmoz-treenode-navigator chosen-node="{{ chosenNode }}" data="[[ data ]]"
+			<cosmoz-treenode-navigator id="treeNavigator" chosen-node="{{ chosenNode }}" data="[[ data ]]"
 				id="treenodeNavigator" on-data-plane-changed="refit"
 				highlighted-node-path="{{ highlightedNodePath }}" child-property="[[ childProperty ]]"
 				comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"

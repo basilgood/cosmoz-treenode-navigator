@@ -51,7 +51,7 @@ Navigator through object with treelike datastructure.
 					<span class="slash">/</span><a href="#" data-path$="[[ node.path ]]" on-click="openNode">[[ getNodeName(node) ]]</a>
 				</template>
 			</h3>
-			<paper-input class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
+			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
 				id="searchInput" value="{{ inputValue }}">
 				<a suffix hidden$="[[ !_searching ]]" href="#" on-tap="clearSearch"><iron-icon icon="clear"></iron-icon></a>
 			</paper-input>

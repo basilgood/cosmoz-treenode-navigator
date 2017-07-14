@@ -134,6 +134,12 @@
 		},
 		openDialogTree: function (event) {
 			this.$.dialogTree.open();
+			// Focus needs to be called async or 
+			// cosmoz-dialog needs a animation-finished or opened event
+			// which we could use here to call focus() on treeNavigator.
+			this.async(function() {
+				this.$.treeNavigator.focus();
+			}.bind(this),100)				
 		},
 		reset: function (event) {
 			this.value = '';
