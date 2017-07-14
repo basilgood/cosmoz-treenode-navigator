@@ -19,8 +19,9 @@
 			},
 			dataPlane: {
 				type: Array,
-				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data)',
-				notify: true
+				value: function() { return []; },
+				notify: true,
+				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data)'
 			},
 			_renderedLevel: {
 				type: Array,
@@ -141,11 +142,19 @@
 				value: 1
 			}
 		},
+
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, data) {
 			if (searching) {
 				return this.searchAllBranches(inputValue, openNodeLevelPathParts, renderedLevel, data);
 			}
 			return renderedLevel;
+		},
+
+		/**
+		 * Gets called if a user selects a node.
+		 */
+		_nodeSelected: function(e) {
+			this.highlightedNodePath = e.currentTarget.locationPath;
 		},
 
 		/**
@@ -198,7 +207,7 @@
 		},
 
 		/**
-		 * Returns an Array of notes on a given path.
+		 * Returns an Array of nodes on a given path.
 		 */
 		_getNodesOnPath: function(pl, nodes) {
 			var path = pl.split(this.separatorSign),
@@ -220,30 +229,8 @@
 			return nodesOnPath;
 		},
 
-		_getTreePathParts: function (value, data) {
-			if (value === null) {
-				value = '';
-			}
-			var path = value.split(this.separatorSign),
-				parts = [],
-				newpath = [];
-
-			path.some(function (part) {
-				newpath.push(part);
-				var newPathString = newpath.join(this.separatorSign),
-					node = this._getNode(newPathString, data);
-				if (!node) {
-					return true;
-				}
-				node.path = newPathString;
-				parts.push(node);
-			}, this);
-
-			return parts;
-		},
-
 		/**
-		 * Returns a note based on a given path locator.
+		 * Returns a node based on a given path locator.
 		 */
 		_getNode: function(pl, nodes) {
 			if (!pl || pl === '' || pl === null) {
@@ -269,6 +256,28 @@
 			return node;
 		},
 
+		_getTreePathParts: function (value, data) {
+			if (value === null) {
+				value = '';
+			}
+			var path = value.split(this.separatorSign),
+				parts = [],
+				newpath = [];
+
+			path.some(function (part) {
+				newpath.push(part);
+				var newPathString = newpath.join(this.separatorSign),
+					node = this._getNode(newPathString, data);
+				if (!node) {
+					return true;
+				}
+				node.path = newPathString;
+				parts.push(node);
+			}, this);
+
+			return parts;
+		},
+
 		clearSearch: function (event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -289,14 +298,7 @@
 
 		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
 			var results = [];
-
-			// Make result a element propery and push async
-			this.getObject(nodeList, searchWord, this.comparisonProperty, results);
-
-			results.forEach(function(node, i, results) {
-				var pl = node.pathLocator || node.path;
-				node.sectionName = this._getPathString(pl, data);
-			}, this);
+			this._findInNodes(nodeList, searchWord, this.comparisonProperty, results, this.childProperty, data);			
 			return results;
 		},
 
@@ -309,41 +311,35 @@
 			return path;
 		},
 
-
-		getObject: function(nodes, searchStr, attr, results) {
+		/**
+		 * Sets the results array of matched nodes based on a search string.
+		 */
+		_findInNodes: function(nodes, searchStr, searchAttr, results, childProperty, data) {
 		    var result = null;
-		    var arr;
+		    var arr, value, children, pl;
 
 		    if(nodes instanceof Array) {
 		        for(var i = 0; i < nodes.length; i++) {
-		            result = this.getObject(nodes[i], searchStr, attr, results);
-		            if (result) {
-		                break;
-		            }   
+		            result = this._findInNodes(nodes[i], searchStr, searchAttr, results, childProperty, data);  
 		        }
-		    }
-		    else
-		    {
-		        for(var prop in nodes) {
-		            if(prop == attr) {
-		                if(nodes[prop].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
-		                    results.push(nodes);
-		                }
-		            }
-		            if(nodes[prop] instanceof Object) {
-		            	arr = Object.keys(nodes[prop]).map(function(key) { return nodes[prop][key]; });
-		                result = this.getObject(arr, searchStr, attr, results);
-		                if (result) {
-		                    break;
-		                }
-		            }
+		    } else {
 
-		            if(nodes[prop] instanceof Array) {
-		                result = this.getObject(nodes[prop], searchStr, attr, results);
-		                if (result) {
-		                    break;
-		                }
-		            } 
+		    	if(nodes[searchAttr].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
+		    		nodes.path = nodes.pathLocator || nodes.path;
+		    		nodes.sectionName = this._getPathString(nodes.path, data);
+		            results.push(nodes);
+		        }
+
+		        if (typeof nodes[childProperty] !== 'undefined') {
+		        	children = nodes[childProperty];
+
+			        if(children instanceof Object) {
+						children = Object.keys(children).map(function(key) { return children[key]; });
+			        }
+
+			        if(children instanceof Array) {
+				        result = this._findInNodes(children, searchStr, searchAttr, results, childProperty, data);
+			        } 
 		        }
 		    }
 		},

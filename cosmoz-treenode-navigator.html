@@ -1,11 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
 <link rel="import" href="../paper-item/paper-item.html"> 
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-list/iron-list.html">
 <link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
 
 <!--
@@ -45,6 +45,10 @@ Navigator through object with treelike datastructure.
 			.slash {
 				margin: 0 2px;
 			}
+
+			iron-list {
+				max-height: 50vh;
+			}
 		</style>
 		<div id="header">
 			<h3 class="layout horizontal center wrap">
@@ -58,15 +62,17 @@ Navigator through object with treelike datastructure.
 				<a suffix hidden$="[[ !_searching ]]" href="#" on-tap="clearSearch"><iron-icon icon="clear"></iron-icon></a>
 			</paper-input>
 		</div>
-		<paper-listbox class="listTree" attr-for-selected="location-path" selectable="paper-item" selected="{{ highlightedNodePath }}">
-			<template is="dom-repeat" items="[[ dataPlane ]]" as="node">
-				<div class="section" hidden$="[[ !_renderSection(_searching, index, dataPlane, node) ]]">[[ node.sectionName ]]</div>
-				<paper-item location-path="[[ node.path ]]" class="nodeItem" node-object="[[ node ]]">
-					<span class="flex">[[ node.name ]]</span>
-					<iron-icon hidden$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" on-click="openNode" data-path$="[[ node.path ]]"></iron-icon>
-				</paper-item>
+		<iron-list items="[[dataPlane]]" as="node">
+			<template>
+				<div>
+					<div class="section" hidden$="[[ !_renderSection(_searching, index, dataPlane, node) ]]">[[ node.sectionName ]]</div>
+					<paper-item on-tap="_nodeSelected" location-path="[[ node.path ]]" class="nodeItem" node-object="[[ node ]]">
+						<span class="flex">[[ node.name ]]</span>
+						<iron-icon hidden$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" on-click="openNode" data-path$="[[ node.path ]]"></iron-icon>
+					</paper-item>
+				</div>
 			</template>
-		</paper-listbox>
+		</iron-list>
 		<paper-button hidden$="[[ !showGlobalSearch(_searching, _openNodeLevelPath) ]]" on-click="tryGlobalSearch">[[ localSearchDoneText ]]</paper-button>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-navigator.js"></script>
