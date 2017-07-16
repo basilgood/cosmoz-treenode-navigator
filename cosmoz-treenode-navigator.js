@@ -19,7 +19,6 @@
 			},
 			dataPlane: {
 				type: Array,
-				value: function() { return []; },
 				notify: true,
 				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data)'
 			},
@@ -142,28 +141,24 @@
 				value: 1
 			}
 		},
-
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, data) {
 			if (searching) {
 				return this.searchAllBranches(inputValue, openNodeLevelPathParts, renderedLevel, data);
 			}
 			return renderedLevel;
 		},
-
 		/**
 		 * Focusses the search input.
 		 */
 		focus: function() {
 			this.$.searchInput.inputElement.focus();
 		},
-
 		/**
 		 * Sets highlightedNodePath if a user selects a node.
 		 */
 		_nodeSelected: function(e) {
-			this.highlightedNodePath = e.currentTarget.locationPath;
+			this.highlightedNodePath = e.model.node.path;
 		},
-
 		/**
 		 * Returns a node array with the children of the given path.
 		 */
@@ -171,7 +166,6 @@
 			var pathSegment = nodes,
 				node,
 				level = [];
-
 			if (pl==='' || typeof pl=== 'undefined') {
 				// Return the formatted root nodes.
 				level = Object.keys(nodes).map(function (key) {
@@ -212,7 +206,6 @@
 			this._sortItOut(level);
 			return level;
 		},
-
 		/**
 		 * Returns an Array of nodes on a given path.
 		 */
@@ -235,7 +228,6 @@
 
 			return nodesOnPath;
 		},
-
 		/**
 		 * Returns a node based on a given path locator.
 		 */
@@ -262,7 +254,6 @@
 
 			return node;
 		},
-
 		_getTreePathParts: function (value, data) {
 			if (value === null) {
 				value = '';
@@ -284,7 +275,6 @@
 
 			return parts;
 		},
-
 		clearSearch: function (event) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -292,23 +282,20 @@
 		},
 		getNodeName: function (node) {
 			return node[this.comparisonProperty];
-		},
-		
+		},		
 		highlightedNodePathChanged: function (newpath) {
-			if (this._searching) {
+			if (this._searching && typeof newpath !== 'undefined') {
 				return;
 			}
 			var path = newpath.split(this.separatorSign);
 			path.pop(); // remove highlighted node
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
-
 		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
 			var results = [];
 			this._findInNodes(nodeList, searchWord, this.comparisonProperty, results, this.childProperty, data);			
 			return results;
 		},
-
 		_getPathString: function(pl, nodeList) {
 			var nodesOnPath = this._getNodesOnPath(pl, nodeList);
 			var path = '';
@@ -317,7 +304,6 @@
 			}, this);
 			return path;
 		},
-
 		/**
 		 * Sets the results array of matched nodes based on a search string.
 		 */
@@ -350,7 +336,6 @@
 		        }
 		    }
 		},
-
 		hasChildren: function (node) {
 			var children = node.children;
 			return children && Object.keys(children).length > 0;

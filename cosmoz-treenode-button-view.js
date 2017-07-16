@@ -139,7 +139,7 @@
 			// which we could use here to call focus() on treeNavigator.
 			this.async(function() {
 				this.$.treeNavigator.focus();
-			}.bind(this),100)				
+			},100)				
 		},
 		reset: function (event) {
 			this.value = '';
