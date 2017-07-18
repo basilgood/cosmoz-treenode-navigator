@@ -208,15 +208,13 @@
 		_getNodesOnPath: function(pl, nodes) {
 			var path = pl.split(this.separatorSign),
 				pathSegment = nodes,
-				nodesOnPath = [],
-				node,
-				children;
+				nodesOnPath = [];
 
 			path.forEach(function(nodeKey) {
-				node = pathSegment[nodeKey];
+				var node = pathSegment[nodeKey];
 				node['key'] = nodeKey;
 			    nodesOnPath.push(node);
-			    children = node[this.childProperty];
+			    var children = node[this.childProperty];
 			    if (node && children !== undefined && Object.keys(children).length > 0) {
 					pathSegment = node[this.childProperty];
 				}
