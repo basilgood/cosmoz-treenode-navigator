@@ -150,13 +150,13 @@
 		/**
 		 * Focusses the search input.
 		 */
-		focus: function() {
+		focus: function () {
 			this.$.searchInput.inputElement.focus();
 		},
 		/**
 		 * Sets highlightedNodePath if a user selects a node.
 		 */
-		_nodeSelected: function(e) {
+		_nodeSelected: function (e) {
 			this.highlightedNodePath = e.model.node.path;
 		},
 		/**
@@ -182,7 +182,7 @@
 			}
 
 			pathArray = pl.split(this.separatorSign);
-			pathArray.forEach(function(pathKey, i, arr) {
+			pathArray.forEach(function (pathKey, i, arr) {
 				var node = pathSegment[pathKey];
 				var children = node[this.childProperty];
 				if (i == arr.length-1) {
@@ -205,12 +205,12 @@
 		/**
 		 * Returns an Array of nodes on a given path.
 		 */
-		_getNodesOnPath: function(pl, nodes) {
+		_getNodesOnPath: function (pl, nodes) {
 			var path = pl.split(this.separatorSign),
 				pathSegment = nodes,
 				nodesOnPath = [];
 
-			path.forEach(function(nodeKey) {
+			path.forEach(function (nodeKey) {
 				var node = pathSegment[nodeKey];
 				node['key'] = nodeKey;
 			    nodesOnPath.push(node);
@@ -225,7 +225,7 @@
 		/**
 		 * Returns a node based on a given path locator.
 		 */
-		_getNode: function(pl, nodes) {
+		_getNode: function (pl, nodes) {
 			if (!pl || pl===undefined) {
 				return null;
 			}
@@ -233,7 +233,7 @@
 				pathSegment = nodes,
 				node;
 			
-			pathArray.forEach(function(path) {
+			pathArray.forEach(function (path) {
 				node = pathSegment[path];
 				if (node !== undefined) {
 					var children = node[this.childProperty];
@@ -289,10 +289,10 @@
 			this._findInNodes(nodeList, searchWord, this.comparisonProperty, results, this.childProperty, data);			
 			return results;
 		},
-		_getPathString: function(pl, nodeList) {
+		_getPathString: function (pl, nodeList) {
 			var nodesOnPath = this._getNodesOnPath(pl, nodeList);
 			var path = '';
-			nodesOnPath.forEach(function(node) {
+			nodesOnPath.forEach(function (node) {
 				path += node[this.comparisonProperty] + '/';
 			}, this);
 			return path;
@@ -300,16 +300,16 @@
 		/**
 		 * Sets the results array of matched nodes based on a search string.
 		 */
-		_findInNodes: function(nodes, searchStr, searchAttr, results, childProperty, data) {
+		_findInNodes: function (nodes, searchStr, searchAttr, results, childProperty, data) {
 		    var arr, value, children, pl;
 
-		    if(nodes instanceof Array) {
-		        for(var i = 0; i < nodes.length; i++) {
-		            this._findInNodes(nodes[i], searchStr, searchAttr, results, childProperty, data);  
-		        }
+		    if (nodes instanceof Array) {
+				nodes.forEach(function () {
+					this._findInNodes(nodes[i], searchStr, searchAttr, results, childProperty, data);
+				}, this)
 		    } else {
 
-		    	if(nodes[searchAttr].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
+		    	if (nodes[searchAttr].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
 		    		nodes.path = nodes.pathLocator || nodes.path;
 		    		nodes.sectionName = this._getPathString(nodes.path, data);
 		            results.push(nodes);
@@ -318,11 +318,11 @@
 		        if (nodes[childProperty] !== undefined) {
 		        	children = nodes[childProperty];
 
-			        if(children instanceof Object) {
-						children = Object.keys(children).map(function(key) { return children[key]; });
+			        if (children instanceof Object) {
+						children = Object.keys(children).map(function (key) { return children[key]; });
 			        }
 
-			        if(children instanceof Array) {
+			        if (children instanceof Array) {
 				    	this._findInNodes(children, searchStr, searchAttr, results, childProperty, data);
 			        } 
 		        }
