@@ -164,47 +164,43 @@
 		 */
 		_renderLevel: function (pl, nodes) {
 			var pathSegment = nodes,
-				node,
+				pathArray,
 				level = [];
-			if (pl==='' || typeof pl=== 'undefined') {
+
+			if (!pl || pl===undefined) {
 				// Return the formatted root nodes.
 				level = Object.keys(nodes).map(function (key) {
-					node = nodes[key];
+					var node = nodes[key];
 					return {
 						id: key,
 						name: node[this.comparisonProperty],
 						path: node.pathLocator,
 						children: node[this.childProperty]
 					};
-				}.bind(this));
-			} else {
-				var pathArray = pl.split(this.separatorSign),
-					child,
-					children;
-
-				pathArray.forEach(function(pathKey, i, arr) {
-					node = pathSegment[pathKey];
-					children = node[this.childProperty];
-
-					if (i == arr.length-1) {
-						level = Object.keys(children).map(function (childKey) {
-							child = children[childKey];
-							return {
-								id: child.key,
-								name: child[this.comparisonProperty],
-								path: child.pathLocator,
-								children: child[this.childProperty]
-							};
-						}.bind(this));
-					} else {
-						pathSegment = children;
-					}
-				    
-				}.bind(this));
+				},this);
+				return this._sortItOut(level);
 			}
 
-			this._sortItOut(level);
-			return level;
+			pathArray = pl.split(this.separatorSign);
+			pathArray.forEach(function(pathKey, i, arr) {
+				var node = pathSegment[pathKey];
+				var children = node[this.childProperty];
+				if (i == arr.length-1) {
+					level = Object.keys(children).map(function (childKey) {
+						var child = children[childKey];
+						return {
+							id: child.key,
+							name: child[this.comparisonProperty],
+							path: child.pathLocator,
+							children: child[this.childProperty]
+						};
+					}.bind(this));
+				} else {
+					pathSegment = children;
+				}			    
+			},this);
+
+			return this._sortItOut(level);
 		},
 		/**
 		 * Returns an Array of nodes on a given path.
@@ -221,10 +217,10 @@
 				node['key'] = nodeKey;
 			    nodesOnPath.push(node);
 			    children = node[this.childProperty];
-			    if (node && typeof children !== 'undefined' && Object.keys(children).length > 0) {
+			    if (node && children !== undefined && Object.keys(children).length > 0) {
 					pathSegment = node[this.childProperty];
 				}
-			}.bind(this));
+			},this);
 
 			return nodesOnPath;
 		},
@@ -232,25 +228,24 @@
 		 * Returns a node based on a given path locator.
 		 */
 		_getNode: function(pl, nodes) {
-			if (!pl || pl === '' || pl === null) {
+			if (!pl || pl===undefined) {
 				return null;
 			}
 			var pathArray = pl.split(this.separatorSign),
 				pathSegment = nodes,
-				node,
-				children;
+				node;
 			
 			pathArray.forEach(function(path) {
 				node = pathSegment[path];
-				if (typeof node !== 'undefined') {
-					children = node[this.childProperty];
-					if (typeof children !== 'undefined' && Object.keys(children).length > 0) {
-						pathSegment = node[this.childProperty];
+				if (node !== undefined) {
+					var children = node[this.childProperty];
+					if (children !== undefined && Object.keys(children).length > 0) {
+						pathSegment = children;
 					}
 				} else {
 					console.error('Path does not exist.', pathArray, path, nodes);
 				}
-			}.bind(this));
+			},this);
 
 			return node;
 		},
@@ -284,7 +279,7 @@
 			return node[this.comparisonProperty];
 		},		
 		highlightedNodePathChanged: function (newpath) {
-			if (this._searching && typeof newpath !== 'undefined') {
+			if (this._searching && newpath !== undefined) {
 				return;
 			}
 			var path = newpath.split(this.separatorSign);
@@ -308,12 +303,11 @@
 		 * Sets the results array of matched nodes based on a search string.
 		 */
 		_findInNodes: function(nodes, searchStr, searchAttr, results, childProperty, data) {
-		    var result = null;
 		    var arr, value, children, pl;
 
 		    if(nodes instanceof Array) {
 		        for(var i = 0; i < nodes.length; i++) {
-		            result = this._findInNodes(nodes[i], searchStr, searchAttr, results, childProperty, data);  
+		            this._findInNodes(nodes[i], searchStr, searchAttr, results, childProperty, data);  
 		        }
 		    } else {
 
@@ -323,7 +317,7 @@
 		            results.push(nodes);
 		        }
 
-		        if (typeof nodes[childProperty] !== 'undefined') {
+		        if (nodes[childProperty] !== undefined) {
 		        	children = nodes[childProperty];
 
 			        if(children instanceof Object) {
@@ -331,7 +325,7 @@
 			        }
 
 			        if(children instanceof Array) {
-				        result = this._findInNodes(children, searchStr, searchAttr, results, childProperty, data);
+				    	this._findInNodes(children, searchStr, searchAttr, results, childProperty, data);
 			        } 
 		        }
 		    }
