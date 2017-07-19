@@ -133,13 +133,10 @@
 			}, this).join(' / ');
 		},
 		openDialogTree: function (event) {
-			this.$.dialogTree.open();
-			// Focus needs to be called async or 
-			// cosmoz-dialog needs a animation-finished or opened event
-			// which we could use here to call focus() on treeNavigator.
-			this.async(function() {
-				this.$.treeNavigator.focus();
-			},100)				
+			this.$.dialogTree.open();			
+		},
+		focusSearch: function (event) {
+			this.$.treeNavigator.focus();
 		},
 		reset: function (event) {
 			this.value = '';
