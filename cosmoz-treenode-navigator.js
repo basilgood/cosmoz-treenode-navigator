@@ -206,10 +206,9 @@
 		 */
 		_getNodesOnPath: function (pl, nodes) {
 			var path = pl.split(this.separatorSign),
-				pathSegment = nodes,
-				nodesOnPath = [];
-
-			nodesOnPath = path.map(function (nodeKey) {
+				pathSegment = nodes;
+				
+			return path.map(function (nodeKey) {
 				var node = pathSegment[nodeKey],
 					children = node[this.childProperty];
 				node['key'] = nodeKey;
@@ -218,8 +217,6 @@
 				}
 				return node;
 			}, this);
-
-			return nodesOnPath;
 		},
 		/**
 		 * Returns a node based on a given path locator.
