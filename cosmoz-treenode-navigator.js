@@ -209,14 +209,14 @@
 				pathSegment = nodes,
 				nodesOnPath = [];
 
-			path.forEach(function (nodeKey) {
+			nodesOnPath = path.map(function (nodeKey) {
 				var node = pathSegment[nodeKey],
-					children = node[this.childProperty]
+					children = node[this.childProperty];
 				node['key'] = nodeKey;
-				nodesOnPath.push(node);
 				if (node && children !== undefined && Object.keys(children).length > 0) {
 					pathSegment = children;
 				}
+				return node;
 			}, this);
 
 			return nodesOnPath;
