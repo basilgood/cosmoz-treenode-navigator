@@ -133,7 +133,10 @@
 			}, this).join(' / ');
 		},
 		openDialogTree: function (event) {
-			this.$.dialogTree.open();
+			this.$.dialogTree.open();			
+		},
+		focusSearch: function (event) {
+			this.$.treeNavigator.focus();
 		},
 		reset: function (event) {
 			this.value = '';

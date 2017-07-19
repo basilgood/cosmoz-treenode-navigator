@@ -166,7 +166,6 @@
 			var pathSegment = nodes,
 				pathArray,
 				level = [];
-
 			if (!pl) {
 				// Return the formatted root nodes.
 				level = Object.keys(nodes).map(function (key) {
@@ -207,20 +206,17 @@
 		 */
 		_getNodesOnPath: function (pl, nodes) {
 			var path = pl.split(this.separatorSign),
-				pathSegment = nodes,
-				nodesOnPath = [];
-
-			path.forEach(function (nodeKey) {
+				pathSegment = nodes;
+				
+			return path.map(function (nodeKey) {
 				var node = pathSegment[nodeKey],
-					children = node[this.childProperty]
+					children = node[this.childProperty];
 				node['key'] = nodeKey;
-				nodesOnPath.push(node);
 				if (node && children !== undefined && Object.keys(children).length > 0) {
 					pathSegment = children;
 				}
+				return node;
 			}, this);
-
-			return nodesOnPath;
 		},
 		/**
 		 * Returns a node based on a given path locator.
