@@ -177,7 +177,7 @@
 						children: node[this.childProperty]
 					};
 				}, this);
-				return this._sortItOut(level);
+				return this._sortNodes(level);
 			}
 
 			pathArray = pl.split(this.separatorSign);
@@ -199,25 +199,9 @@
 				}
 			}, this);
 
-			return this._sortItOut(level);
+			return this._sortNodes(level);
 		},
-		/**
-		 * Returns an Array of nodes on a given path.
-		 */
-		_getNodesOnPath: function (pl, nodes) {
-			var path = pl.split(this.separatorSign),
-				pathSegment = nodes;
-				
-			return path.map(function (nodeKey) {
-				var node = pathSegment[nodeKey],
-					children = node[this.childProperty];
-				node['key'] = nodeKey;
-				if (node && children !== undefined && Object.keys(children).length > 0) {
-					pathSegment = children;
-				}
-				return node;
-			}, this);
-		},
+
 		/**
 		 * Returns a node based on a given path locator.
 		 */
@@ -282,35 +266,22 @@
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
 		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
-			var results = [];
-			this._findInNodes(results, nodeList, searchWord, this.comparisonProperty, this.childProperty, data);
-			return results;
-		},
-		_getPathString: function (pl, nodeList) {
-			var nodesOnPath = this._getNodesOnPath(pl, nodeList),
-				path = '';
-			nodesOnPath.forEach(function (node) {
-				path += node[this.comparisonProperty] + '/';
-			}, this);
-			return path;
-		},
-		/**
-		 * Sets the results array of matched nodes based on a search string.
-		 */
-		_findInNodes: function (results, nodes, searchStr, searchAttr, childProperty, data) {
-			nodes.forEach(function (node) {
-				if (node.hasOwnProperty(searchAttr) && node[searchAttr].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
-					node.path = node.pathLocator || node.path;
-					node.sectionName = this._getPathString(node.path, data);
-					results.push(node);
-					return node;
-				}
-				if (node[childProperty] !== undefined) {
-					var children = node[childProperty];
-					children = Object.keys(children).map(function (key) { return children[key]; });
-					this._findInNodes(results, children, searchStr, searchAttr, childProperty, data);
-				}
-			}, this)
+			var nodes = {};
+			nodeList.forEach(function (n) { nodes[n.id] = n; });
+
+			var tree = new Cosmoz.DefaultTree(nodes);
+			
+			tree.getPath = function (node) {
+				return node.path.split(this.separatorSign);
+			}.bind(this);
+
+			tree.afterFound = function (node) {
+				node.path = node.pathLocator || node.path;
+				node.sectionName = tree.getPathString(this.data, node.path, this.comparisonProperty);
+				return node;
+			}.bind(this);
+
+			return tree.getNodeByProperty(this.comparisonProperty, searchWord, false, true);
 		},
 		hasChildren: function (node) {
 			var children = node.children;
@@ -359,7 +330,7 @@
 			}
 			return true;
 		},
-		_sortItOut: function (inputArray) {
+		_sortNodes: function (inputArray) {
 			var hasChildren = function (node) {
 				var children = node[this.childProperty];
 				return children && Object.keys(children).length > 0;
