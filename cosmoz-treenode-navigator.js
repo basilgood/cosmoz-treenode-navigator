@@ -5,7 +5,8 @@
 	Polymer({
 
 		behaviors: [
-			Cosmoz.TranslatableBehavior
+			Cosmoz.TranslatableBehavior,
+			Cosmoz.TreeBehavior
 		],
 		is: 'cosmoz-treenode-navigator',
 
@@ -15,16 +16,18 @@
 			that component is given
 			 */
 			data: {
-				type: Object
+				type: Object,
+				value: function () { return {} },
+				treeClass: 'Cosmoz.DefaultTree',
 			},
 			dataPlane: {
 				type: Array,
 				notify: true,
-				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data)'
+				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data.tree)'
 			},
 			_renderedLevel: {
 				type: Array,
-				computed: '_renderLevel(_openNodeLevelPath, data)'
+				computed: '_renderLevel(_openNodeLevelPath, data.tree)'
 			},
 			_openNodeLevelPath: {
 				type: String,
@@ -32,7 +35,7 @@
 			},
 			_openNodeLevelPathParts: {
 				type: Array,
-				computed: '_getTreePathParts(_openNodeLevelPath, data)'
+				computed: '_getTreePathParts(_openNodeLevelPath, data.tree)'
 			},
 			/*
 			 path value
@@ -46,7 +49,7 @@
 
 			valuePathParts: {
 				type: Array,
-				computed: '_getTreePathParts(value, data)',
+				computed: '_getTreePathParts(value, data.tree)',
 				notify: true
 			},
 			/*
@@ -141,11 +144,24 @@
 				value: 1
 			}
 		},
-		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, data) {
+
+		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
-				return this.searchAllBranches(inputValue, openNodeLevelPathParts, renderedLevel, data);
+				return tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
 			}
 			return renderedLevel;
+		},
+		/**
+		 * A hook to manipulate the default tree class
+		 * of Cosmoz.TreeBehavior
+		 */
+		_getTreeClass: function (treeClass) {
+			treeClass.prototype.afterFound = function (node, propertyName) {
+				node.path = node.pathLocator || node.path;
+				node.sectionName = this.getPathString(node.path, propertyName);
+				return node;
+			};
+			return treeClass;
 		},
 		/**
 		 * Focusses the search input.
@@ -162,92 +178,37 @@
 		/**
 		 * Returns a node array with the children of the given path.
 		 */
-		_renderLevel: function (pl, nodes) {
-			var pathSegment = nodes,
-				pathArray,
-				level = [];
-			if (!pl) {
-				// Return the formatted root nodes.
-				level = Object.keys(nodes).map(function (key) {
-					var node = nodes[key];
+		_renderLevel: function (pathLocator, tree) {
+			if (!tree) return;
+
+			var n = tree.getNodeByPathLocator(pathLocator),
+				children = tree.getChildren(n) ? tree.getChildren(n) : n,
+				level;
+
+			level = Object.keys(children).map(function (key) {
+					var node =children[key];
 					return {
 						id: key,
 						name: node[this.comparisonProperty],
 						path: node.pathLocator,
-						children: node[this.childProperty]
+						children: tree.getChildren(node)
 					};
 				}, this);
-				return this._sortNodes(level);
-			}
-
-			pathArray = pl.split(this.separatorSign);
-			pathArray.forEach(function (pathKey, i, arr) {
-				var node = pathSegment[pathKey],
-					children = node[this.childProperty];
-				if (i === arr.length - 1) {
-					level = Object.keys(children).map(function (childKey) {
-						var child = children[childKey];
-						return {
-							id: child.key,
-							name: child[this.comparisonProperty],
-							path: child.pathLocator,
-							children: child[this.childProperty]
-						};
-					}, this);
-				} else {
-					pathSegment = children;
-				}
-			}, this);
 
 			return this._sortNodes(level);
 		},
 
 		/**
 		 * Returns a node based on a given path locator.
+		 * If pathLocator is empty or not defined, null gets returned.
 		 */
-		_getNode: function (pl, nodes) {
-			if (!pl) {
-				return null;
-			}
-			var pathArray = pl.split(this.separatorSign),
-				pathSegment = nodes,
-				node;
-			
-			pathArray.some(function (path) {
-				node = pathSegment[path];
-
-				if (node === undefined) {
-					console.error('Path does not exist.', pathArray, path, nodes);
-					return true;
-				}
-				var children = node[this.childProperty];
-				if (children !== undefined && Object.keys(children).length > 0) {
-					pathSegment = children;
-				}
-			}, this);
-
-			return node;
+		_getNode: function (pathLocator, nodes) {
+			if (!pathLocator) return null;
+			return this.data.tree.getNodeByPathLocator(pathLocator);
 		},
-		_getTreePathParts: function (value, data) {
-			if (value === null) {
-				value = '';
-			}
-			var path = value.split(this.separatorSign),
-				parts = [],
-				newpath = [];
-
-			path.some(function (part) {
-				newpath.push(part);
-				var newPathString = newpath.join(this.separatorSign),
-					node = this._getNode(newPathString, data);
-				if (!node) {
-					return true;
-				}
-				node.path = newPathString;
-				parts.push(node);
-			}, this);
-
-			return parts;
+		_getTreePathParts: function (pathLocator, tree) {
+			if (!tree) return;
+			return tree.getNodesOnPath(pathLocator);
 		},
 		clearSearch: function (event) {
 			event.preventDefault();
@@ -265,40 +226,12 @@
 			path.pop(); // remove highlighted node
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
-		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
-			var nodes = {};
-			nodeList.forEach(function (n) { nodes[n.id] = n; });
-
-			var tree = new Cosmoz.DefaultTree(nodes);
-			
-			tree.getPath = function (node) {
-				return node.path.split(this.separatorSign);
-			}.bind(this);
-
-			tree.afterFound = function (node) {
-				node.path = node.pathLocator || node.path;
-				node.sectionName = tree.getPathString(this.data, node.path, this.comparisonProperty);
-				return node;
-			}.bind(this);
-
-			return tree.getNodeByProperty(this.comparisonProperty, searchWord, false, true);
-		},
 		hasChildren: function (node) {
 			var children = node.children;
 			return children && Object.keys(children).length > 0;
 		},
 		openNode: function (event) {
-			event.preventDefault();
-			event.path.some(function (element, index) {
-				var path = element.dataset.path;
-				if (path !== undefined) {
-					this._openNodeLevelPath = path;
-					return true;
-				} else if (index > 3) {
-					return true;
-				}
-			}, this);
-
+			this._openNodeLevelPath = event.model.node.pathLocator;
 			this.inputValue = '';
 		},
 		_valueChanged: function (path) {
