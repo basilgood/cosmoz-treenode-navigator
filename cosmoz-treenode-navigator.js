@@ -158,7 +158,7 @@
 		_getTreeClass: function (treeClass) {
 			treeClass.prototype.afterFound = function (node, propertyName) {
 				node.path = node.pathLocator || node.path;
-				node.sectionName = this.getPathString(node.path, propertyName);
+				node.sectionName = this.getPath(node.path, propertyName);
 				return node;
 			};
 			return treeClass;
@@ -208,6 +208,7 @@
 		},
 		_getTreePathParts: function (pathLocator, tree) {
 			if (!tree) return;
+			if (!pathLocator) return [];
 			return tree.getNodesOnPath(pathLocator);
 		},
 		clearSearch: function (event) {
@@ -231,7 +232,7 @@
 			return children && Object.keys(children).length > 0;
 		},
 		openNode: function (event) {
-			this._openNodeLevelPath = event.model.node.pathLocator;
+			this._openNodeLevelPath = event.currentTarget.getAttribute('data-path');
 			this.inputValue = '';
 		},
 		_valueChanged: function (path) {
