@@ -17,7 +17,7 @@
 			 */
 			data: {
 				type: Object,
-				value: function () { return {} },
+				value: function () { return {}; },
 				treeClass: 'Cosmoz.DefaultTree',
 			},
 			dataPlane: {
@@ -70,7 +70,7 @@
 
 			chosenNode: {
 				type: Object,
-				computed: '_getNode(value, data)',
+				computed: '_getNode(value)',
 				notify: true
 			},
 			/*
@@ -147,21 +147,10 @@
 
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
-				return tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
+				var node = tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
+				return this._normalizeNode(node);
 			}
 			return renderedLevel;
-		},
-		/**
-		 * A hook to manipulate the default tree class
-		 * of Cosmoz.TreeBehavior
-		 */
-		_getTreeClass: function (treeClass) {
-			treeClass.prototype.afterFound = function (node, propertyName) {
-				node.path = node.pathLocator || node.path;
-				node.sectionName = this.getPath(node.path, propertyName);
-				return node;
-			};
-			return treeClass;
 		},
 		/**
 		 * Focusses the search input.
@@ -179,37 +168,48 @@
 		 * Returns a node array with the children of the given path.
 		 */
 		_renderLevel: function (pathLocator, tree) {
-			if (!tree) return;
-
+			if (!tree) {
+				return;
+			}
 			var n = tree.getNodeByPathLocator(pathLocator),
-				children = tree.getChildren(n) ? tree.getChildren(n) : n,
-				level;
-
-			level = Object.keys(children).map(function (key) {
-					var node =children[key];
-					return {
-						id: key,
-						name: node[this.comparisonProperty],
-						path: node.pathLocator,
-						children: tree.getChildren(node)
-					};
-				}, this);
-
-			return this._sortNodes(level);
+				level = tree.getChildren(n) ? tree.getChildren(n) : n;
+			return this._sortNodes(this._normalizeNode(level));
 		},
-
+		/**
+		 * Returns the "formatted" normalized node
+		 * with the properties id, name, path, sectionName, children
+		 */
+		_normalizeNode: function (nodeObj) {
+			if (!nodeObj) {
+				return;
+			}
+			return Object.keys(nodeObj).map(function (key) {
+				var node = nodeObj[key];
+				return {
+					id: key,
+					name: node[this.comparisonProperty],
+					path: node.pathLocator || node.path,
+					sectionName: this.data.tree.getPath(node.path, this.comparisonProperty),
+					children: this.data.tree.getChildren(node)
+				};
+			}, this);
+		},
 		/**
 		 * Returns a node based on a given path locator.
 		 * If pathLocator is empty or not defined, null gets returned.
 		 */
-		_getNode: function (pathLocator, nodes) {
-			if (!pathLocator) return null;
-			return this.data.tree.getNodeByPathLocator(pathLocator);
+		_getNode: function (pathLocator) {
+			if (!pathLocator) {
+				return null;
+			}
+			var node = this.data.tree.getNodeByPathLocator(pathLocator);
+			return this._normalizeNode(node);
 		},
 		_getTreePathParts: function (pathLocator, tree) {
-			if (!tree) return;
-			if (!pathLocator) return [];
-			return tree.getNodesOnPath(pathLocator);
+			if (!tree || !pathLocator) {
+				return [];
+			};
+			return this._normalizeNode(tree.getNodesOnPath(pathLocator));
 		},
 		clearSearch: function (event) {
 			event.preventDefault();
@@ -232,7 +232,7 @@
 			return children && Object.keys(children).length > 0;
 		},
 		openNode: function (event) {
-			this._openNodeLevelPath = event.currentTarget.getAttribute('data-path');
+			this._openNodeLevelPath = event.currentTarget.dataset.path;
 			this.inputValue = '';
 		},
 		_valueChanged: function (path) {
