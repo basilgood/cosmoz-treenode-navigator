@@ -185,7 +185,7 @@
 					id: key,
 					name: node[this.comparisonProperty],
 					path: node.pathLocator || node.path,
-					sectionName: this.tree.getPath(node.path, this.comparisonProperty),
+					sectionName: this.tree.getPathString(node.path, this.comparisonProperty),
 					children: this.tree.getChildren(node)
 				};
 			}, this);
@@ -205,7 +205,7 @@
 			if (!tree || !pathLocator) {
 				return [];
 			};
-			return this._normalizeNode(tree.getNodesOnPath(pathLocator));
+			return this._normalizeNode(tree.getPath(pathLocator));
 		},
 		clearSearch: function (event) {
 			event.preventDefault();
