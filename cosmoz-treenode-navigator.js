@@ -6,7 +6,6 @@
 
 		behaviors: [
 			Cosmoz.TranslatableBehavior,
-			Cosmoz.TreeBehavior
 		],
 		is: 'cosmoz-treenode-navigator',
 
@@ -15,19 +14,17 @@
 			Node structure object
 			that component is given
 			 */
-			data: {
-				type: Object,
-				value: function () { return {}; },
-				treeClass: 'Cosmoz.DefaultTree',
+			tree: {
+				type: Cosmoz.tree,
 			},
 			dataPlane: {
 				type: Array,
 				notify: true,
-				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data.tree)'
+				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, tree)'
 			},
 			_renderedLevel: {
 				type: Array,
-				computed: '_renderLevel(_openNodeLevelPath, data.tree)'
+				computed: '_renderLevel(_openNodeLevelPath, tree)'
 			},
 			_openNodeLevelPath: {
 				type: String,
@@ -35,7 +32,7 @@
 			},
 			_openNodeLevelPathParts: {
 				type: Array,
-				computed: '_getTreePathParts(_openNodeLevelPath, data.tree)'
+				computed: '_getTreePathParts(_openNodeLevelPath, tree)'
 			},
 			/*
 			 path value
@@ -49,7 +46,7 @@
 
 			valuePathParts: {
 				type: Array,
-				computed: '_getTreePathParts(value, data.tree)',
+				computed: '_getTreePathParts(value, tree)',
 				notify: true
 			},
 			/*
@@ -144,7 +141,6 @@
 				value: 1
 			}
 		},
-
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
 				var node = tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
@@ -189,8 +185,8 @@
 					id: key,
 					name: node[this.comparisonProperty],
 					path: node.pathLocator || node.path,
-					sectionName: this.data.tree.getPath(node.path, this.comparisonProperty),
-					children: this.data.tree.getChildren(node)
+					sectionName: this.tree.getPath(node.path, this.comparisonProperty),
+					children: this.tree.getChildren(node)
 				};
 			}, this);
 		},
@@ -202,7 +198,7 @@
 			if (!pathLocator) {
 				return null;
 			}
-			var node = this.data.tree.getNodeByPathLocator(pathLocator);
+			var node = this.tree.getNodeByPathLocator(pathLocator);
 			return this._normalizeNode(node);
 		},
 		_getTreePathParts: function (pathLocator, tree) {
