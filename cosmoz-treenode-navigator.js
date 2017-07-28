@@ -143,8 +143,8 @@
 		},
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
-				var node = tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
-				return this._normalizeNode(node);
+				var results = tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
+				return this._normalizeNodes(results);
 			}
 			return renderedLevel;
 		},
@@ -168,24 +168,20 @@
 				return;
 			}
 			var n = tree.getNodeByPathLocator(pathLocator),
-				level = tree.getChildren(n) ? tree.getChildren(n) : n;
-			return this._sortNodes(this._normalizeNode(level));
+				level = tree.getChildren(n) ? _objectValues(tree.getChildren(n)) : n;
+			return this._sortNodes(this._normalizeNodes(_objectValues(level)));
 		},
 		/**
-		 * Returns the "formatted" normalized node
-		 * with the properties id, name, path, sectionName, children
+		 * Normalizes and returns an Array of nodes
+		 * with the properties name, path, sectionName, children
 		 */
-		_normalizeNode: function (nodeObj) {
-			if (!nodeObj) {
-				return;
-			}
-			return Object.keys(nodeObj).map(function (key) {
-				var node = nodeObj[key];
+		_normalizeNodes: function (nodes) { 
+			return nodes.map(function (node) {
+				var path = node.pathLocator || node.path;
 				return {
-					id: key,
 					name: node[this.comparisonProperty],
-					path: node.pathLocator || node.path,
-					sectionName: this.tree.getPathString(node.path, this.comparisonProperty),
+					path: path,
+					sectionName: this.tree.getPathString(path, this.comparisonProperty),
 					children: this.tree.getChildren(node)
 				};
 			}, this);
@@ -198,14 +194,13 @@
 			if (!pathLocator) {
 				return null;
 			}
-			var node = this.tree.getNodeByPathLocator(pathLocator);
-			return this._normalizeNode(node);
+			return this.tree.getNodeByPathLocator(pathLocator);
 		},
 		_getTreePathParts: function (pathLocator, tree) {
 			if (!tree || !pathLocator) {
 				return [];
 			};
-			return this._normalizeNode(tree.getPath(pathLocator));
+			return this._normalizeNodes(tree.getPath(pathLocator));
 		},
 		clearSearch: function (event) {
 			event.preventDefault();
