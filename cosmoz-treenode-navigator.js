@@ -167,9 +167,10 @@
 			if (!tree) {
 				return;
 			}
-			var n = tree.getNodeByPathLocator(pathLocator),
-				level = tree.getChildren(n) ? _objectValues(tree.getChildren(n)) : n;
-			return this._sortNodes(this._normalizeNodes(_objectValues(level)));
+			var node = tree.getNodeByPathLocator(pathLocator),
+				children = tree.getChildren(node),
+				level = children || _objectValues(node);
+			return this._sortNodes(this._normalizeNodes(level));
 		},
 		/**
 		 * Normalizes and returns an Array of nodes
@@ -182,7 +183,7 @@
 					name: node[this.comparisonProperty],
 					path: path,
 					sectionName: this.tree.getPathString(path, this.comparisonProperty),
-					children: this.tree.getChildren(node)
+					children: node[this.childProperty]
 				};
 			}, this);
 		},
@@ -219,7 +220,7 @@
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
 		hasChildren: function (node) {
-			var children = node.children;
+			var children = node[this.childProperty];
 			return children && Object.keys(children).length > 0;
 		},
 		openNode: function (event) {
