@@ -27,19 +27,15 @@
 			<h3>Button Dialog Multiple Roots Demo</h3>
 			  <demo-snippet>
 				<template is="dom-bind" id="demo">
-					<iron-ajax url="data/multiRootTree.json" handle-as="json" on-response="handleResponse" debounce-duration="10" auto></iron-ajax>
-					<cosmoz-treenode-button-view id="navigator" value="{{ path }}" chosen-node="{{ nodeChosen1 }}"></cosmoz-treenode-button-view>
+					<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
+					<cosmoz-treenode-button-view id="navigator" value="{{ path }}" chosen-node="{{ nodeChosen1 }}" tree="[[ getTree(treeData) ]]"></cosmoz-treenode-button-view>
 				</template>
 			  </demo-snippet>
 		 </div>
 		<script>
-			window.addEventListener('WebComponentsReady', function(e) {
-				document.querySelector('#demo').handleResponse = function(response) {
-					var treeData = response.detail.response,
-						tree = new Cosmoz.DefaultTree(treeData);
-					document.querySelector('#navigator').tree = tree;
-				};
-			});
+			document.querySelector('#demo').getTree = function (data) {
+				return new Cosmoz.DefaultTree(data);
+			};
 		</script>
 	</body>
 </html>
