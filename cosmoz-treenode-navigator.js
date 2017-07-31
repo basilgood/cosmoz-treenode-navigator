@@ -5,7 +5,7 @@
 	Polymer({
 
 		behaviors: [
-			Cosmoz.TranslatableBehavior,
+			Cosmoz.TranslatableBehavior
 		],
 		is: 'cosmoz-treenode-navigator',
 
@@ -15,7 +15,7 @@
 			that component is given
 			 */
 			tree: {
-				type: Cosmoz.tree,
+				type: Cosmoz.tree
 			},
 			dataPlane: {
 				type: Array,
@@ -143,7 +143,7 @@
 		},
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
-				var results = tree.getNodeByProperty(this.comparisonProperty, inputValue, false, true, renderedLevel);
+				var results = tree.searchNodes(this.comparisonProperty, inputValue, false, renderedLevel);
 				return this._normalizeNodes(results);
 			}
 			return renderedLevel;
@@ -200,7 +200,7 @@
 			if (!tree || !pathLocator) {
 				return [];
 			};
-			return this._normalizeNodes(tree.getPath(pathLocator));
+			return this._normalizeNodes(tree.getPathNodes(pathLocator));
 		},
 		clearSearch: function (event) {
 			event.preventDefault();
