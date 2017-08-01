@@ -143,7 +143,7 @@
 		},
 		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
-				var results = tree.searchNodes(this.comparisonProperty, inputValue, false, renderedLevel);
+				var results = tree.searchNodes(inputValue, renderedLevel, false);
 				return this._normalizeNodes(results);
 			}
 			return renderedLevel;
@@ -169,7 +169,7 @@
 			}
 			var node = tree.getNodeByPathLocator(pathLocator),
 				children = tree.getChildren(node),
-				level = children || _objectValues(node);
+				level = children || node;
 			return this._sortNodes(this._normalizeNodes(level));
 		},
 		/**
@@ -220,8 +220,7 @@
 			this._openNodeLevelPath = path.join(this.separatorSign);
 		},
 		hasChildren: function (node) {
-			var children = node[this.childProperty];
-			return children && Object.keys(children).length > 0;
+			return this.tree.hasChildren(node);
 		},
 		openNode: function (event) {
 			this._openNodeLevelPath = event.currentTarget.dataset.path;
@@ -257,21 +256,16 @@
 			return true;
 		},
 		_sortNodes: function (inputArray) {
-			var hasChildren = function (node) {
-				var children = node[this.childProperty];
-				return children && Object.keys(children).length > 0;
-			}.bind(this);
-
 			inputArray.sort(
 				function (a, b) {
 					/**
 					 * First sort based on "folder" status (containing children)
 					 */
-					if (hasChildren(a)) {
-						if (!hasChildren(b)) {
+					if (this.hasChildren(a)) {
+						if (!this.hasChildren(b)) {
 							return -1;
 						}
-					} else if (hasChildren(b)) {
+					} else if (this.hasChildren(b)) {
 						return 1;
 					}
 
