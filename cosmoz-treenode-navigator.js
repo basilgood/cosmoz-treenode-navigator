@@ -53,10 +53,6 @@
 			 Current path to displayed
 			 node/folder. That is an
 			 "address" to the node.
-			 An example would be "1.5.35",
-			 where node id/indexes are put
-			 together with "." set as
-			 the seperator.
 			 */
 			highlightedNodePath: {
 				type: String,
@@ -83,30 +79,6 @@
 			inputValue: {
 				type: String,
 				value: ''
-			},
-			/*
-			 Settable name for property which
-			 houses childobjects.
-			 */
-			childProperty: {
-				type: String,
-				value: 'children'
-			},
-			/*
-			 Settable property name that
-			 searches will be compared too.
-			 */
-			comparisonProperty: {
-				type: String,
-				value: 'name'
-			},
-			/*
-			Chosen separator to denote
-			navigation path.
-			 */
-			separatorSign: {
-				type: String,
-				value: '.'
 			},
 			/*
 			 Whether an search has been done.
@@ -180,10 +152,10 @@
 			return nodes.map(function (node) {
 				var path = node.pathLocator || node.path;
 				return {
-					name: node[this.comparisonProperty],
+					name: node[this.tree.searchProperty],
 					path: path,
-					sectionName: this.tree.getPathString(path, this.comparisonProperty),
-					children: node[this.childProperty]
+					sectionName: this.tree.getPathString(path, this.tree.searchProperty),
+					children: node[this.tree.childProperty]
 				};
 			}, this);
 		},
@@ -209,15 +181,15 @@
 			this.inputValue = '';
 		},
 		getNodeName: function (node) {
-			return node[this.comparisonProperty];
+			return node[this.tree.searchProperty];
 		},
 		highlightedNodePathChanged: function (newpath) {
 			if (this._searching || newpath === undefined) {
 				return;
 			}
-			var path = newpath.split(this.separatorSign);
+			var path = newpath.split(this.tree.pathLocatorSeparator);
 			path.pop(); // remove highlighted node
-			this._openNodeLevelPath = path.join(this.separatorSign);
+			this._openNodeLevelPath = path.join(this.tree.pathLocatorSeparator);
 		},
 		hasChildren: function (node) {
 			return this.tree.hasChildren(node);
@@ -270,10 +242,10 @@
 					}
 
 					/**
-					 * Then sort on comparisonProperty
+					 * Then sort on searchProperty
 					 */
-					var val1 = a[this.comparisonProperty],
-						val2 = b[this.comparisonProperty];
+					var val1 = a[this.tree.searchProperty],
+						val2 = b[this.tree.searchProperty];
 
 					if (val1 > val2) {
 						return 1;

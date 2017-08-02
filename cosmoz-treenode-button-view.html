@@ -52,12 +52,15 @@ Navigator through object with treelike datastructure.
 		<cosmoz-dialog id="dialogTree" class="treeDialog" on-iron-overlay-opened="focusSearch" modal>
 			<h2>[[ dialogText ]]</h2>
 			<cosmoz-treenode-navigator id="treeNavigator" chosen-node="{{ chosenNode }}" tree="[[ tree ]]"
-				id="treenodeNavigator" on-data-plane-changed="refit"
-				highlighted-node-path="{{ highlightedNodePath }}" child-property="[[ childProperty ]]"
-				comparison-property="[[ comparisonProperty ]]" search-placeholder="[[ searchPlaceholder ]]"
-				separator-sign="[[ separatorSign ]]" local-search-done-text="[[ localSearchDoneText ]]"
-				reset-text="[[ resetText ]]" search-min-length="[[ searchMinLength ]]"
-				value="{{ value }}" value-path-parts="{{ valuePathParts }}">
+				on-data-plane-changed="refit"
+				highlighted-node-path="{{ highlightedNodePath }}"
+				comparison-property="[[ comparisonProperty ]]"
+				search-placeholder="[[ searchPlaceholder ]]"
+				local-search-done-text="[[ localSearchDoneText ]]"
+				reset-text="[[ resetText ]]"
+				search-min-length="[[ searchMinLength ]]"
+				value="{{ value }}"
+				value-path-parts="{{ valuePathParts }}">
 				<slot></slot>
 			</cosmoz-treenode-navigator>
 			<div class="buttons">
