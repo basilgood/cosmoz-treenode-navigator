@@ -184,7 +184,7 @@
 			return node[this.tree.searchProperty];
 		},
 		highlightedNodePathChanged: function (newpath) {
-			if (this._searching || newpath === undefined) {
+			if (this._searching || newpath === undefined || !this.tree) {
 				return;
 			}
 			var path = newpath.split(this.tree.pathLocatorSeparator);
