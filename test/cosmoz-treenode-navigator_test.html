@@ -5,28 +5,59 @@
     <title>cosmoz-treenode-navigator test</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    
+    <title>cosmoz-treenode-navigator test</title>
+
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="../cosmoz-treenode-navigator.html">
+    <link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
+    <link rel="import" href="../../iron-ajax/iron-ajax.html">
   </head>
   <body>
-
     <test-fixture id="basic">
       <template>
-        <cosmoz-treenode-navigator></cosmoz-treenode-navigator>
+        <cosmoz-treenode-navigator id="navigator"></cosmoz-treenode-navigator>
+        <iron-ajax auto
+          url="data/basicTree.json"
+          handle-as="json"
+          last-response="{{ basicTree }}">
+        </iron-ajax>
       </template>
     </test-fixture>
 
     <script>
-      suite('cosmoz-treenode-navigator', function() {
+      (function () {
+		    'use strict';
+        suite('cosmoz-treenode-navigator', function() {
+          var basicFixture,
+              basicTree,
+              navigator;
 
-        test('instantiating the element works', function() {
-          var element = fixture('basic');
-          assert.equal(element.is, 'cosmoz-treenode-navigator');
+          suiteSetup(function (done) {
+            var ajax;
+            basicFixture = fixture('basic');
+            ajax = basicFixture.find(function (n) { 
+              return n.is === 'iron-ajax';
+            });
+            navigator = basicFixture.find(function (n) { 
+                return n.is === 'cosmoz-treenode-navigator';
+            });
+
+            ajax.addEventListener('response', function () {
+              basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
+              navigator.tree = basicTree;
+              done();
+            });
+          });
+
+          test('instantiating the element', function() {
+            assert.equal(navigator.is, 'cosmoz-treenode-navigator');
+          });
+
         });
-
-      });
+      }());
     </script>
   </body>
 </html>

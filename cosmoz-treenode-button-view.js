@@ -14,8 +14,8 @@
 			Node structure object
 			that component is given
 			 */
-			data: {
-				type: Object
+			tree: {
+				type: Cosmoz.tree
 			},
 			/*
 			 Currently selected node object

@@ -62,7 +62,7 @@ Navigator through object with treelike datastructure.
 					<div class="section" hidden$="[[ !_renderSection(_searching, index, dataPlane, node) ]]">[[ node.sectionName ]]</div>
 					<paper-item on-tap="_nodeSelected" class="nodeItem">
 						<span class="flex">[[ node.name ]]</span>
-						<iron-icon hidden$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" on-click="openNode" data-path$="[[ node.path ]]"></iron-icon>
+						<iron-icon hidden$="[[ !hasChildren(node) ]]" data-path$="[[ node.path ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
 					</paper-item>
 				</div>
 			</template>

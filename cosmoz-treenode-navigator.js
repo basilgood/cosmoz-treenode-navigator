@@ -14,17 +14,17 @@
 			Node structure object
 			that component is given
 			 */
-			data: {
-				type: Object
+			tree: {
+				type: Cosmoz.tree
 			},
 			dataPlane: {
 				type: Array,
 				notify: true,
-				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, data)'
+				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, tree)'
 			},
 			_renderedLevel: {
 				type: Array,
-				computed: '_renderLevel(_openNodeLevelPath, data)'
+				computed: '_renderLevel(_openNodeLevelPath, tree)'
 			},
 			_openNodeLevelPath: {
 				type: String,
@@ -32,7 +32,7 @@
 			},
 			_openNodeLevelPathParts: {
 				type: Array,
-				computed: '_getTreePathParts(_openNodeLevelPath, data)'
+				computed: '_getTreePathParts(_openNodeLevelPath, tree)'
 			},
 			/*
 			 path value
@@ -46,17 +46,13 @@
 
 			valuePathParts: {
 				type: Array,
-				computed: '_getTreePathParts(value, data)',
+				computed: '_getTreePathParts(value, tree)',
 				notify: true
 			},
 			/*
 			 Current path to displayed
 			 node/folder. That is an
 			 "address" to the node.
-			 An example would be "1.5.35",
-			 where node id/indexes are put
-			 together with "." set as
-			 the seperator.
 			 */
 			highlightedNodePath: {
 				type: String,
@@ -67,7 +63,7 @@
 
 			chosenNode: {
 				type: Object,
-				computed: '_getNode(value, data)',
+				computed: '_getNode(value, tree)',
 				notify: true
 			},
 			/*
@@ -83,30 +79,6 @@
 			inputValue: {
 				type: String,
 				value: ''
-			},
-			/*
-			 Settable name for property which
-			 houses childobjects.
-			 */
-			childProperty: {
-				type: String,
-				value: 'children'
-			},
-			/*
-			 Settable property name that
-			 searches will be compared too.
-			 */
-			comparisonProperty: {
-				type: String,
-				value: 'name'
-			},
-			/*
-			Chosen separator to denote
-			navigation path.
-			 */
-			separatorSign: {
-				type: String,
-				value: '.'
 			},
 			/*
 			 Whether an search has been done.
@@ -141,9 +113,10 @@
 				value: 1
 			}
 		},
-		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, data) {
+		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
 			if (searching) {
-				return this.searchAllBranches(inputValue, openNodeLevelPathParts, renderedLevel, data);
+				var results = tree.searchNodes(inputValue, renderedLevel, false);
+				return this._normalizeNodes(results);
 			}
 			return renderedLevel;
 		},
@@ -162,108 +135,45 @@
 		/**
 		 * Returns a node array with the children of the given path.
 		 */
-		_renderLevel: function (pl, nodes) {
-			var pathSegment = nodes,
-				pathArray,
-				level = [];
-			if (!pl) {
-				// Return the formatted root nodes.
-				level = Object.keys(nodes).map(function (key) {
-					var node = nodes[key];
-					return {
-						id: key,
-						name: node[this.comparisonProperty],
-						path: node.pathLocator,
-						children: node[this.childProperty]
-					};
-				}, this);
-				return this._sortItOut(level);
+		_renderLevel: function (pathLocator, tree) {
+			if (!tree) {
+				return;
 			}
-
-			pathArray = pl.split(this.separatorSign);
-			pathArray.forEach(function (pathKey, i, arr) {
-				var node = pathSegment[pathKey],
-					children = node[this.childProperty];
-				if (i === arr.length - 1) {
-					level = Object.keys(children).map(function (childKey) {
-						var child = children[childKey];
-						return {
-							id: child.key,
-							name: child[this.comparisonProperty],
-							path: child.pathLocator,
-							children: child[this.childProperty]
-						};
-					}, this);
-				} else {
-					pathSegment = children;
-				}
-			}, this);
-
-			return this._sortItOut(level);
+			var node = tree.getNodeByPathLocator(pathLocator),
+				children = tree.getChildren(node),
+				level = children || node;
+			return this._sortNodes(this._normalizeNodes(level));
 		},
 		/**
-		 * Returns an Array of nodes on a given path.
+		 * Normalizes and returns an Array of nodes
+		 * with the properties name, path, sectionName, children
 		 */
-		_getNodesOnPath: function (pl, nodes) {
-			var path = pl.split(this.separatorSign),
-				pathSegment = nodes;
-				
-			return path.map(function (nodeKey) {
-				var node = pathSegment[nodeKey],
-					children = node[this.childProperty];
-				node['key'] = nodeKey;
-				if (node && children !== undefined && Object.keys(children).length > 0) {
-					pathSegment = children;
-				}
-				return node;
+		_normalizeNodes: function (nodes) { 
+			return nodes.map(function (node) {
+				var path = node.pathLocator || node.path;
+				return {
+					name: node[this.tree.searchProperty],
+					path: path,
+					sectionName: this.tree.getPathString(path, this.tree.searchProperty),
+					children: node[this.tree.childProperty]
+				};
 			}, this);
 		},
 		/**
 		 * Returns a node based on a given path locator.
+		 * If pathLocator is empty or not defined, null gets returned.
 		 */
-		_getNode: function (pl, nodes) {
-			if (!pl) {
+		_getNode: function (pathLocator, tree) {
+			if (!pathLocator || !tree) {
 				return null;
 			}
-			var pathArray = pl.split(this.separatorSign),
-				pathSegment = nodes,
-				node;
-			
-			pathArray.some(function (path) {
-				node = pathSegment[path];
-
-				if (node === undefined) {
-					console.error('Path does not exist.', pathArray, path, nodes);
-					return true;
-				}
-				var children = node[this.childProperty];
-				if (children !== undefined && Object.keys(children).length > 0) {
-					pathSegment = children;
-				}
-			}, this);
-
-			return node;
+			return this.tree.getNodeByPathLocator(pathLocator);
 		},
-		_getTreePathParts: function (value, data) {
-			if (value === null) {
-				value = '';
-			}
-			var path = value.split(this.separatorSign),
-				parts = [],
-				newpath = [];
-
-			path.some(function (part) {
-				newpath.push(part);
-				var newPathString = newpath.join(this.separatorSign),
-					node = this._getNode(newPathString, data);
-				if (!node) {
-					return true;
-				}
-				node.path = newPathString;
-				parts.push(node);
-			}, this);
-
-			return parts;
+		_getTreePathParts: function (pathLocator, tree) {
+			if (!tree || !pathLocator) {
+				return [];
+			};
+			return this._normalizeNodes(tree.getPathNodes(pathLocator));
 		},
 		clearSearch: function (event) {
 			event.preventDefault();
@@ -271,63 +181,21 @@
 			this.inputValue = '';
 		},
 		getNodeName: function (node) {
-			return node[this.comparisonProperty];
+			return node[this.tree.searchProperty];
 		},
 		highlightedNodePathChanged: function (newpath) {
-			if (this._searching || newpath === undefined) {
+			if (this._searching || newpath === undefined || !this.tree) {
 				return;
 			}
-			var path = newpath.split(this.separatorSign);
+			var path = newpath.split(this.tree.pathLocatorSeparator);
 			path.pop(); // remove highlighted node
-			this._openNodeLevelPath = path.join(this.separatorSign);
-		},
-		searchAllBranches: function (searchWord, pathPartsRaw, nodeList, data) {
-			var results = [];
-			this._findInNodes(results, nodeList, searchWord, this.comparisonProperty, this.childProperty, data);
-			return results;
-		},
-		_getPathString: function (pl, nodeList) {
-			var nodesOnPath = this._getNodesOnPath(pl, nodeList),
-				path = '';
-			nodesOnPath.forEach(function (node) {
-				path += node[this.comparisonProperty] + '/';
-			}, this);
-			return path;
-		},
-		/**
-		 * Sets the results array of matched nodes based on a search string.
-		 */
-		_findInNodes: function (results, nodes, searchStr, searchAttr, childProperty, data) {
-			nodes.forEach(function (node) {
-				if (node.hasOwnProperty(searchAttr) && node[searchAttr].toLowerCase().indexOf(searchStr.toLowerCase()) !== -1) {
-					node.path = node.pathLocator || node.path;
-					node.sectionName = this._getPathString(node.path, data);
-					results.push(node);
-					return node;
-				}
-				if (node[childProperty] !== undefined) {
-					var children = node[childProperty];
-					children = Object.keys(children).map(function (key) { return children[key]; });
-					this._findInNodes(results, children, searchStr, searchAttr, childProperty, data);
-				}
-			}, this)
+			this._openNodeLevelPath = path.join(this.tree.pathLocatorSeparator);
 		},
 		hasChildren: function (node) {
-			var children = node.children;
-			return children && Object.keys(children).length > 0;
+			return this.tree.hasChildren(node);
 		},
 		openNode: function (event) {
-			event.preventDefault();
-			event.path.some(function (element, index) {
-				var path = element.dataset.path;
-				if (path !== undefined) {
-					this._openNodeLevelPath = path;
-					return true;
-				} else if (index > 3) {
-					return true;
-				}
-			}, this);
-
+			this._openNodeLevelPath = event.currentTarget.dataset.path;
 			this.inputValue = '';
 		},
 		_valueChanged: function (path) {
@@ -359,30 +227,25 @@
 			}
 			return true;
 		},
-		_sortItOut: function (inputArray) {
-			var hasChildren = function (node) {
-				var children = node[this.childProperty];
-				return children && Object.keys(children).length > 0;
-			}.bind(this);
-
+		_sortNodes: function (inputArray) {
 			inputArray.sort(
 				function (a, b) {
 					/**
 					 * First sort based on "folder" status (containing children)
 					 */
-					if (hasChildren(a)) {
-						if (!hasChildren(b)) {
+					if (this.hasChildren(a)) {
+						if (!this.hasChildren(b)) {
 							return -1;
 						}
-					} else if (hasChildren(b)) {
+					} else if (this.hasChildren(b)) {
 						return 1;
 					}
 
 					/**
-					 * Then sort on comparisonProperty
+					 * Then sort on searchProperty
 					 */
-					var val1 = a[this.comparisonProperty],
-						val2 = b[this.comparisonProperty];
+					var val1 = a[this.tree.searchProperty],
+						val2 = b[this.tree.searchProperty];
 
 					if (val1 > val2) {
 						return 1;

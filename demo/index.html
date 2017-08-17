@@ -10,11 +10,7 @@
 		<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
 		<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
 		<link rel="import" href="../../iron-ajax/iron-ajax.html">
-		<link rel="import" href="../../paper-listbox/paper-listbox.html">
-		<link rel="import" href="../../paper-item/paper-item.html"> 
-		<link rel="import" href="../../paper-input/paper-input.html">
-		<link rel="import" href="../../cosmoz-dialog/cosmoz-dialog.html">  
-		<link rel="import" href="../../paper-button/paper-button.html">
+		<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
 		<link rel="import" href="../cosmoz-treenode-navigator.html">
 		<link rel="import" href="../cosmoz-treenode-button-view.html">
 
@@ -29,12 +25,17 @@
 		</div>
 		<div class="vertical-section-container centered">
 			<h3>Button Dialog Multiple Roots Demo</h3>
-			<demo-snippet>
-				<template is="dom-bind">
-					<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData1 }}" auto></iron-ajax>
-					<cosmoz-treenode-button-view value="{{ path }}" chosen-node="{{ nodeChosen1 }}" data="{{ treeData1 }}"></cosmoz-treenode-button-view>
+			  <demo-snippet>
+				<template is="dom-bind" id="demo">
+					<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
+					<cosmoz-treenode-button-view id="navigator" value="{{ path }}" chosen-node="{{ nodeChosen1 }}" tree="[[ getTree(treeData) ]]"></cosmoz-treenode-button-view>
 				</template>
-			</demo-snippet>
-		</div>
+			  </demo-snippet>
+		 </div>
+		<script>
+			document.querySelector('#demo').getTree = function (data) {
+				return new Cosmoz.DefaultTree(data);
+			};
+		</script>
 	</body>
 </html>
