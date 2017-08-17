@@ -63,7 +63,7 @@
 
 			chosenNode: {
 				type: Object,
-				computed: '_getNode(value)',
+				computed: '_getNode(value, tree)',
 				notify: true
 			},
 			/*
@@ -163,8 +163,8 @@
 		 * Returns a node based on a given path locator.
 		 * If pathLocator is empty or not defined, null gets returned.
 		 */
-		_getNode: function (pathLocator) {
-			if (!pathLocator) {
+		_getNode: function (pathLocator, tree) {
+			if (!pathLocator || !tree) {
 				return null;
 			}
 			return this.tree.getNodeByPathLocator(pathLocator);
