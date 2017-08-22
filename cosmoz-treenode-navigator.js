@@ -148,7 +148,7 @@
 		 * Normalizes and returns an Array of nodes
 		 * with the properties name, path, sectionName, children
 		 */
-		_normalizeNodes: function (nodes) { 
+		_normalizeNodes: function (nodes) {
 			return nodes.map(function (node) {
 				var path = node.pathLocator || node.path;
 				return {
@@ -172,7 +172,7 @@
 		_getTreePathParts: function (pathLocator, tree) {
 			if (!tree || !pathLocator) {
 				return [];
-			};
+			}
 			return this._normalizeNodes(tree.getPathNodes(pathLocator));
 		},
 		clearSearch: function (event) {
