@@ -197,6 +197,7 @@
 		openNode: function (event) {
 			this._openNodeLevelPath = event.currentTarget.dataset.path;
 			this.inputValue = '';
+			event.currentTarget.parentElement.blur();
 		},
 		_valueChanged: function (path) {
 			if (!path) {
