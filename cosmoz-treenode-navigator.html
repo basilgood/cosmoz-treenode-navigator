@@ -17,6 +17,10 @@ Navigator through object with treelike datastructure.
 <dom-module id="cosmoz-treenode-navigator">
 	<template>
 		<style is="custom-style" include="iron-flex iron-flex-alignment">
+			:host {
+				--cosmoz-treenode-navigator-select-node-icon-color: var(--primary-color, white);
+				--cosmoz-treenode-navigator-list-item-focused-color: #f0f8ff;
+			}
 
 			#header {
 				margin: 0 16px;
@@ -41,7 +45,24 @@ Navigator through object with treelike datastructure.
 			}
 
 			iron-list {
-				max-height: var(--cosmoz-treenode-navigator-max-list-height, 50vh);;
+				height: 100vh;
+				max-height: var(--cosmoz-treenode-navigator-max-list-height, 50vh);
+			}
+
+			paper-item {
+				--paper-item-focused: {
+					transition: background-color 0.5s ease;
+					-moz-transition: background-color 0.5s ease;
+					-o-transition: background-color 0.5s ease;
+					background-color: var(--cosmoz-treenode-navigator-list-item-focused-color);
+				};
+			}
+
+			paper-item:focus iron-icon {
+				transition: color 0.8s ease-out;
+				-moz-transition: color 0.8s ease-out;
+				-o-transition: color 0.8s ease-out;
+				color: var(--cosmoz-treenode-navigator-select-node-icon-color);
 			}
 		</style>
 		<div id="header">
