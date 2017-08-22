@@ -122,18 +122,24 @@
 		},
 		/**
 		 * Focusses the search input.
+		 * @return {undefined}
 		 */
 		focus: function () {
 			this.$.searchInput.inputElement.focus();
 		},
 		/**
 		 * Sets highlightedNodePath if a user selects a node.
+		 * @param {Event} e - Event
+		 * @return {undefined}
 		 */
 		_nodeSelected: function (e) {
 			this.highlightedNodePath = e.model.node.path;
 		},
 		/**
 		 * Returns a node array with the children of the given path.
+		 * @param {String} pathLocator - The separated address parts of a node
+		 * @param {Tree} tree - The main tree
+		 * @return {Array} - Nodes
 		 */
 		_renderLevel: function (pathLocator, tree) {
 			if (!tree) {
@@ -147,6 +153,8 @@
 		/**
 		 * Normalizes and returns an Array of nodes
 		 * with the properties name, path, sectionName, children
+		 * @param {Array} nodes - The input nodes
+		 * @return {Array} - The normalized nodes
 		 */
 		_normalizeNodes: function (nodes) {
 			return nodes.map(function (node) {
@@ -162,6 +170,9 @@
 		/**
 		 * Returns a node based on a given path locator.
 		 * If pathLocator is empty or not defined, null gets returned.
+		 * @param {String} pathLocator - The separated address parts of a node
+		 * @param {Tree} tree - The main tree
+		 * @return {Object} - The found node
 		 */
 		_getNode: function (pathLocator, tree) {
 			if (!pathLocator || !tree) {
