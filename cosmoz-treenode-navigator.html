@@ -66,14 +66,14 @@ Navigator through object with treelike datastructure.
 		</style>
 		<div id="header">
 			<h3 class="layout horizontal center wrap">
-				<a href="#" data-path="" on-click="openNode"><iron-icon icon="home"></iron-icon></a>
+				<a data-path="" on-click="openNode"><iron-icon icon="home"></iron-icon></a>
 				<template is="dom-repeat" items="[[ _nodesOnOpenNodePath ]]" as="node">
-					<span class="slash">/</span><a href="#" data-path$="[[ node.path ]]" on-click="openNode">[[ _getNodeName(node) ]]</a>
+					<span class="slash">/</span><a data-path$="[[ node.path ]]" on-click="openNode">[[ _getNodeName(node) ]]</a>
 				</template>
 			</h3>
 			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
 				id="searchInput" value="{{ searchValue }}">
-				<a suffix hidden$="[[ !_search ]]" href="#" on-tap="_clearSearch"><iron-icon icon="clear"></iron-icon></a>
+				<a suffix hidden$="[[ !_search ]]" on-tap="_clearSearch"><iron-icon icon="clear"></iron-icon></a>
 			</paper-input>
 		</div>
 		<iron-list items="[[dataPlane]]" as="node">
