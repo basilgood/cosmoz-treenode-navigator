@@ -1,4 +1,7 @@
-/* */
+/**
+ * The Cosmoz.DefaultTree implementation of a tree.
+ * @typedef {object} Tree
+ */
 (function () {
 	'use strict';
 
@@ -57,7 +60,7 @@
 			highlightedNodePath: {
 				type: String,
 				value: '',
-				observer: 'highlightedNodePathChanged',
+				observer: '_highlightedNodePathChanged',
 				notify: true
 			},
 
@@ -113,19 +116,28 @@
 				value: 1
 			}
 		},
-		_computeDataPlane: function (searching, inputValue, renderedLevel, openNodeLevelPathParts, tree) {
-			if (searching) {
-				var results = tree.searchNodes(inputValue, renderedLevel, false);
-				return this._normalizeNodes(results);
-			}
-			return renderedLevel;
-		},
 		/**
 		 * Focusses the search input.
 		 * @return {undefined}
 		 */
 		focus: function () {
 			this.$.searchInput.inputElement.focus();
+		},
+		/**
+		 * Returns the found nodes based on a search string and a given tree to be searched
+		 * @param {Boolean} searching - If true, a search should be executed
+		 * @param {String} searchString - The search string
+		 * @param {Array} renderedLevel - The node list on which the search should be executed
+		 * @param {Array} openNodeLevelPathParts - openNodeLevelPathParts
+		 * @param {Tree} tree - The main tree
+		 * @return {Array} - The found nodes
+		 */
+		_computeDataPlane: function (searching, searchString, renderedLevel, openNodeLevelPathParts, tree) {
+			if (searching) {
+				var results = tree.searchNodes(searchString, renderedLevel, false);
+				return this._normalizeNodes(results);
+			}
+			return renderedLevel;
 		},
 		/**
 		 * Sets highlightedNodePath if a user selects a node.
@@ -147,8 +159,30 @@
 			}
 			var node = tree.getNodeByPathLocator(pathLocator),
 				children = tree.getChildren(node),
-				level = children || node;
-			return this._sortNodes(this._normalizeNodes(level));
+				level = children || node,
+				sortFunc = function (a, b) {
+					// First sort based on "folder" status (containing children)
+					if (this.hasChildren(a)) {
+						if (!this.hasChildren(b)) {
+							return -1;
+						}
+					} else if (this.hasChildren(b)) {
+						return 1;
+					}
+					// Then sort on searchProperty
+					var val1 = a[this.tree.searchProperty],
+						val2 = b[this.tree.searchProperty];
+
+					if (val1 > val2) {
+						return 1;
+					}
+					if (val1 < val2) {
+						return -1;
+					}
+					return 0;
+				}.bind(this);
+
+			return this._normalizeNodes(level).sort(sortFunc);
 		},
 		/**
 		 * Normalizes and returns an Array of nodes
@@ -175,7 +209,7 @@
 		 * @return {Object} - The found node
 		 */
 		_getNode: function (pathLocator, tree) {
-			if (!pathLocator || !tree) {
+			if (!tree || !pathLocator) {
 				return null;
 			}
 			return this.tree.getNodeByPathLocator(pathLocator);
@@ -193,18 +227,24 @@
 			return this._normalizeNodes(tree.getPathNodes(pathLocator));
 		},
 		/**
-		 * Clears the search input element
+		 * Clears the search input
+		 * @param {Event} e - The trigger event
 		 * @return {undefined}
 		 */
-		clearSearch: function () {
-			event.preventDefault();
-			event.stopPropagation();
+		_clearSearch: function (e) {
+			e.preventDefault();
+			e.stopPropagation();
 			this.inputValue = '';
 		},
-		getNodeName: function (node) {
+		/**
+		 * Returns the name of a given node
+		 * @param {Object} node - The node
+		 * @return {String} - The name
+		 */
+		_getNodeName: function (node) {
 			return node[this.tree.searchProperty];
 		},
-		highlightedNodePathChanged: function (newpath) {
+		_highlightedNodePathChanged: function (newpath) {
 			if (this._searching || newpath === undefined || !this.tree) {
 				return;
 			}
@@ -212,12 +252,24 @@
 			path.pop(); // remove highlighted node
 			this._openNodeLevelPath = path.join(this.tree.pathLocatorSeparator);
 		},
+		/**
+		 * Returns true if a given node has children
+		 * @param {Object} node - The node
+		 * @return {Boolean} - True if node has children
+		 */
 		hasChildren: function (node) {
 			return this.tree.hasChildren(node);
 		},
-		openNode: function (event) {
-			this._openNodeLevelPath = event.currentTarget.dataset.path;
+		/**
+		 * Sets the render level to the node of a given path
+		 * @param {Event} e - The triggering event
+		 * @param {Event} e.currentTarget.dataset.path - The path locator attribute
+		 * @return {undefined}
+		 */
+		openNode: function (e) {
+			this._openNodeLevelPath = e.currentTarget.dataset.path;
 			this.inputValue = '';
+			e.currentTarget.parentElement.blur();
 		},
 		_valueChanged: function (path) {
 			if (!path) {
@@ -226,17 +278,41 @@
 			}
 			this.highlightedNodePath = path;
 		},
-		showGlobalSearch: function (_searching, _openNodeLevelPath) {
-			return _searching && _openNodeLevelPath !== '';
+		/**
+		 * Returns true, if the button should be visible
+		 * @param {Boolean} searching - If a search is currently executed
+		 * @param {String} openNodeLevelPath - The open node level
+		 * @return {Boolean} - The visibility of the button
+		 */
+		_showGlobalSearchBtn: function (searching, openNodeLevelPath) {
+			return searching && openNodeLevelPath !== '';
 		},
+		/**
+		 * Triggers a global search
+		 * @return {undefined}
+		 */
 		tryGlobalSearch: function () {
 			this._openNodeLevelPath = '';
 		},
+		/**
+		 * Returns true, if a search string is eligable to trigger a search
+		 * @param {String} value - The search string
+		 * @param {Number} searchMinLength - The minimum length of value to be valid
+		 * @return {Boolean} - If a search should be triggered
+		 */
 		_computeSearching: function (value, searchMinLength) {
 			return value && value.length >= searchMinLength && value !== '';
 		},
-		_renderSection: function (_searching, index, dataPlane, node) {
-			if (!_searching || index >= dataPlane.length || !node || !node.sectionName) {
+		/**
+		 * Returns true, if the path of a node should be visible in the view
+		 * @param {Boolean} searching - If a search is currently executed
+		 * @param {Number} index - The node's current index in the list
+		 * @param {Array} dataPlane - The node list
+		 * @param {Object} node - The node
+		 * @return {Boolean} - If the path should be visible
+		 */
+		_renderSection: function (searching, index, dataPlane, node) {
+			if (!searching || index >= dataPlane.length || !node || !node.sectionName) {
 				return false;
 			}
 			if (index === 0) {
@@ -247,38 +323,6 @@
 				return false;
 			}
 			return true;
-		},
-		_sortNodes: function (inputArray) {
-			inputArray.sort(
-				function (a, b) {
-					/**
-					 * First sort based on "folder" status (containing children)
-					 */
-					if (this.hasChildren(a)) {
-						if (!this.hasChildren(b)) {
-							return -1;
-						}
-					} else if (this.hasChildren(b)) {
-						return 1;
-					}
-
-					/**
-					 * Then sort on searchProperty
-					 */
-					var val1 = a[this.tree.searchProperty],
-						val2 = b[this.tree.searchProperty];
-
-					if (val1 > val2) {
-						return 1;
-					}
-					if (val1 < val2) {
-						return -1;
-					}
-					return 0;
-				}.bind(this)
-			);
-
-			return inputArray;
 		}
 	});
 }());
