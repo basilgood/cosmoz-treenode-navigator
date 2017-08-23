@@ -47,19 +47,19 @@ Navigator through object with treelike datastructure.
 		<div id="header">
 			<h3 class="layout horizontal center wrap">
 				<a href="#" data-path="" on-click="openNode"><iron-icon icon="home"></iron-icon></a>
-				<template is="dom-repeat" items="[[ _openNodeLevelPathParts ]]" as="node">
-					<span class="slash">/</span><a href="#" data-path$="[[ node.path ]]" on-click="openNode">[[ getNodeName(node) ]]</a>
+				<template is="dom-repeat" items="[[ _nodesOnOpenNodePath ]]" as="node">
+					<span class="slash">/</span><a href="#" data-path$="[[ node.path ]]" on-click="openNode">[[ _getNodeName(node) ]]</a>
 				</template>
 			</h3>
 			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
-				id="searchInput" value="{{ inputValue }}">
-				<a suffix hidden$="[[ !_searching ]]" href="#" on-tap="clearSearch"><iron-icon icon="clear"></iron-icon></a>
+				id="searchInput" value="{{ searchValue }}">
+				<a suffix hidden$="[[ !_search ]]" href="#" on-tap="_clearSearch"><iron-icon icon="clear"></iron-icon></a>
 			</paper-input>
 		</div>
 		<iron-list items="[[dataPlane]]" as="node">
 			<template>
 				<div>
-					<div class="section" hidden$="[[ !_renderSection(_searching, index, dataPlane, node) ]]">[[ node.sectionName ]]</div>
+					<div class="section" hidden$="[[ !_renderSection(_search, index, dataPlane, node) ]]">[[ node.sectionName ]]</div>
 					<paper-item on-tap="_nodeSelected" class="nodeItem">
 						<span class="flex">[[ node.name ]]</span>
 						<iron-icon hidden$="[[ !hasChildren(node) ]]" data-path$="[[ node.path ]]" icon="icons:arrow-forward" on-click="openNode"></iron-icon>
@@ -67,7 +67,7 @@ Navigator through object with treelike datastructure.
 				</div>
 			</template>
 		</iron-list>
-		<paper-button hidden$="[[ !showGlobalSearch(_searching, _openNodeLevelPath) ]]" on-click="tryGlobalSearch">[[ localSearchDoneText ]]</paper-button>
+		<paper-button hidden$="[[ !_showGlobalSearchBtn(_search, _openNodePath) ]]" on-click="tryGlobalSearch">[[ searchGlobalPlaceholder ]]</paper-button>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-navigator.js"></script>
 </dom-module>

@@ -11,16 +11,15 @@
 
 		properties: {
 			/*
-			Node structure object
-			that component is given
+			 * The main node structure
 			 */
 			tree: {
 				type: Cosmoz.tree
 			},
 			/*
-			 Currently selected node object
+			 * Currently selected node object
 			 */
-			chosenNode: {
+			selectedNode: {
 				type: Object,
 				value: function (){
 					return {};
@@ -28,126 +27,96 @@
 				notify: true
 			},
 			/**
-			 * Prevent reset button
+			 * If true, reset button gets hidden
 			 */
 			noReset: {
 				type: Boolean,
 				value: false
 			},
 			/*
-			Placeholder for search field.
+			 * Placeholder for the search field
 			 */
 			searchPlaceholder: {
 				type: String
 			},
 			/*
-			Placeholder for button text.
+			 * Placeholder for button text
 			 */
 			buttonTextPlaceholder: {
 				type: String,
 				value: 'No selection made'
 			},
 			/*
-			 path value
+			 * The path of the selected node
 			 */
-			value: {
+			nodePath: {
 				type: String,
 				notify: true
 			},
-
-			valuePathParts: {
+			/*
+			 * The nodes on the path of the selected node
+			 */
+			nodesOnNodePath: {
 				type: Array
 			},
 			/*
-			Input value for searches
+			 * Text displayed when local search has finished
+			 * to suggest a search on the entire tree
 			 */
-			inputValue: {
+			searchGlobalPlaceholder: {
 				type: String
 			},
 			/*
-			 Settable name for property which
-			 houses childobjects.
+			 * Settable text for dialog title.
 			 */
-			childProperty: {
-				type: String,
-				value: 'children'
-			},
-			/*
-			 Settable property name that
-			 searches will be compared too.
-			 */
-			comparisonProperty: {
-				type: String,
-				value: 'name'
-			},
-			/*
-			Chosen separator to denote
-			navigation path.
-			 */
-			separatorSign: {
-				type: String,
-				value: '.'
-			},
-			/*
-			 Settable text given to user
-			 when local search has
-			 been done.
-			 */
-			localSearchDoneText: {
-				type: String
-			},
-			/*
-			Settable text given to user
-			when after an global search.
-			*/
-			resetText: {
-				type: String
-			},
-			/*
-			Settable text for dialog title.
-			*/
 			dialogText: {
 				type: String,
 				value: 'Search or navigate to chosen destination'
 			},
 			/*
-			Minimum length before an search
-			starts.
-			*/
+			 * Minimum length before an search
+			 * starts.
+			 */
 			searchMinLength: {
 				type: Number
+			},
+			/*
+			 * Path string of highlighted (focused) node
+			 */
+			highlightedNodePath: {
+				type: String
 			}
 		},
-		_enableReset: function (value, noReset) {
+		_enableReset: function (nodePath, noReset) {
 			if (noReset) {
 				return false;
 			}
-			return !!value;
+			return !!nodePath;
 		},
 		_getButtonLabel: function (pathParts, placeholder) {
 			if (!pathParts, pathParts.length < 1) {
 				return placeholder;
 			}
 			return pathParts.map(function (part) {
-				return part[this.comparisonProperty];
+				return part[this.tree.searchProperty];
 			}, this).join(' / ');
 		},
-		openDialogTree: function (event) {
-			this.$.dialogTree.open();			
+		openDialogTree: function () {
+			this.$.dialogTree.open();
 		},
-		focusSearch: function (event) {
+		focusSearch: function () {
 			this.$.treeNavigator.focus();
 		},
-		reset: function (event) {
-			this.value = '';
+		reset: function () {
+			this.nodePath = '';
 		},
-		selectNode: function (event) {
-			this.value = this.highlightedNodePath;
+		selectNode: function () {
+			this.nodePath = this.highlightedNodePath;
 		},
 		refit: function () {
 			this.debounce('refit', function () {
 				this.$.dialogTree.fit();
-			}, 50); // 5 was enough during test
+			}.bind(this), 50); // 5 was enough during test
 		}
 	});
 }());
