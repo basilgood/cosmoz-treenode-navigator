@@ -150,12 +150,8 @@
 			this.highlightedNodePath = e.model.node.path;
 		},
 		/**
-<<<<<<< HEAD
-		 * Returns a node array with the children of the given path.
-=======
 		 * Returns a node array with the children of a node on the given path
 		 * If the node doesn't have children, the node gets returned
->>>>>>> upstream/master
 		 * @param {String} pathLocator - The separated address parts of a node
 		 * @param {Tree} tree - The main tree
 		 * @return {Array} - Nodes
@@ -272,12 +268,6 @@
 		hasChildren: function (node) {
 			return this.tree.hasChildren(node);
 		},
-<<<<<<< HEAD
-		openNode: function (event) {
-			this._openNodeLevelPath = event.currentTarget.dataset.path;
-			this.inputValue = '';
-			event.currentTarget.parentElement.blur();
-=======
 		/**
 		 * Opens a node (renderLevel) based on a given path
 		 * @param {Event} e - The triggering event
@@ -288,7 +278,6 @@
 			this._openNodePath = e.currentTarget.dataset.path;
 			this.searchValue = '';
 			e.currentTarget.parentElement.blur();
->>>>>>> upstream/master
 		},
 		/**
 		 * Gets called if the selected node (path) has changed
