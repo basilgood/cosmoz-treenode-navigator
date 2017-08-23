@@ -27,37 +27,37 @@
       </template>
     </test-fixture>
 
-    <script>
-      (function () {
-		    'use strict';
-        suite('cosmoz-treenode-navigator', function() {
-          var basicFixture,
-              basicTree,
-              navigator;
+	<script>
+		(function () {
+			'use strict';
+			suite('cosmoz-treenode-navigator', function () {
+				var basicFixture,
+					basicTree,
+					navigator;
 
-          suiteSetup(function (done) {
-            var ajax;
-            basicFixture = fixture('basic');
-            ajax = basicFixture.find(function (n) { 
-              return n.is === 'iron-ajax';
-            });
-            navigator = basicFixture.find(function (n) { 
-                return n.is === 'cosmoz-treenode-navigator';
-            });
+				suiteSetup(function (done) {
+					var ajax;
+					basicFixture = fixture('basic');
+					ajax = basicFixture.find(function (n) {
+						return n.is === 'iron-ajax';
+					});
+					navigator = basicFixture.find(function (n) {
+						return n.is === 'cosmoz-treenode-navigator';
+					});
 
-            ajax.addEventListener('response', function () {
-              basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
-              navigator.tree = basicTree;
-              done();
-            });
-          });
+					ajax.addEventListener('response', function () {
+						basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
+						navigator.tree = basicTree;
+						done();
+					});
+				});
 
-          test('instantiating the element', function() {
-            assert.equal(navigator.is, 'cosmoz-treenode-navigator');
-          });
+				test('instantiating the element', function () {
+					assert.equal(navigator.is, 'cosmoz-treenode-navigator');
+				});
 
-        });
-      }());
+			});
+		}());
     </script>
   </body>
 </html>

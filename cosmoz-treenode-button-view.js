@@ -116,6 +116,10 @@
 			*/
 			searchMinLength: {
 				type: Number
+			},
+
+			highlightedNodePath: {
+				type: String
 			}
 		},
 		_enableReset: function (value, noReset) {
@@ -132,22 +136,22 @@
 				return part[this.comparisonProperty];
 			}, this).join(' / ');
 		},
-		openDialogTree: function (event) {
-			this.$.dialogTree.open();			
+		openDialogTree: function () {
+			this.$.dialogTree.open();
 		},
-		focusSearch: function (event) {
+		focusSearch: function () {
 			this.$.treeNavigator.focus();
 		},
-		reset: function (event) {
+		reset: function () {
 			this.value = '';
 		},
-		selectNode: function (event) {
+		selectNode: function () {
 			this.value = this.highlightedNodePath;
 		},
 		refit: function () {
 			this.debounce('refit', function () {
 				this.$.dialogTree.fit();
-			}, 50); // 5 was enough during test
+			}.bind(this), 50); // 5 was enough during test
 		}
 	});
 }());
