@@ -28,7 +28,7 @@
 			  <demo-snippet>
 				<template is="dom-bind" id="demo">
 					<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
-					<cosmoz-treenode-button-view id="navigator" value="{{ path }}" chosen-node="{{ nodeChosen1 }}" tree="[[ getTree(treeData) ]]"></cosmoz-treenode-button-view>
+					<cosmoz-treenode-button-view id="navigator" node-path="{{ path }}" selected-node="{{ nodeChosen1 }}" tree="[[ getTree(treeData) ]]"></cosmoz-treenode-button-view>
 				</template>
 			  </demo-snippet>
 		 </div>

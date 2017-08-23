@@ -17,7 +17,7 @@
 				type: Cosmoz.tree
 			},
 			/*
-			 Currently selected node object
+			 * Currently selected node object
 			 */
 			selectedNode: {
 				type: Object,
@@ -67,8 +67,8 @@
 				type: String
 			},
 			/*
-			Settable text for dialog title.
-			*/
+			 * Settable text for dialog title.
+			 */
 			dialogText: {
 				type: String,
 				value: 'Search or navigate to chosen destination'
