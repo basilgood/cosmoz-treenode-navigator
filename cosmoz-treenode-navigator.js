@@ -14,48 +14,67 @@
 
 		properties: {
 			/*
-			Node structure object
-			that component is given
+			 * The main node structure
 			 */
 			tree: {
 				type: Cosmoz.tree
 			},
+			/*
+			 * The currently displayed node list
+			 */
 			dataPlane: {
 				type: Array,
 				notify: true,
-				computed: '_computeDataPlane(_searching, inputValue, _renderedLevel, _openNodeLevelPathParts, tree)'
+				computed: '_computeDataPlane(_search, searchValue, _renderedLevel, tree)'
 			},
+			/*
+			 * Nodes (children) to be displayed when opening a node
+			 */
 			_renderedLevel: {
 				type: Array,
-				computed: '_renderLevel(_openNodeLevelPath, tree)'
+				computed: '_renderLevel(_openNodePath, tree)'
 			},
-			_openNodeLevelPath: {
+			/*
+			 * The path of the opened node
+			 */
+			_openNodePath: {
 				type: String,
 				value: ''
 			},
-			_openNodeLevelPathParts: {
+			/*
+			 * The nodes on the path of the opened node
+			 */
+			_nodesOnOpenNodePath: {
 				type: Array,
-				computed: '_getTreePathParts(_openNodeLevelPath, tree)'
+				computed: '_getTreePathParts(_openNodePath, tree)'
 			},
 			/*
-			 path value
+			 * The selected node
 			 */
-			value: {
-				type: String,
-				value: '',
-				notify: true,
-				observer: '_valueChanged'
-			},
-
-			valuePathParts: {
-				type: Array,
-				computed: '_getTreePathParts(value, tree)',
+			selectedNode: {
+				type: Object,
+				computed: '_getNode(nodePath, tree)',
 				notify: true
 			},
 			/*
-			 Current path to displayed
-			 node/folder. That is an
-			 "address" to the node.
+			 * The path of the selected node
+			 */
+			nodePath: {
+				type: String,
+				value: '',
+				notify: true,
+				observer: '_nodePathChanged'
+			},
+			/*
+			 * The nodes on the path of the selected node
+			 */
+			nodesOnNodePath: {
+				type: Array,
+				computed: '_getTreePathParts(nodePath, tree)',
+				notify: true
+			},
+			/*
+			 * Path string of highlighted (focused) node
 			 */
 			highlightedNodePath: {
 				type: String,
@@ -63,54 +82,38 @@
 				observer: '_highlightedNodePathChanged',
 				notify: true
 			},
-
-			chosenNode: {
-				type: Object,
-				computed: '_getNode(value, tree)',
-				notify: true
+			/*
+			 * The search string
+			 */
+			searchValue: {
+				type: String,
+				value: ''
 			},
 			/*
-			Placeholder for search field.
+			 * Whether a search should be executed
+			 */
+			_search: {
+				type: Boolean,
+				computed: '_computeSearching(searchValue, searchMinLength)'
+			},
+			/*
+			 * Placeholder for search field.
 			 */
 			searchPlaceholder: {
 				type: String,
 				value: 'Search'
 			},
 			/*
-			Input value for searches
+			 * Text displayed when local search has finished
+			 * to suggest a search on the entire tree
 			 */
-			inputValue: {
-				type: String,
-				value: ''
-			},
-			/*
-			 Whether an search has been done.
-			 */
-			_searching: {
-				type: Boolean,
-				computed: '_computeSearching(inputValue, searchMinLength)'
-			},
-			/*
-			 Settable text given to user
-			 when local search has
-			 been done.
-			 */
-			localSearchDoneText: {
+			searchGlobalPlaceholder: {
 				type: String,
 				value: 'Click to search again but globally.'
 			},
 			/*
-			Settable text given to user
-			when after an global search.
-			*/
-			resetText: {
-				type: String,
-				value: 'Click to reset.'
-			},
-			/*
-			Minimum length before an search
-			starts.
-			*/
+			 * Minimum length of searchValue to trigger a search
+			 */
 			searchMinLength: {
 				type: Number,
 				value: 1
@@ -128,11 +131,10 @@
 		 * @param {Boolean} searching - If true, a search should be executed
 		 * @param {String} searchString - The search string
 		 * @param {Array} renderedLevel - The node list on which the search should be executed
-		 * @param {Array} openNodeLevelPathParts - openNodeLevelPathParts
 		 * @param {Tree} tree - The main tree
 		 * @return {Array} - The found nodes
 		 */
-		_computeDataPlane: function (searching, searchString, renderedLevel, openNodeLevelPathParts, tree) {
+		_computeDataPlane: function (searching, searchString, renderedLevel, tree) {
 			if (searching) {
 				var results = tree.searchNodes(searchString, renderedLevel, false);
 				return this._normalizeNodes(results);
@@ -148,7 +150,8 @@
 			this.highlightedNodePath = e.model.node.path;
 		},
 		/**
-		 * Returns a node array with the children of the given path.
+		 * Returns a node array with the children of a node on the given path
+		 * If the node doesn't have children, the node gets returned
 		 * @param {String} pathLocator - The separated address parts of a node
 		 * @param {Tree} tree - The main tree
 		 * @return {Array} - Nodes
@@ -234,7 +237,7 @@
 		_clearSearch: function (e) {
 			e.preventDefault();
 			e.stopPropagation();
-			this.inputValue = '';
+			this.searchValue = '';
 		},
 		/**
 		 * Returns the name of a given node
@@ -244,13 +247,18 @@
 		_getNodeName: function (node) {
 			return node[this.tree.searchProperty];
 		},
-		_highlightedNodePathChanged: function (newpath) {
-			if (this._searching || newpath === undefined || !this.tree) {
+		/**
+		 * Gets called if the focused node has changed
+		 * @param {String} newPath - The focused node's path
+		 * @return {undefined}
+		 */
+		_highlightedNodePathChanged: function (newPath) {
+			if (this._search || newPath === undefined || !this.tree) {
 				return;
 			}
-			var path = newpath.split(this.tree.pathLocatorSeparator);
+			var path = newPath.split(this.tree.pathLocatorSeparator);
 			path.pop(); // remove highlighted node
-			this._openNodeLevelPath = path.join(this.tree.pathLocatorSeparator);
+			this._openNodePath = path.join(this.tree.pathLocatorSeparator);
 		},
 		/**
 		 * Returns true if a given node has children
@@ -261,17 +269,22 @@
 			return this.tree.hasChildren(node);
 		},
 		/**
-		 * Sets the render level to the node of a given path
+		 * Opens a node (renderLevel) based on a given path
 		 * @param {Event} e - The triggering event
 		 * @param {Event} e.currentTarget.dataset.path - The path locator attribute
 		 * @return {undefined}
 		 */
 		openNode: function (e) {
-			this._openNodeLevelPath = e.currentTarget.dataset.path;
-			this.inputValue = '';
+			this._openNodePath = e.currentTarget.dataset.path;
+			this.searchValue = '';
 			e.currentTarget.parentElement.blur();
 		},
-		_valueChanged: function (path) {
+		/**
+		 * Gets called if the selected node (path) has changed
+		 * @param {String} path - The path of the newly selected node
+		 * @return {undefined}
+		 */
+		_nodePathChanged: function (path) {
 			if (!path) {
 				this.highlightedNodePath = '';
 				return;
@@ -292,7 +305,7 @@
 		 * @return {undefined}
 		 */
 		tryGlobalSearch: function () {
-			this._openNodeLevelPath = '';
+			this._openNodePath = '';
 		},
 		/**
 		 * Returns true, if a search string is eligable to trigger a search
