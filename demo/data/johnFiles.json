@@ -1,0 +1,54 @@
+{
+	"300": {
+		"name": "John",
+		"pathLocator": "1.100.300",
+		"children": {
+			"301": {
+				"name": "Documents",
+				"pathLocator": "1.100.300.301"
+			},
+			"302": {
+				"name": "Music",
+				"pathLocator": "1.100.300.302"
+			},
+			"303": {
+				"name": "Pictures",
+				"pathLocator": "1.100.300.303"
+			}
+		}
+	},
+	"400": {
+		"name": "Public",
+		"pathLocator": "1.100.400",
+		"children": {
+			"401": {
+				"name": "Public Documents",
+				"pathLocator": "1.100.400.401"
+			},
+			"402": {
+				"name": "Public Music",
+				"pathLocator": "1.100.400.402"
+			},
+			"403": {
+				"name": "Public Pictures",
+				"pathLocator": "1.100.400.403"
+			}
+		}
+	},
+	"1000": {
+		"name": "D:",
+		"pathLocator": "1000",
+		"children": {
+			"1001": {
+				"name": "Data",
+				"pathLocator": "1000.1001",
+				"children": {
+					"1002": {
+						"name": "John",
+						"pathLocator": "1000.1001.1002"
+					}
+				}
+			}
+		}
+	}
+}

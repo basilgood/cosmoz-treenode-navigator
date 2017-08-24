@@ -17,25 +17,61 @@
 		<style is="custom-style" include="demo-pages-shared-styles">
 
 		</style>
-	</head> 
+	</head>
 
 	<body>
-		<div class="horizontal-section-container centered">
-			<h1>Cosmoz-treenode-navigator</h1>
-		</div>
-		<div class="vertical-section-container centered">
-			<h3>Button Dialog Multiple Roots Demo</h3>
-			  <demo-snippet>
-				<template is="dom-bind" id="demo">
-					<iron-ajax url="data/multiRootTree.json" handle-as="json" last-response="{{ treeData }}" auto></iron-ajax>
-					<cosmoz-treenode-button-view id="navigator" node-path="{{ path }}" selected-node="{{ nodeChosen1 }}" tree="[[ getTree(treeData) ]]"></cosmoz-treenode-button-view>
+		<h1>Cosmoz-treenode-navigator</h1>
+		<div class="vertical-section-container">
+			<h3>Navigator with multiple root tree data structure</h3>
+			<p>
+				The tree data structure simulate a windows file system, with 2 drives C: and D:
+			</p>
+			<demo-snippet>
+				<template is="dom-bind" id="demo1">
+					<iron-ajax
+						url="data/adminFiles.json"
+						handle-as="json"
+						last-response="{{ treeData1 }}" auto>
+					</iron-ajax>
+					<cosmoz-treenode-button-view id="navigator"
+						button-text-placeholder="Click to select a node"
+						node-path="{{ path1 }}"
+						selected-node="{{ selectedNode1 }}"
+						tree="[[ getTree(treeData1) ]]">
+					</cosmoz-treenode-button-view>
 				</template>
-			  </demo-snippet>
+			</demo-snippet>
+		 </div>
+
+		 <div class="vertical-section-container">
+			<h3>Navigator with multiple root tree data structure and missing ancestor nodes</h3>
+			<p>
+				The tree data structure is based on the one in the demo above, but showing only files accessible to a specific user.
+			</p>
+			<demo-snippet>
+				<template is="dom-bind" id="demo2">
+					<iron-ajax url="data/johnFiles.json"
+						handle-as="json"
+						last-response="{{ treeData2 }}"
+						auto>
+					</iron-ajax>
+					<cosmoz-treenode-button-view id="navigator"
+						button-text-placeholder="Click to select a node"
+						node-path="{{ path2 }}"
+						selected-node="{{ selectedNode2 }}"
+						tree="[[ getTree(treeData2) ]]">
+					</cosmoz-treenode-button-view>
+				</template>
+			</demo-snippet>
 		 </div>
 		<script>
-			document.querySelector('#demo').getTree = function (data) {
+
+			function getTree(data) {
 				return new Cosmoz.DefaultTree(data);
-			};
+			}
+
+			document.querySelector('#demo1').getTree = getTree;
+			document.querySelector('#demo2').getTree = getTree;
 		</script>
 	</body>
 </html>
