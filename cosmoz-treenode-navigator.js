@@ -362,12 +362,12 @@
 		},
 		/**
 		 * Returns the classes of a row based its selection state
+		 * @param {String} classes - The default classes
 		 * @param {Boolean} selected - If the row is currently selected
 		 * @return {String} - The CSS classes
 		 */
-		_computeRowClass: function (selected) {
-			var cls = 'node-item pointer layout horizontal center';
-			return selected ? cls + ' selected' : cls;
+		_computeRowClass: function (classes, selected) {
+			return selected ? classes + ' selected' : classes;
 		}
 	});
 }());

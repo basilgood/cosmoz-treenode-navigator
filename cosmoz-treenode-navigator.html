@@ -99,7 +99,7 @@ Navigator through object with treelike datastructure.
 						hidden$="[[ !_renderSection(_search, index, dataPlane, node) ]]"
 						class="section">[[ node.sectionName ]]
 					</div>
-					<div class$="[[_computeRowClass(selected)]]">
+					<div class$="[[_computeRowClass('node-item pointer layout horizontal center', selected)]]">
 						<div class="flex">[[ node.name ]]</div>
 						<paper-icon-button
 							hidden$="[[ !hasChildren(node) ]]"
