@@ -58,6 +58,7 @@
 			},
 			/*
 			 * The path of the selected node
+			 * This is the node which was highlighted and after the user tapped the select button
 			 */
 			nodePath: {
 				type: String,
@@ -74,11 +75,18 @@
 				notify: true
 			},
 			/*
-			 * Path string of highlighted (focused) node
+			 * The highlighted (focused) node
+			 * This is the node which is currently selected in the list
+			 */
+			highlightedNode: {
+				type: Object,
+				observer: '_highlightedNodeChanged',
+			},
+			/*
+			 * The path string of highlighted (focused) node
 			 */
 			highlightedNodePath: {
 				type: String,
-				value: '',
 				observer: '_highlightedNodePathChanged',
 				notify: true
 			},
@@ -140,14 +148,6 @@
 				return this._normalizeNodes(results);
 			}
 			return renderedLevel;
-		},
-		/**
-		 * Sets highlightedNodePath if a user selects a node.
-		 * @param {Event} e - Event
-		 * @return {undefined}
-		 */
-		_nodeSelected: function (e) {
-			this.highlightedNodePath = e.model.node.path;
 		},
 		/**
 		 * Returns a node array with the children of a node on the given path
@@ -247,6 +247,14 @@
 		_getNodeName: function (node) {
 			return node[this.tree.searchProperty];
 		},
+
+		_highlightedNodeChanged: function (node) {
+			if (!node) {
+				// this.highlightedNodePath = '';
+				return;
+			}
+			this.highlightedNodePath = node.path;
+		},
 		/**
 		 * Gets called if the focused node has changed
 		 * @param {String} newPath - The focused node's path
@@ -336,6 +344,30 @@
 				return false;
 			}
 			return true;
+		},
+		/**
+		 * Triggers a click event on the currentTarget
+		 * if space or enter key was pressed
+		 * @param {Event} e - The event
+		 * @return {undefined}
+		 */
+		_clickOnEnterOrSpace: function (e) {
+			if (e.keyCode === 13 || e.keyCode === 32) {
+				// enter or space pressed!
+				var fnName = 'click',
+					target = e.currentTarget,
+					fn = new Function('target', 'fnName', 'return target.' + fnName + '()');
+				fn(target, fnName);
+			}
+		},
+		/**
+		 * Returns the classes of a row based its selection state
+		 * @param {Boolean} selected - If the row is currently selected
+		 * @return {String} - The CSS classes
+		 */
+		_computeRowClass: function (selected) {
+			var cls = 'node-item pointer layout horizontal center';
+			return selected ? cls + ' selected' : cls;
 		}
 	});
 }());

@@ -36,10 +36,6 @@ Navigator through object with treelike datastructure.
 				background-color: #f5f5f5;
 				padding: 5px;
 			}
-			
-			.nodeItem {
-				cursor:pointer
-			}
 
 			.slash {
 				margin: 0 2px;
@@ -53,16 +49,24 @@ Navigator through object with treelike datastructure.
 				height: var(--cosmoz-treenode-navigator-list-height, 50vh);
 			}
 
-			paper-item {
-				--paper-item-focused: {
-					transition: background-color 0.5s ease;
-					-moz-transition: background-color 0.5s ease;
-					-o-transition: background-color 0.5s ease;
-					background-color: var(--cosmoz-treenode-navigator-list-item-focused-color);
-				};
+			.node-item {
+				font-family: 'Roboto', 'Noto', sans-serif;
+        		-webkit-font-smoothing: antialiased;
+				padding: 6px 12px;
+				font-size: 16px;
+				font-weight: 400;
+				line-height: 24px;
+				height: 40px;
 			}
 
-			paper-item:focus iron-icon {
+			.node-item.selected {
+				transition: background-color 0.2s ease-out;
+				-moz-transition: background-color 0.2s ease-out;
+				-o-transition: background-color 0.2s ease-out;
+				background-color: var(--cosmoz-treenode-navigator-list-item-focused-color);
+			}
+
+			.node-item.selected paper-icon-button {
 				transition: color 0.8s ease-out;
 				-moz-transition: color 0.8s ease-out;
 				-o-transition: color 0.8s ease-out;
@@ -78,7 +82,8 @@ Navigator through object with treelike datastructure.
 						class="pointer"
 						tabindex="0"
 						data-path$="[[ node.path ]]"
-						on-tap="openNode">[[ _getNodeName(node) ]]
+						on-tap="openNode"
+						on-keydown="_clickOnEnterOrSpace">[[ _getNodeName(node) ]]
 					</span>
 				</template>
 			</h3>
@@ -87,22 +92,22 @@ Navigator through object with treelike datastructure.
 				<paper-icon-button icon="clear" suffix hidden$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
 			</paper-input>
 		</div>
-		<iron-list items="[[dataPlane]]" as="node">
+		<iron-list items="[[dataPlane]]" as="node" selected-item="{{highlightedNode}}" selection-enabled>
 			<template>
-				<div>
+				<div tabindex$="[[tabIndex]]">
 					<div
 						hidden$="[[ !_renderSection(_search, index, dataPlane, node) ]]"
 						class="section">[[ node.sectionName ]]
 					</div>
-					<paper-item on-tap="_nodeSelected" class="nodeItem">
-						<span class="flex">[[ node.name ]]</span>
-						<iron-icon
+					<div class$="[[_computeRowClass(selected)]]">
+						<div class="flex">[[ node.name ]]</div>
+						<paper-icon-button
 							hidden$="[[ !hasChildren(node) ]]"
 							icon="icons:arrow-forward"
 							data-path$="[[ node.path ]]"
 							on-tap="openNode">
-						</iron-icon>
-					</paper-item>
+						</paper-icon-button>
+					</div>
 				</div>
 			</template>
 		</iron-list>
