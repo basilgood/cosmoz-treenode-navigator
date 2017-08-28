@@ -87,7 +87,6 @@
 			 */
 			highlightedNodePath: {
 				type: String,
-				observer: '_highlightedNodePathChanged',
 				notify: true
 			},
 			/*
@@ -247,26 +246,17 @@
 		_getNodeName: function (node) {
 			return node[this.tree.searchProperty];
 		},
-
+		/**
+		 * Sets the highlightedNodePath when highlightedNode changed
+		 * @param {Object} node - The highlighted node
+		 * @return {undefined}
+		 */
 		_highlightedNodeChanged: function (node) {
 			if (!node) {
-				// this.highlightedNodePath = '';
+				this.highlightedNodePath = '';
 				return;
 			}
 			this.highlightedNodePath = node.path;
-		},
-		/**
-		 * Gets called if the focused node has changed
-		 * @param {String} newPath - The focused node's path
-		 * @return {undefined}
-		 */
-		_highlightedNodePathChanged: function (newPath) {
-			if (this._search || newPath === undefined || !this.tree) {
-				return;
-			}
-			var path = newPath.split(this.tree.pathLocatorSeparator);
-			path.pop(); // remove highlighted node
-			this._openNodePath = path.join(this.tree.pathLocatorSeparator);
 		},
 		/**
 		 * Returns true if a given node has children
