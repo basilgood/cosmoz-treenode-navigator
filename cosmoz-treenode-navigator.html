@@ -1,12 +1,11 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../paper-item/paper-item.html"> 
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-list/iron-list.html">
+
 <link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
 
 <!--
@@ -74,8 +73,8 @@ Navigator through object with treelike datastructure.
 			}
 		</style>
 		<div id="header">
-			<h3 class="layout horizontal center wrap">				
-				<paper-icon-button data-path="" on-tap="openNode" icon="home"></paper-icon-button>			
+			<h3 class="layout horizontal center wrap">
+				<paper-icon-button data-path="" on-tap="openNode" icon="home"></paper-icon-button>
 				<template is="dom-repeat" items="[[ _nodesOnOpenNodePath ]]" as="node">
 					<span class="slash">/</span>
 					<span
@@ -88,7 +87,7 @@ Navigator through object with treelike datastructure.
 				</template>
 			</h3>
 			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
-				id="searchInput" value="{{ searchValue }}">				
+				id="searchInput" value="{{ searchValue }}">
 				<paper-icon-button icon="clear" suffix hidden$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
 			</paper-input>
 		</div>

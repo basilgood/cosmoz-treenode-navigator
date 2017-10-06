@@ -1,7 +1,3 @@
-/**
- * The Cosmoz.DefaultTree implementation of a tree.
- * @typedef {object} Tree
- */
 (function () {
 	'use strict';
 

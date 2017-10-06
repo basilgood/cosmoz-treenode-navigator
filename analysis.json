@@ -1,0 +1,2305 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "Navigator through object with treelike datastructure.",
+      "summary": "",
+      "path": "cosmoz-treenode-navigator.js",
+      "properties": [
+        {
+          "name": "t",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 10,
+              "column": 3
+            },
+            "end": {
+              "line": 15,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "{}",
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "tree",
+          "type": "Cosmoz.tree",
+          "description": "The main node structure",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 14,
+              "column": 3
+            },
+            "end": {
+              "line": 16,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "dataPlane",
+          "type": "Array",
+          "description": "The currently displayed node list",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 20,
+              "column": 3
+            },
+            "end": {
+              "line": 24,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "_renderedLevel",
+          "type": "Array",
+          "description": "Nodes (children) to be displayed when opening a node",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 28,
+              "column": 3
+            },
+            "end": {
+              "line": 31,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "_openNodePath",
+          "type": "string",
+          "description": "The path of the opened node",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 35,
+              "column": 3
+            },
+            "end": {
+              "line": 38,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "_nodesOnOpenNodePath",
+          "type": "Array",
+          "description": "The nodes on the path of the opened node",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 42,
+              "column": 3
+            },
+            "end": {
+              "line": 45,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "selectedNode",
+          "type": "Object",
+          "description": "The selected node",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 49,
+              "column": 3
+            },
+            "end": {
+              "line": 53,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "nodePath",
+          "type": "string",
+          "description": "The path of the selected node\nThis is the node which was highlighted and after the user tapped the select button",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 58,
+              "column": 3
+            },
+            "end": {
+              "line": 63,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"_nodePathChanged\""
+            }
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "nodesOnNodePath",
+          "type": "Array",
+          "description": "The nodes on the path of the selected node",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 67,
+              "column": 3
+            },
+            "end": {
+              "line": 71,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "highlightedNode",
+          "type": "Object",
+          "description": "The highlighted (focused) node\nThis is the node which is currently selected in the list",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 76,
+              "column": 3
+            },
+            "end": {
+              "line": 79,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_highlightedNodeChanged\""
+            }
+          }
+        },
+        {
+          "name": "highlightedNodePath",
+          "type": "string",
+          "description": "The path string of highlighted (focused) node",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 83,
+              "column": 3
+            },
+            "end": {
+              "line": 86,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "searchValue",
+          "type": "string",
+          "description": "The search string",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 90,
+              "column": 3
+            },
+            "end": {
+              "line": 93,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "_search",
+          "type": "boolean",
+          "description": "Whether a search should be executed",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 97,
+              "column": 3
+            },
+            "end": {
+              "line": 100,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "searchPlaceholder",
+          "type": "string",
+          "description": "Placeholder for search field.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 104,
+              "column": 3
+            },
+            "end": {
+              "line": 107,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"Search\""
+        },
+        {
+          "name": "searchGlobalPlaceholder",
+          "type": "string",
+          "description": "Text displayed when local search has finished\nto suggest a search on the entire tree",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 112,
+              "column": 3
+            },
+            "end": {
+              "line": 115,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"Click to search again but globally.\""
+        },
+        {
+          "name": "searchMinLength",
+          "type": "number",
+          "description": "Minimum length of searchValue to trigger a search",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 119,
+              "column": 3
+            },
+            "end": {
+              "line": 122,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "1"
+        }
+      ],
+      "methods": [
+        {
+          "name": "_argumentsToObject",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 18,
+              "column": 2
+            },
+            "end": {
+              "line": 21,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "args"
+            },
+            {
+              "name": "skipnum"
+            }
+          ],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_arrayToObject",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 23,
+              "column": 2
+            },
+            "end": {
+              "line": 37,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "array"
+            }
+          ],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_ensureInitialized",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 39,
+              "column": 2
+            },
+            "end": {
+              "line": 45,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_",
+          "description": "Convenience method for `gettext`",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 52,
+              "column": 2
+            },
+            "end": {
+              "line": 59,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "key",
+              "type": "String",
+              "description": "Translation key"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated text"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "created",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 61,
+              "column": 2
+            },
+            "end": {
+              "line": 63,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "detached",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 65,
+              "column": 2
+            },
+            "end": {
+              "line": 70,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "gettext",
+          "description": "#### Basic functionality\n##### `_(string, t)`\n    <div>{{ _(‘My translation’, t) }}</div>\n\n#### Interpolation\n##### `_(string, [args], t)`\n    <div>{{ _(‘Hello {0}’, user.name, t) }}</div>",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 85,
+              "column": 2
+            },
+            "end": {
+              "line": 92,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "key",
+              "type": "String",
+              "description": "String to translate"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "ngettext",
+          "description": "#### Plurals\n##### `ngettext(singular, plural, count, t)`\n    <div>{{ ngettext(‘My translation’,\n    \t\t‘My translations’, count, t) }}</div>\n\n#### Plurals with interpolation\n##### `ngettext(singular, plural, [count and other args], t)`\n    <div>{{ ngettext(‘My translation for “{1}”’,\n        \t‘My {0} translations for “{1}”’,\n        \tcount, ‘hello’, t) }}</div>\n_The first number-argument found will be used as ‘count’ to decide plural._",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 111,
+              "column": 2
+            },
+            "end": {
+              "line": 129,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "singular",
+              "type": "String",
+              "description": "Singular string"
+            },
+            {
+              "name": "plural",
+              "type": "String",
+              "description": "Plural string"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "pgettext",
+          "description": "#### Context\n##### `pgettext(context, ‘text’, t)`\n    <div>{{ pgettext(‘Cancel Invoice’,\n    \t\t‘Cancel’, t) }}</div>\n\n#### Context with interpolation\n##### `pgettext(context, ‘text’, [args], t)`\n    <div>{{ pgettext(‘Cancel Invoice’, ‘Cancel {0}’,\n    \t\tdocument.type, t) }}</div>",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 146,
+              "column": 2
+            },
+            "end": {
+              "line": 154,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "context",
+              "type": "String",
+              "description": "Context string"
+            },
+            {
+              "name": "key",
+              "type": "String",
+              "description": "String to translate"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "npgettext",
+          "description": "#### Plurals and context\n##### `npgettext(context, singular, plural, count, t)`\n    <div>{{ npgettext('Cancel invoice',\n    \t\t‘My cancellation’,\n    \t\t‘My {0} cancellations’,\n    \t\tcount, t) }}</div>\n\n#### Plurals and context with interpolation\n##### `npgettext(context, singular, plural, count, t)`\n    <div>{{ npgettext('Cancel invoice',\n    \t\t‘My {1} cancellation’,\n    \t\t‘My {0} {1} cancellations’,\n    \t\tcount, document.type, t) }}</div>",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 176,
+              "column": 2
+            },
+            "end": {
+              "line": 198,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "context",
+              "type": "String",
+              "description": "Context string"
+            },
+            {
+              "name": "singular",
+              "type": "String",
+              "description": "Singular string"
+            },
+            {
+              "name": "plural",
+              "type": "String",
+              "description": "Plural string"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "focus",
+          "description": "Focusses the search input.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 128,
+              "column": 2
+            },
+            "end": {
+              "line": 130,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "_computeDataPlane",
+          "description": "Returns the found nodes based on a search string and a given tree to be searched",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 139,
+              "column": 2
+            },
+            "end": {
+              "line": 145,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "searching",
+              "type": "Boolean",
+              "description": "If true, a search should be executed"
+            },
+            {
+              "name": "searchString",
+              "type": "String",
+              "description": "The search string"
+            },
+            {
+              "name": "renderedLevel",
+              "type": "Array",
+              "description": "The node list on which the search should be executed"
+            },
+            {
+              "name": "tree",
+              "type": "Tree",
+              "description": "The main tree"
+            }
+          ],
+          "return": {
+            "type": "Array",
+            "desc": "The found nodes"
+          }
+        },
+        {
+          "name": "_renderLevel",
+          "description": "Returns a node array with the children of a node on the given path\nIf the node doesn't have children, the node gets returned",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 153,
+              "column": 2
+            },
+            "end": {
+              "line": 183,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "pathLocator",
+              "type": "String",
+              "description": "The separated address parts of a node"
+            },
+            {
+              "name": "tree",
+              "type": "Tree",
+              "description": "The main tree"
+            }
+          ],
+          "return": {
+            "type": "Array",
+            "desc": "Nodes"
+          }
+        },
+        {
+          "name": "_normalizeNodes",
+          "description": "Normalizes and returns an Array of nodes\nwith the properties name, path, sectionName, children",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 190,
+              "column": 2
+            },
+            "end": {
+              "line": 200,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "nodes",
+              "type": "Array",
+              "description": "The input nodes"
+            }
+          ],
+          "return": {
+            "type": "Array",
+            "desc": "The normalized nodes"
+          }
+        },
+        {
+          "name": "_getNode",
+          "description": "Returns a node based on a given path locator.\nIf pathLocator is empty or not defined, null gets returned.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 208,
+              "column": 2
+            },
+            "end": {
+              "line": 213,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "pathLocator",
+              "type": "String",
+              "description": "The separated address parts of a node"
+            },
+            {
+              "name": "tree",
+              "type": "Tree",
+              "description": "The main tree"
+            }
+          ],
+          "return": {
+            "type": "Object",
+            "desc": "The found node"
+          }
+        },
+        {
+          "name": "_getTreePathParts",
+          "description": "Returns the nodes on a path specified by a given path locator",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 220,
+              "column": 2
+            },
+            "end": {
+              "line": 225,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "pathLocator",
+              "type": "String",
+              "description": "The separated address parts of a node"
+            },
+            {
+              "name": "tree",
+              "type": "Tree",
+              "description": "The main tree"
+            }
+          ],
+          "return": {
+            "type": "Array",
+            "desc": "The found nodes or empty array"
+          }
+        },
+        {
+          "name": "_clearSearch",
+          "description": "Clears the search input",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 231,
+              "column": 2
+            },
+            "end": {
+              "line": 235,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e",
+              "type": "Event",
+              "description": "The trigger event"
+            }
+          ],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "_getNodeName",
+          "description": "Returns the name of a given node",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 241,
+              "column": 2
+            },
+            "end": {
+              "line": 243,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "node",
+              "type": "Object",
+              "description": "The node"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "The name"
+          }
+        },
+        {
+          "name": "_highlightedNodeChanged",
+          "description": "Sets the highlightedNodePath when highlightedNode changed",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 249,
+              "column": 2
+            },
+            "end": {
+              "line": 255,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "node",
+              "type": "Object",
+              "description": "The highlighted node"
+            }
+          ],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "hasChildren",
+          "description": "Returns true if a given node has children",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 261,
+              "column": 2
+            },
+            "end": {
+              "line": 263,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "node",
+              "type": "Object",
+              "description": "The node"
+            }
+          ],
+          "return": {
+            "type": "Boolean",
+            "desc": "True if node has children"
+          }
+        },
+        {
+          "name": "openNode",
+          "description": "Opens a node (renderLevel) based on a given path",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 270,
+              "column": 2
+            },
+            "end": {
+              "line": 274,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e",
+              "type": "Event",
+              "description": "The triggering event"
+            }
+          ],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "_nodePathChanged",
+          "description": "Gets called if the selected node (path) has changed",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 280,
+              "column": 2
+            },
+            "end": {
+              "line": 286,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "path",
+              "type": "String",
+              "description": "The path of the newly selected node"
+            }
+          ],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "_showGlobalSearchBtn",
+          "description": "Returns true, if the button should be visible",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 293,
+              "column": 2
+            },
+            "end": {
+              "line": 295,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "searching",
+              "type": "Boolean",
+              "description": "If a search is currently executed"
+            },
+            {
+              "name": "openNodeLevelPath",
+              "type": "String",
+              "description": "The open node level"
+            }
+          ],
+          "return": {
+            "type": "Boolean",
+            "desc": "The visibility of the button"
+          }
+        },
+        {
+          "name": "tryGlobalSearch",
+          "description": "Triggers a global search",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 300,
+              "column": 2
+            },
+            "end": {
+              "line": 302,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "_computeSearching",
+          "description": "Returns true, if a search string is eligable to trigger a search",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 309,
+              "column": 2
+            },
+            "end": {
+              "line": 311,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "value",
+              "type": "String",
+              "description": "The search string"
+            },
+            {
+              "name": "searchMinLength",
+              "type": "Number",
+              "description": "The minimum length of value to be valid"
+            }
+          ],
+          "return": {
+            "type": "Boolean",
+            "desc": "If a search should be triggered"
+          }
+        },
+        {
+          "name": "_renderSection",
+          "description": "Returns true, if the path of a node should be visible in the view",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 320,
+              "column": 2
+            },
+            "end": {
+              "line": 332,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "searching",
+              "type": "Boolean",
+              "description": "If a search is currently executed"
+            },
+            {
+              "name": "index",
+              "type": "Number",
+              "description": "The node's current index in the list"
+            },
+            {
+              "name": "dataPlane",
+              "type": "Array",
+              "description": "The node list"
+            },
+            {
+              "name": "node",
+              "type": "Object",
+              "description": "The node"
+            }
+          ],
+          "return": {
+            "type": "Boolean",
+            "desc": "If the path should be visible"
+          }
+        },
+        {
+          "name": "_clickOnEnterOrSpace",
+          "description": "Triggers a click event on the currentTarget\nif space or enter key was pressed",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 339,
+              "column": 2
+            },
+            "end": {
+              "line": 347,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e",
+              "type": "Event",
+              "description": "The event"
+            }
+          ],
+          "return": {
+            "type": "undefined"
+          }
+        },
+        {
+          "name": "_computeRowClass",
+          "description": "Returns the classes of a row based its selection state",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 354,
+              "column": 2
+            },
+            "end": {
+              "line": 356,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "classes",
+              "type": "String",
+              "description": "The default classes"
+            },
+            {
+              "name": "selected",
+              "type": "Boolean",
+              "description": "If the row is currently selected"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "The CSS classes"
+          }
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 3,
+          "column": 9
+        },
+        "end": {
+          "line": 357,
+          "column": 2
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "attributes": [
+        {
+          "name": "t",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 10,
+              "column": 3
+            },
+            "end": {
+              "line": 15,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Object",
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "tree",
+          "description": "The main node structure",
+          "sourceRange": {
+            "start": {
+              "line": 14,
+              "column": 3
+            },
+            "end": {
+              "line": 16,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Cosmoz.tree"
+        },
+        {
+          "name": "data-plane",
+          "description": "The currently displayed node list",
+          "sourceRange": {
+            "start": {
+              "line": 20,
+              "column": 3
+            },
+            "end": {
+              "line": 24,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Array"
+        },
+        {
+          "name": "selected-node",
+          "description": "The selected node",
+          "sourceRange": {
+            "start": {
+              "line": 49,
+              "column": 3
+            },
+            "end": {
+              "line": 53,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "node-path",
+          "description": "The path of the selected node\nThis is the node which was highlighted and after the user tapped the select button",
+          "sourceRange": {
+            "start": {
+              "line": 58,
+              "column": 3
+            },
+            "end": {
+              "line": 63,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "nodes-on-node-path",
+          "description": "The nodes on the path of the selected node",
+          "sourceRange": {
+            "start": {
+              "line": 67,
+              "column": 3
+            },
+            "end": {
+              "line": 71,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Array"
+        },
+        {
+          "name": "highlighted-node",
+          "description": "The highlighted (focused) node\nThis is the node which is currently selected in the list",
+          "sourceRange": {
+            "start": {
+              "line": 76,
+              "column": 3
+            },
+            "end": {
+              "line": 79,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "highlighted-node-path",
+          "description": "The path string of highlighted (focused) node",
+          "sourceRange": {
+            "start": {
+              "line": 83,
+              "column": 3
+            },
+            "end": {
+              "line": 86,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "search-value",
+          "description": "The search string",
+          "sourceRange": {
+            "start": {
+              "line": 90,
+              "column": 3
+            },
+            "end": {
+              "line": 93,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "search-placeholder",
+          "description": "Placeholder for search field.",
+          "sourceRange": {
+            "start": {
+              "line": 104,
+              "column": 3
+            },
+            "end": {
+              "line": 107,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "search-global-placeholder",
+          "description": "Text displayed when local search has finished\nto suggest a search on the entire tree",
+          "sourceRange": {
+            "start": {
+              "line": 112,
+              "column": 3
+            },
+            "end": {
+              "line": 115,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "search-min-length",
+          "description": "Minimum length of searchValue to trigger a search",
+          "sourceRange": {
+            "start": {
+              "line": 119,
+              "column": 3
+            },
+            "end": {
+              "line": 122,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "data-plane-changed",
+          "description": "Fired when the `dataPlane` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "selected-node-changed",
+          "description": "Fired when the `selectedNode` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "node-path-changed",
+          "description": "Fired when the `nodePath` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "nodes-on-node-path-changed",
+          "description": "Fired when the `nodesOnNodePath` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "highlighted-node-path-changed",
+          "description": "Fired when the `highlightedNodePath` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "cosmoz-treenode-navigator"
+    },
+    {
+      "description": "`cosmoz-treenode-navigator`\nNavigator through object with treelike datastructure.",
+      "summary": "",
+      "path": "cosmoz-treenode-button-view.js",
+      "properties": [
+        {
+          "name": "t",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 10,
+              "column": 3
+            },
+            "end": {
+              "line": 15,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "{}",
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "tree",
+          "type": "Cosmoz.tree",
+          "description": "The main node structure",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 14,
+              "column": 3
+            },
+            "end": {
+              "line": 16,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "selectedNode",
+          "type": "Object",
+          "description": "Currently selected node object",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 20,
+              "column": 3
+            },
+            "end": {
+              "line": 26,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          },
+          "defaultValue": "{}"
+        },
+        {
+          "name": "noReset",
+          "type": "boolean",
+          "description": "If true, reset button gets hidden",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 30,
+              "column": 3
+            },
+            "end": {
+              "line": 33,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "searchPlaceholder",
+          "type": "string",
+          "description": "Placeholder for the search field",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 37,
+              "column": 3
+            },
+            "end": {
+              "line": 39,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "buttonTextPlaceholder",
+          "type": "string",
+          "description": "Placeholder for button text",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 43,
+              "column": 3
+            },
+            "end": {
+              "line": 46,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"No selection made\""
+        },
+        {
+          "name": "nodePath",
+          "type": "string",
+          "description": "The path of the selected node",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 50,
+              "column": 3
+            },
+            "end": {
+              "line": 53,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "nodesOnNodePath",
+          "type": "Array",
+          "description": "The nodes on the path of the selected node",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 57,
+              "column": 3
+            },
+            "end": {
+              "line": 59,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "searchGlobalPlaceholder",
+          "type": "string",
+          "description": "Text displayed when local search has finished\nto suggest a search on the entire tree",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 64,
+              "column": 3
+            },
+            "end": {
+              "line": 66,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "dialogText",
+          "type": "string",
+          "description": "Settable text for dialog title.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 70,
+              "column": 3
+            },
+            "end": {
+              "line": 73,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"Search or navigate to chosen destination\""
+        },
+        {
+          "name": "searchMinLength",
+          "type": "number",
+          "description": "Minimum length before an search\nstarts.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 3
+            },
+            "end": {
+              "line": 80,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "highlightedNodePath",
+          "type": "string",
+          "description": "Path string of highlighted (focused) node",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 84,
+              "column": 3
+            },
+            "end": {
+              "line": 86,
+              "column": 4
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "_argumentsToObject",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 18,
+              "column": 2
+            },
+            "end": {
+              "line": 21,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "args"
+            },
+            {
+              "name": "skipnum"
+            }
+          ],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_arrayToObject",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 23,
+              "column": 2
+            },
+            "end": {
+              "line": 37,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "array"
+            }
+          ],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_ensureInitialized",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 39,
+              "column": 2
+            },
+            "end": {
+              "line": 45,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_",
+          "description": "Convenience method for `gettext`",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 52,
+              "column": 2
+            },
+            "end": {
+              "line": 59,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "key",
+              "type": "String",
+              "description": "Translation key"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated text"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "created",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 61,
+              "column": 2
+            },
+            "end": {
+              "line": 63,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "detached",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 65,
+              "column": 2
+            },
+            "end": {
+              "line": 70,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [],
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "gettext",
+          "description": "#### Basic functionality\n##### `_(string, t)`\n    <div>{{ _(‘My translation’, t) }}</div>\n\n#### Interpolation\n##### `_(string, [args], t)`\n    <div>{{ _(‘Hello {0}’, user.name, t) }}</div>",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 85,
+              "column": 2
+            },
+            "end": {
+              "line": 92,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "key",
+              "type": "String",
+              "description": "String to translate"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "ngettext",
+          "description": "#### Plurals\n##### `ngettext(singular, plural, count, t)`\n    <div>{{ ngettext(‘My translation’,\n    \t\t‘My translations’, count, t) }}</div>\n\n#### Plurals with interpolation\n##### `ngettext(singular, plural, [count and other args], t)`\n    <div>{{ ngettext(‘My translation for “{1}”’,\n        \t‘My {0} translations for “{1}”’,\n        \tcount, ‘hello’, t) }}</div>\n_The first number-argument found will be used as ‘count’ to decide plural._",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 111,
+              "column": 2
+            },
+            "end": {
+              "line": 129,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "singular",
+              "type": "String",
+              "description": "Singular string"
+            },
+            {
+              "name": "plural",
+              "type": "String",
+              "description": "Plural string"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "pgettext",
+          "description": "#### Context\n##### `pgettext(context, ‘text’, t)`\n    <div>{{ pgettext(‘Cancel Invoice’,\n    \t\t‘Cancel’, t) }}</div>\n\n#### Context with interpolation\n##### `pgettext(context, ‘text’, [args], t)`\n    <div>{{ pgettext(‘Cancel Invoice’, ‘Cancel {0}’,\n    \t\tdocument.type, t) }}</div>",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 146,
+              "column": 2
+            },
+            "end": {
+              "line": 154,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "context",
+              "type": "String",
+              "description": "Context string"
+            },
+            {
+              "name": "key",
+              "type": "String",
+              "description": "String to translate"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "npgettext",
+          "description": "#### Plurals and context\n##### `npgettext(context, singular, plural, count, t)`\n    <div>{{ npgettext('Cancel invoice',\n    \t\t‘My cancellation’,\n    \t\t‘My {0} cancellations’,\n    \t\tcount, t) }}</div>\n\n#### Plurals and context with interpolation\n##### `npgettext(context, singular, plural, count, t)`\n    <div>{{ npgettext('Cancel invoice',\n    \t\t‘My {1} cancellation’,\n    \t\t‘My {0} {1} cancellations’,\n    \t\tcount, document.type, t) }}</div>",
+          "privacy": "public",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 176,
+              "column": 2
+            },
+            "end": {
+              "line": 198,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "context",
+              "type": "String",
+              "description": "Context string"
+            },
+            {
+              "name": "singular",
+              "type": "String",
+              "description": "Singular string"
+            },
+            {
+              "name": "plural",
+              "type": "String",
+              "description": "Plural string"
+            }
+          ],
+          "return": {
+            "type": "String",
+            "desc": "Translated string"
+          },
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "_enableReset",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 88,
+              "column": 2
+            },
+            "end": {
+              "line": 93,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "nodePath"
+            },
+            {
+              "name": "noReset"
+            }
+          ]
+        },
+        {
+          "name": "_getButtonLabel",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 94,
+              "column": 2
+            },
+            "end": {
+              "line": 101,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "pathParts"
+            },
+            {
+              "name": "placeholder"
+            }
+          ]
+        },
+        {
+          "name": "openDialogTree",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 102,
+              "column": 2
+            },
+            "end": {
+              "line": 104,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "focusSearch",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 105,
+              "column": 2
+            },
+            "end": {
+              "line": 107,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "reset",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 108,
+              "column": 2
+            },
+            "end": {
+              "line": 110,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "selectNode",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 111,
+              "column": 2
+            },
+            "end": {
+              "line": 113,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "refit",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 114,
+              "column": 2
+            },
+            "end": {
+              "line": 118,
+              "column": 3
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 3,
+          "column": 9
+        },
+        "end": {
+          "line": 119,
+          "column": 2
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "attributes": [
+        {
+          "name": "t",
+          "description": "",
+          "sourceRange": {
+            "file": "bower_components/cosmoz-i18next/cosmoz-i18next.js",
+            "start": {
+              "line": 10,
+              "column": 3
+            },
+            "end": {
+              "line": 15,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Object",
+          "inheritedFrom": "Cosmoz.TranslatableBehavior"
+        },
+        {
+          "name": "tree",
+          "description": "The main node structure",
+          "sourceRange": {
+            "start": {
+              "line": 14,
+              "column": 3
+            },
+            "end": {
+              "line": 16,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Cosmoz.tree"
+        },
+        {
+          "name": "selected-node",
+          "description": "Currently selected node object",
+          "sourceRange": {
+            "start": {
+              "line": 20,
+              "column": 3
+            },
+            "end": {
+              "line": 26,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "no-reset",
+          "description": "If true, reset button gets hidden",
+          "sourceRange": {
+            "start": {
+              "line": 30,
+              "column": 3
+            },
+            "end": {
+              "line": 33,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "search-placeholder",
+          "description": "Placeholder for the search field",
+          "sourceRange": {
+            "start": {
+              "line": 37,
+              "column": 3
+            },
+            "end": {
+              "line": 39,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "button-text-placeholder",
+          "description": "Placeholder for button text",
+          "sourceRange": {
+            "start": {
+              "line": 43,
+              "column": 3
+            },
+            "end": {
+              "line": 46,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "node-path",
+          "description": "The path of the selected node",
+          "sourceRange": {
+            "start": {
+              "line": 50,
+              "column": 3
+            },
+            "end": {
+              "line": 53,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "nodes-on-node-path",
+          "description": "The nodes on the path of the selected node",
+          "sourceRange": {
+            "start": {
+              "line": 57,
+              "column": 3
+            },
+            "end": {
+              "line": 59,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "Array"
+        },
+        {
+          "name": "search-global-placeholder",
+          "description": "Text displayed when local search has finished\nto suggest a search on the entire tree",
+          "sourceRange": {
+            "start": {
+              "line": 64,
+              "column": 3
+            },
+            "end": {
+              "line": 66,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "dialog-text",
+          "description": "Settable text for dialog title.",
+          "sourceRange": {
+            "start": {
+              "line": 70,
+              "column": 3
+            },
+            "end": {
+              "line": 73,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "search-min-length",
+          "description": "Minimum length before an search\nstarts.",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 3
+            },
+            "end": {
+              "line": 80,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "highlighted-node-path",
+          "description": "Path string of highlighted (focused) node",
+          "sourceRange": {
+            "start": {
+              "line": 84,
+              "column": 3
+            },
+            "end": {
+              "line": 86,
+              "column": 4
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "selected-node-changed",
+          "description": "Fired when the `selectedNode` property changes.",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "node-path-changed",
+          "description": "Fired when the `nodePath` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [
+        {
+          "description": "",
+          "name": "",
+          "range": {
+            "file": "cosmoz-treenode-button-view.html",
+            "start": {
+              "line": 62,
+              "column": 4
+            },
+            "end": {
+              "line": 62,
+              "column": 17
+            }
+          }
+        }
+      ],
+      "tagname": "cosmoz-treenode-button-view"
+    }
+  ]
+}

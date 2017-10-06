@@ -1,63 +1,67 @@
 <!doctype html>
 
 <html>
-  <head>
-    <title>cosmoz-treenode-navigator test</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-    
-    <title>cosmoz-treenode-navigator test</title>
+<head>
+	<title>cosmoz-treenode-navigator test</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+	<title>cosmoz-treenode-navigator test</title>
 
-    <link rel="import" href="../cosmoz-treenode-navigator.html">
-    <link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
-    <link rel="import" href="../../iron-ajax/iron-ajax.html">
-  </head>
-  <body>
-    <test-fixture id="basic">
-      <template>
-        <cosmoz-treenode-navigator id="navigator"></cosmoz-treenode-navigator>
-        <iron-ajax auto
-          url="data/basicTree.json"
-          handle-as="json"
-          last-response="{{ basicTree }}">
-        </iron-ajax>
-      </template>
-    </test-fixture>
+	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="../../web-component-tester/browser.js"></script>
+	<script src="../../test-fixture/test-fixture-mocha.js"></script>
+
+	<link rel="import" href="../../test-fixture/test-fixture.html">
+	<link rel="import" href="../../iron-test-helpers/iron-test-helpers.html">
+
+	<link rel="import" href="../cosmoz-treenode-navigator.html">
+	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
+	<link rel="import" href="../../iron-ajax/iron-ajax.html">
+</head>
+<body>
+	<test-fixture id="basic">
+		<template>
+			<cosmoz-treenode-navigator id="navigator"></cosmoz-treenode-navigator>
+			<iron-ajax auto
+				url="data/basicTree.json"
+				handle-as="json"
+				last-response="{{ basicTree }}">
+			</iron-ajax>
+		</template>
+	</test-fixture>
 
 	<script>
-		(function () {
-			'use strict';
-			suite('cosmoz-treenode-navigator', function () {
-				var basicFixture,
-					basicTree,
-					navigator;
+	(function () {
+		'use strict';
 
-				suiteSetup(function (done) {
-					var ajax;
-					basicFixture = fixture('basic');
-					ajax = basicFixture.find(function (n) {
-						return n.is === 'iron-ajax';
-					});
-					navigator = basicFixture.find(function (n) {
-						return n.is === 'cosmoz-treenode-navigator';
-					});
+		suite('cosmoz-treenode-navigator', function () {
+			var basicFixture,
+				basicTree,
+				navigator;
 
-					ajax.addEventListener('response', function () {
-						basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
-						navigator.tree = basicTree;
-						done();
-					});
+			suiteSetup(function (done) {
+				var ajax;
+				basicFixture = fixture('basic');
+				ajax = basicFixture.find(function (n) {
+					return n.is === 'iron-ajax';
+				});
+				navigator = basicFixture.find(function (n) {
+					return n.is === 'cosmoz-treenode-navigator';
 				});
 
-				test('instantiating the element', function () {
-					assert.equal(navigator.is, 'cosmoz-treenode-navigator');
+				ajax.addEventListener('response', function () {
+					basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
+					navigator.tree = basicTree;
+					done();
 				});
-
 			});
-		}());
-    </script>
-  </body>
-</html>
+
+			test('instantiating the element', function () {
+				assert.equal(navigator.is, 'cosmoz-treenode-navigator');
+			});
+
+		});
+	}());
+	</script>
+</body></html>

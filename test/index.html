@@ -3,16 +3,22 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-	<title>cosmoz-bottom-bar tests</title>
-	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<title>cosmoz-treenode-navigator tests</title>
 	<script src="../../web-component-tester/browser.js"></script>
 </head>
 <body>
 	<script>
-	/*global WCT*/
-		WCT.loadSuites([
-			'cosmoz-treenode-navigator_test.html'
-		]);
+		var pages = [
+				'cosmoz-treenode-navigator_test.html',
+				'cosmoz-treenode-button-view_test.html'
+			],
+			suites = [],
+			i;
+
+		for (i = 0; i < pages.length; i++) {
+			suites.push(pages[i] + '?dom=shadow');
+			suites.push(pages[i] + '?wc-shadydom=true&wc-ce=true');
+		}
+		WCT.loadSuites(suites);
 	</script>
-</body>
-</html>
+</body></html>

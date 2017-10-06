@@ -1,4 +1,3 @@
-/* */
 (function () {
 	'use strict';
 
@@ -94,7 +93,7 @@
 			return !!nodePath;
 		},
 		_getButtonLabel: function (pathParts, placeholder) {
-			if (!pathParts, pathParts.length < 1) {
+			if (!(pathParts &&  pathParts.length > 1)) {
 				return placeholder;
 			}
 			return pathParts.map(function (part) {

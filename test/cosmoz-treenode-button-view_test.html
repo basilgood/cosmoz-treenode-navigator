@@ -1,7 +1,7 @@
 <!doctype html>
 
 <html>
-  <head>
+	<head>
 	<title>cosmoz-treenode-navigator test</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
@@ -10,16 +10,19 @@
 
 	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 	<script src="../../web-component-tester/browser.js"></script>
+	<script src="../../test-fixture/test-fixture-mocha.js"></script>
+
+	<link rel="import" href="../../test-fixture/test-fixture.html">
+	<link rel="import" href="../../iron-test-helpers/iron-test-helpers.html">
 
 	<link rel="import" href="../cosmoz-treenode-button-view.html">
 	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
 	<link rel="import" href="../../iron-ajax/iron-ajax.html">
-  </head>
-  <body>
+</head>
+<body>
 	<test-fixture id="rtl">
 		<template>
-			<cosmoz-treenode-button-view>
-			</cosmoz-treenode-button-view>
+			<cosmoz-treenode-button-view></cosmoz-treenode-button-view>
 			<iron-ajax auto
 				url="data/rtlTest.json"
 				handle-as="json">
@@ -28,38 +31,38 @@
 	</test-fixture>
 
 	<script>
-		(function () {
-			'use strict';
-			suite('rtl', function () {
-				var buttonFixture,
-					tree,
-					treeButton;
+	(function () {
+		'use strict';
 
-				suiteSetup(function (done) {
-					var ajax;
-					buttonFixture = fixture('rtl');
-					ajax = buttonFixture.find(function (n) {
-						return n.is === 'iron-ajax';
-					});
-					treeButton = buttonFixture.find(function (n) {
-						return n.is === 'cosmoz-treenode-button-view';
-					});
+		suite('rtl', function () {
+			var buttonFixture,
+				tree,
+				treeButton;
 
-					ajax.addEventListener('response', function () {
-						tree = new Cosmoz.DefaultTree(ajax.lastResponse);
-						treeButton.tree = tree;
-						done();
-					});
+			suiteSetup(function (done) {
+				var ajax;
+				buttonFixture = fixture('rtl');
+				ajax = buttonFixture.find(function (n) {
+					return n.is === 'iron-ajax';
+				});
+				treeButton = buttonFixture.find(function (n) {
+					return n.is === 'cosmoz-treenode-button-view';
 				});
 
-				test('button renders selected path', function () {
-					treeButton.nodePath = '1.2.3';
-					var buttonLabel = treeButton.querySelector('.pathToNode').textContent;
-					assert.equal(buttonLabel, '1 / 2 / 3');
+				ajax.addEventListener('response', function () {
+					tree = new Cosmoz.DefaultTree(ajax.lastResponse);
+					treeButton.tree = tree;
+					done();
 				});
-
 			});
-		}());
+
+			test('button renders selected path', function () {
+				treeButton.nodePath = '1.2.3';
+				var buttonLabel = treeButton.$$('.pathToNode').textContent;
+				assert.equal(buttonLabel, '1 / 2 / 3');
+			});
+
+		});
+	}());
 	</script>
-  </body>
-</html>
+</body></html>

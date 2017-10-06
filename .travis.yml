@@ -12,14 +12,15 @@ addons:
 cache:
   yarn: true
   directories:
-    - node_modules
-    - bower_components
-    - .eslintcache
-    - $HOME/.cache/bower
+  - node_modules
+  - bower_components
+  - bower_components-1.x
+  - ".eslintcache"
+  - "$HOME/.cache/bower"
 before_script:
-  - yarn run lint
+- yarn run lint
 script:
-  - xvfb-run yarn test
+- xvfb-run yarn test
 notifications:
   slack:
     secure: iKrc/HlSSK9VCtcLxZ87GZsW3mtyx5q+C6c8JZjFvLIPQvXuZxho4HoojvGtFYASGfNtPUup88MBcHs5nqZK3clI0VyTj4iR14KVW+7ngGzAcwMM+WrWzWEQI9Q2v4UHQTsu0IR6aXFREhjh7uxAUtyvbuaVIBLt2176UispLoWCnjufNkio3qAhNdzvQCmyySfjUgTrKW1ibvDlvTIoxawU+M05DnxdDuiCN6/pj6irFY7Id98bMmuM69Noh39H2Zm14GY4GxfuHK42rL+01O33WfSzyIwLo0P06xpAq0gc+UkPPNLKs0xrvlG9+q3/H0w40RAX/HRC0N7dDJqSTSZqIT0x81kGAILJOtIjy4Dfnv0TiY0IGx0bezGnnYNdTdmhGypOqHOqCtuAo4Q2MiiCyDXCi3PaQij3CuiOjxBR8epET4g3Cl4DAGX740M71Xoc/15tX931sFnnGwhiQbjWCLt8mIYmv/mlzgVeC0j89ul3FgCbivy89VPQI1YGEhek2SSCWeCxGexgvfXhC67SVqi30Rhlx1yz1CRNZHS6+y+7XEenwb6mzGZf6DdoZfuNLiOBvTYa9GyzFl/F/ZWSj3N0ko9n/p3KSqcSijge7cZKjsaKIFmlJcBTTAZ/nizJqAR0A+1vF/Ch2fm7Aikkf54xylLMpIiWoJBmSDk=

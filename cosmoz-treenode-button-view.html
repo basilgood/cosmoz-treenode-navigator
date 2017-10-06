@@ -2,47 +2,46 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-listbox/paper-listbox.html">
-<link rel="import" href="../paper-item/paper-item.html"> 
-<link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../cosmoz-dialog/cosmoz-dialog.html">  
 <link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="../cosmoz-dialog/cosmoz-dialog.html">
 <link rel="import" href="../cosmoz-i18next/cosmoz-i18next.html">
+
 <link rel="import" href="cosmoz-treenode-navigator.html">
 <!--
 `cosmoz-treenode-navigator`
-Navigator through object with treelike datastructure.  
- 
-@demo demo/index.html 
+Navigator through object with treelike datastructure.
+
+@demo demo/index.html
 -->
 <dom-module id="cosmoz-treenode-button-view">
-	<style is="custom-style" include="iron-flex iron-flex-alignment">
-
-		.pathToNode {
-			max-width: 320px;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			direction: rtl;
-			text-align:left;
-		}
-
-		paper-dialog .buttons {
-			@apply --cosmoz-treenode-button-view-dialog-container;
-		}
-
-		#dialogTree {
-			min-width: 250px !important;
-			width: 450px;
-		}
-
-		/* FIXME: https://github.com/PolymerElements/iron-flex-layout/issues/86	*/
-		[hidden] {
-			display: none;
-		}
-
-	</style>
 	<template>
+		<style is="custom-style" include="iron-flex iron-flex-alignment">
+
+			.pathToNode {
+				max-width: 320px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				direction: rtl;
+				text-align:left;
+			}
+
+			paper-dialog .buttons {
+				@apply --cosmoz-treenode-button-view-dialog-container;
+			}
+
+			#dialogTree {
+				min-width: 250px !important;
+				width: 450px;
+			}
+
+			/* FIXME: https://github.com/PolymerElements/iron-flex-layout/issues/86	*/
+			[hidden] {
+				display: none;
+			}
+
+		</style>
 		<div class="horizontal layout">
 			<paper-button class="flex" raised on-tap="openDialogTree">
 				<div class="pathToNode">[[ _getButtonLabel(nodesOnNodePath, buttonTextPlaceholder) ]]</div>
