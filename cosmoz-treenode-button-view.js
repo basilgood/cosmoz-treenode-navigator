@@ -93,12 +93,10 @@
 			return !!nodePath;
 		},
 		_getButtonLabel: function (pathParts, placeholder) {
-			if (!(pathParts &&  pathParts.length > 1)) {
+			if (!Array.isArray(pathParts) || pathParts.length === 0) {
 				return placeholder;
 			}
-			return pathParts.map(function (part) {
-				return part[this.tree.searchProperty];
-			}, this).join(' / ');
+			return pathParts.map(part => part[this.tree.searchProperty]).join(' / ');
 		},
 		openDialogTree: function () {
 			this.$.dialogTree.open();
