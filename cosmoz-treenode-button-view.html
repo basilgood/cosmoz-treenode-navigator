@@ -63,7 +63,7 @@ Navigator through object with treelike datastructure.
 				<slot></slot>
 			</cosmoz-treenode-navigator>
 			<div class="buttons">
-				<paper-button dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
+				<paper-button disabled="[[!highlightedNodePath]]" dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
 				<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
 			</div>
 		</cosmoz-dialog>
