@@ -102,7 +102,7 @@
 			this.$.dialogTree.open();
 		},
 		focusSearch: function () {
-			this.$.treeNavigator.focus();
+			this.$.dialogTree.paperDialog.querySelector('#treeNavigator').focus();
 		},
 		reset: function () {
 			this.nodePath = '';

@@ -49,23 +49,25 @@ Navigator through object with treelike datastructure.
 			<paper-icon-button icon="clear" on-tap="reset" hidden$="[[ !_enableReset(nodePath, noReset) ]]"></paper-icon-button>
 		</div>
 		<cosmoz-dialog id="dialogTree" class="treeDialog" on-iron-overlay-opened="focusSearch" modal>
-			<h2>[[ dialogText ]]</h2>
-			<cosmoz-treenode-navigator id="treeNavigator"
-				tree="[[ tree ]]"
-				selected-node="{{ selectedNode }}"
-				on-data-plane-changed="refit"
-				highlighted-node-path="{{ highlightedNodePath }}"
-				search-placeholder="[[ searchPlaceholder ]]"
-				search-global-placeholder="[[ searchGlobalPlaceholder ]]"
-				search-min-length="[[ searchMinLength ]]"
-				node-path="{{ nodePath }}"
-				nodes-on-node-path="{{ nodesOnNodePath }}">
-				<slot></slot>
-			</cosmoz-treenode-navigator>
-			<div class="buttons">
+			<template>
+				<h2>[[ dialogText ]]</h2>
+				<cosmoz-treenode-navigator id="treeNavigator"
+					tree="[[ tree ]]"
+					selected-node="{{ selectedNode }}"
+					on-data-plane-changed="refit"
+					highlighted-node-path="{{ highlightedNodePath }}"
+					search-placeholder="[[ searchPlaceholder ]]"
+					search-global-placeholder="[[ searchGlobalPlaceholder ]]"
+					search-min-length="[[ searchMinLength ]]"
+					node-path="{{ nodePath }}"
+					nodes-on-node-path="{{ nodesOnNodePath }}">
+					<slot></slot>
+				</cosmoz-treenode-navigator>
+				<div class="buttons">
 				<paper-button disabled="[[!highlightedNodePath]]" dialog-confirm autofocus on-tap="selectNode">[[ _('Select', t) ]]</paper-button>
-				<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
-			</div>
+					<paper-button dialog-dismiss>[[ _('Cancel', t) ]]</paper-button>
+				</div>
+			</template>
 		</cosmoz-dialog>
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-button-view.js"></script>
