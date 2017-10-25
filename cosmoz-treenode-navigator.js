@@ -272,6 +272,10 @@
 			this._openNodePath = e.currentTarget.dataset.path;
 			this.searchValue = '';
 			e.currentTarget.parentElement.blur();
+
+			// stop event propagation to prevent iron-list trying to select the current item while it will be removed
+			e.preventDefault();
+			e.stopPropagation();
 		},
 		/**
 		 * Gets called if the selected node (path) has changed
