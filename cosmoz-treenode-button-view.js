@@ -98,6 +98,11 @@
 			}
 			return pathParts.map(part => part[this.tree.searchProperty]).join(' / ');
 		},
+
+		_hasPath: function (nodePath, pathParts){
+			return !!nodePath && Array.isArray(pathParts) && pathParts.length > 0;
+		},
+
 		openDialogTree: function () {
 			this.$.dialogTree.open();
 		},
