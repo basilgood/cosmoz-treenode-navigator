@@ -58,8 +58,12 @@
 
 			test('button renders selected path', function () {
 				treeButton.nodePath = '1.2.3';
-				var buttonLabel = treeButton.$$('.pathToNode').textContent;
-				assert.equal(buttonLabel, '1 / 2 / 3');
+				// Button view label depends on a binding in a cosmoz-treenode-navigator
+				// stamped asynchronously, so we need to wait a bit.
+				Polymer.Base.async(function () {
+					var buttonLabel = treeButton.$$('.pathToNode').textContent;
+					assert.equal(buttonLabel, '1 / 2 / 3');
+				}, 100);
 			});
 
 		});
