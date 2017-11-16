@@ -52,7 +52,7 @@ Navigator through object with treelike datastructure.
 			</paper-button>
 			<paper-icon-button icon="clear" on-tap="reset" hidden$="[[ !_enableReset(nodePath, noReset) ]]"></paper-icon-button>
 		</div>
-		<cosmoz-dialog id="dialogTree" class="treeDialog" on-iron-overlay-opened="focusSearch" modal>
+		<cosmoz-dialog id="dialogTree" class="treeDialog" on-iron-overlay-opened="focusSearch" modal prerender>
 			<template>
 				<h2>[[ dialogText ]]</h2>
 				<cosmoz-treenode-navigator id="treeNavigator"
