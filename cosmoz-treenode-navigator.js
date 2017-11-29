@@ -189,6 +189,9 @@
 		 * @return {Array} - The normalized nodes
 		 */
 		_normalizeNodes: function (nodes) {
+			if (!Array.isArray(nodes)){
+				return [];
+			}
 			return nodes.map(function (node) {
 				var path = node.pathLocator || node.path;
 				return {
