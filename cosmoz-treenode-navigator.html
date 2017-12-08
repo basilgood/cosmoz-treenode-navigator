@@ -91,7 +91,7 @@ Navigator through object with treelike datastructure.
 				<paper-icon-button icon="clear" suffix hidden$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
 			</paper-input>
 		</div>
-		<iron-list items="[[dataPlane]]" as="node" selected-item="{{highlightedNode}}" selection-enabled>
+		<iron-list items="[[dataPlane]]" as="node" selected-item="{{highlightedNode}}" selection-enabled on-tap="_onListTap">
 			<template>
 				<div tabindex$="[[tabIndex]]">
 					<div

@@ -361,6 +361,15 @@
 		 */
 		_computeRowClass: function (classes, selected) {
 			return selected ? classes + ' selected' : classes;
+		},
+
+		_onListTap(e){
+			// Prevent iron-list from calling getModelForElement on itself otherwise it triggers a infinite loop
+			// because `cosmoz-dialog` weirdly sets dataHost.
+			if (e.target && e.target.is === 'iron-list'){
+				console.warn('stopImmediatePropagation for tap directly on iron-list');
+				e.stopImmediatePropagation();
+			}
 		}
 	});
 }());
