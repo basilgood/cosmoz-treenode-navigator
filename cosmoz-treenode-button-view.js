@@ -20,7 +20,7 @@
 			 */
 			selectedNode: {
 				type: Object,
-				value: function (){
+				value: function () {
 					return {};
 				},
 				notify: true
@@ -96,11 +96,7 @@
 			if (!Array.isArray(pathParts) || pathParts.length === 0) {
 				return placeholder;
 			}
-			return pathParts.map(part => part[this.tree.searchProperty]).join(' / ');
-		},
-
-		_hasPath: function (nodePath, pathParts){
-			return !!nodePath && Array.isArray(pathParts) && pathParts.length > 0;
+			return pathParts.filter(n => n).map(part => part[this.tree.searchProperty]).join(' / ');
 		},
 
 		openDialogTree: function () {

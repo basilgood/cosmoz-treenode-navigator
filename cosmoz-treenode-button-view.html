@@ -27,10 +27,6 @@ Navigator through object with treelike datastructure.
 				text-align:left;
 			}
 
-			.actions:not([has-path]) {
-				display: none;
-			}
-
 			paper-dialog .buttons {
 				@apply --cosmoz-treenode-button-view-dialog-container;
 			}
@@ -46,7 +42,7 @@ Navigator through object with treelike datastructure.
 			}
 
 		</style>
-		<div class="horizontal layout actions" has-path$="[[ _hasPath(nodePath, nodesOnNodePath) ]]">
+		<div class="horizontal layout actions">
 			<paper-button class="flex" raised on-tap="openDialogTree">
 				<div class="pathToNode">[[ _getButtonLabel(nodesOnNodePath, buttonTextPlaceholder) ]]</div>
 			</paper-button>

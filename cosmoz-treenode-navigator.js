@@ -138,7 +138,7 @@
 		 * @return {Array} - The found nodes
 		 */
 		_computeDataPlane: function (searching, searchString, renderedLevel, tree) {
-			if (searching) {
+			if (searching && tree) {
 				var results = tree.searchNodes(searchString, renderedLevel, false);
 				return this._normalizeNodes(results);
 			}
@@ -188,19 +188,23 @@
 		 * @param {Array} nodes - The input nodes
 		 * @return {Array} - The normalized nodes
 		 */
-		_normalizeNodes: function (nodes) {
-			if (!Array.isArray(nodes)){
+		_normalizeNodes(nodes) {
+			if (!Array.isArray(nodes)) {
 				return [];
 			}
-			return nodes.map(function (node) {
-				var path = node.pathLocator || node.path;
-				return {
-					name: node[this.tree.searchProperty],
-					path: path,
-					sectionName: this.tree.getPathString(path, this.tree.searchProperty),
-					children: node[this.tree.childProperty]
-				};
-			}, this);
+			return nodes
+				.map(node => {
+					if (!node) {
+						return node;
+					}
+					var path = node.pathLocator || node.path;
+					return {
+						name: node[this.tree.searchProperty],
+						path: path,
+						sectionName: this.tree.getPathString(path, this.tree.searchProperty),
+						children: node[this.tree.childProperty]
+					};
+				});
 		},
 		/**
 		 * Returns a node based on a given path locator.
@@ -363,10 +367,10 @@
 			return selected ? classes + ' selected' : classes;
 		},
 
-		_onListTap(e){
+		_onListTap(e) {
 			// Prevent iron-list from calling getModelForElement on itself otherwise it triggers a infinite loop
 			// because `cosmoz-dialog` weirdly sets dataHost.
-			if (e.target && e.target.is === 'iron-list'){
+			if (e.target && e.target.is === 'iron-list') {
 				console.warn('stopImmediatePropagation for tap directly on iron-list');
 				e.stopImmediatePropagation();
 			}

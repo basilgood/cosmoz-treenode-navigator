@@ -89,8 +89,11 @@
 			tpl.getTree = getTree;
 			tpl.set('doRequest', true);
 		}
-		initTemplate('demo1');
-		initTemplate('demo2');
+
+		setTimeout(() => {
+			initTemplate('demo1');
+			initTemplate('demo2');
+		});
 
 	});
 	</script>
