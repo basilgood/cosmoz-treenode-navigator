@@ -1,4 +1,4 @@
-(function () {
+(() => {
 	'use strict';
 
 	Polymer({
@@ -20,7 +20,7 @@
 			 */
 			selectedNode: {
 				type: Object,
-				value: function () {
+				value() {
 					return {};
 				},
 				notify: true
@@ -86,35 +86,35 @@
 				type: String
 			}
 		},
-		_enableReset: function (nodePath, noReset) {
+		_enableReset(nodePath, noReset) {
 			if (noReset) {
 				return false;
 			}
 			return !!nodePath;
 		},
-		_getButtonLabel: function (pathParts, placeholder) {
+		_getButtonLabel(pathParts, placeholder) {
 			if (!Array.isArray(pathParts) || pathParts.length === 0) {
 				return placeholder;
 			}
 			return pathParts.filter(n => n).map(part => part[this.tree.searchProperty]).join(' / ');
 		},
 
-		openDialogTree: function () {
+		openDialogTree() {
 			this.$.dialogTree.open();
 		},
-		focusSearch: function () {
+		focusSearch() {
 			this.$.dialogTree.paperDialog.querySelector('#treeNavigator').focus();
 		},
-		reset: function () {
+		reset() {
 			this.nodePath = '';
 		},
-		selectNode: function () {
+		selectNode() {
 			this.nodePath = this.highlightedNodePath;
 		},
-		refit: function () {
+		refit() {
 			this.debounce('refit', function () {
 				this.$.dialogTree.fit();
 			}.bind(this), 50); // 5 was enough during test
 		}
 	});
-}());
+})();
