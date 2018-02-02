@@ -209,6 +209,7 @@
 		/**
 		 * Returns a node based on a given path locator.
 		 * If pathLocator is empty or not defined, null gets returned.
+		 * If pathLocator is only partly valid, the last valid node gets returned.
 		 * @param {String} pathLocator - The separated address parts of a node
 		 * @param {Tree} tree - The main tree
 		 * @return {Object} - The found node
@@ -217,7 +218,14 @@
 			if (!tree || !pathLocator) {
 				return null;
 			}
-			return this.tree.getNodeByPathLocator(pathLocator);
+
+			const node = this.tree.getNodeByPathLocator(pathLocator);
+			let nodes;
+
+			if (!node) {
+				nodes = tree.getPathNodes(pathLocator).filter(n => n != null);
+			}
+			return nodes && nodes.length > 0 ? nodes.pop() : node;
 		},
 		/**
 		 * Returns the nodes on a path specified by a given path locator
