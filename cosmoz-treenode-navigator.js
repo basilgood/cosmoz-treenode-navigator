@@ -161,7 +161,7 @@
 			}
 			const node = tree.getNodeByPathLocator(pathLocator),
 				children = tree.getChildren(node),
-				level = children || node,
+				level = tree.hasChildren(node) ? children : node,
 				sortFunc = (a, b) => {
 					// First sort based on "folder" status (containing children)
 					if (this.hasChildren(a)) {
