@@ -88,7 +88,7 @@ Navigator through object with treelike datastructure.
 			</h3>
 			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]"
 				id="searchInput" value="{{ searchValue }}">
-				<paper-icon-button icon="clear" suffix hidden$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
+				<paper-icon-button icon="clear" slot="suffix" hidden$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
 			</paper-input>
 		</div>
 		<iron-list items="[[dataPlane]]" as="node" selected-item="{{highlightedNode}}" selection-enabled>
