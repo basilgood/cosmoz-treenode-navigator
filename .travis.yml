@@ -2,25 +2,33 @@ language: node_js
 node_js: 6
 dist: trusty
 sudo: required
+env:
+  global:
+    - CC_TEST_REPORTER_ID=36a0219f9323e138cae8767b9b4a34a34ab33ec39027888c1c7c4d7da9c4ac44
 addons:
   firefox: latest
   apt:
     sources:
-    - google-chrome
+      - google-chrome
     packages:
-    - google-chrome-stable
+      - google-chrome-stable
 cache:
   yarn: true
   directories:
-  - node_modules
-  - bower_components
-  - bower_components-1.x
-  - ".eslintcache"
-  - "$HOME/.cache/bower"
+    - node_modules
+    - bower_components
+    - bower_components-1.x
+    - ".eslintcache"
+    - "$HOME/.cache/bower"
 before_script:
-- yarn run lint
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+  - yarn run lint
 script:
-- xvfb-run yarn test
+  - xvfb-run yarn test
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 notifications:
   slack:
     secure: iKrc/HlSSK9VCtcLxZ87GZsW3mtyx5q+C6c8JZjFvLIPQvXuZxho4HoojvGtFYASGfNtPUup88MBcHs5nqZK3clI0VyTj4iR14KVW+7ngGzAcwMM+WrWzWEQI9Q2v4UHQTsu0IR6aXFREhjh7uxAUtyvbuaVIBLt2176UispLoWCnjufNkio3qAhNdzvQCmyySfjUgTrKW1ibvDlvTIoxawU+M05DnxdDuiCN6/pj6irFY7Id98bMmuM69Noh39H2Zm14GY4GxfuHK42rL+01O33WfSzyIwLo0P06xpAq0gc+UkPPNLKs0xrvlG9+q3/H0w40RAX/HRC0N7dDJqSTSZqIT0x81kGAILJOtIjy4Dfnv0TiY0IGx0bezGnnYNdTdmhGypOqHOqCtuAo4Q2MiiCyDXCi3PaQij3CuiOjxBR8epET4g3Cl4DAGX740M71Xoc/15tX931sFnnGwhiQbjWCLt8mIYmv/mlzgVeC0j89ul3FgCbivy89VPQI1YGEhek2SSCWeCxGexgvfXhC67SVqi30Rhlx1yz1CRNZHS6+y+7XEenwb6mzGZf6DdoZfuNLiOBvTYa9GyzFl/F/ZWSj3N0ko9n/p3KSqcSijge7cZKjsaKIFmlJcBTTAZ/nizJqAR0A+1vF/Ch2fm7Aikkf54xylLMpIiWoJBmSDk=

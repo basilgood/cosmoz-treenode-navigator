@@ -1,7 +1,10 @@
 bower_components/
 bower_components-1.x/
 bower-1.x.json
-node_modules
+node_modules/
+coverage/
+debug.log
+yarn-error.log
 .vscode
 .DS_Store
 .eslintcache
