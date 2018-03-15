@@ -17,9 +17,9 @@
 		"paper-button": "PolymerElements/paper-button#1 - 2",
 		"iron-flex-layout": "PolymerElements/iron-flex-layout#1 - 2",
 		"iron-list": "PolymerElements/iron-list#1 - 2",
-		"cosmoz-i18next": "Neovici/cosmoz-i18next#master",
-		"cosmoz-dialog": "Neovici/cosmoz-dialog#master",
-		"cosmoz-tree": "Neovici/cosmoz-tree#master"
+		"cosmoz-i18next": "Neovici/cosmoz-i18next#^1.0.0",
+		"cosmoz-dialog": "Neovici/cosmoz-dialog#^1.0.0",
+		"cosmoz-tree": "Neovici/cosmoz-tree#^1.0.0"
 	},
 	"devDependencies": {
 		"iron-ajax": "PolymerElements/iron-ajax#1 - 2",
@@ -39,9 +39,9 @@
 				"paper-button": "PolymerElements/paper-button#^2.0.0",
 				"iron-flex-layout": "PolymerElements/iron-flex-layout#^1.3.0",
 				"iron-list": "PolymerElements/iron-list#^2.0.0",
-				"cosmoz-i18next": "Neovici/cosmoz-i18next#master",
-				"cosmoz-dialog": "Neovici/cosmoz-dialog#master",
-				"cosmoz-tree": "Neovici/cosmoz-tree#master"
+				"cosmoz-i18next": "Neovici/cosmoz-i18next#^1.0.0",
+				"cosmoz-dialog": "Neovici/cosmoz-dialog#^1.0.0",
+				"cosmoz-tree": "Neovici/cosmoz-tree#^1.0.0"
 			},
 			"devDependencies": {
 				"iron-ajax": "PolymerElements/iron-ajax#^1.4.4",
