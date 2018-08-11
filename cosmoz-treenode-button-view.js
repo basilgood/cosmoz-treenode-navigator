@@ -9,6 +9,10 @@
 		is: 'cosmoz-treenode-button-view',
 
 		properties: {
+			multiSelection: {
+				type: Boolean,
+				value: false
+			},
 			/*
 			 * The main node structure
 			 */
@@ -24,6 +28,14 @@
 					return {};
 				},
 				notify: true
+			},
+			/**
+			 * Selected nodes
+			 */
+			selectedNodes: {
+				type: Array,
+				notify: true,
+				value: () => []
 			},
 			/**
 			 * If true, reset button gets hidden
@@ -43,7 +55,7 @@
 			 */
 			buttonTextPlaceholder: {
 				type: String,
-				value: 'No selection made'
+				computed: 'getButtonTextPlaceholder(multiSelection)'
 			},
 			/*
 			 * The path of the selected node
@@ -86,6 +98,20 @@
 				type: String
 			}
 		},
+		_clearItemSelection(event) {
+			let item = event.model.item,
+				selectedIndex = this.selectedNodes.indexOf(item);
+
+			// This will remove from the DOM the source element of the processed event ...
+			this.splice('selectedNodes', selectedIndex, 1);
+			// ... so we must prevent further propagation of this event, because its source is now invalid.
+			// (This has caused troubles in app-drawer-layout click event handler).
+			event.preventDefault();
+			event.stopPropagation();
+		},
+		getButtonTextPlaceholder(multiSelection) {
+			return multiSelection ? 'Select a node' : 'No selection made';
+		},
 		_enableReset(nodePath, noReset) {
 			if (noReset) {
 				return false;
@@ -98,7 +124,9 @@
 			}
 			return pathParts.filter(n => n).map(part => part[this.tree.searchProperty]).join(' / ');
 		},
-
+		_getChipText(node) {
+			return node.name;
+		},
 		openDialogTree() {
 			this.$.dialogTree.open();
 		},
@@ -107,9 +135,18 @@
 		},
 		reset() {
 			this.nodePath = '';
+			this.selectedNodes = [];
 		},
 		selectNode() {
-			this.nodePath = this.highlightedNodePath;
+			if (this.multiSelection) {
+				if (!this.selectedNodes.some(nodePath => nodePath === this.highlightedNodePath)) {
+					this.push('selectedNodes', this.tree.getNodeByPathLocator(this.highlightedNodePath));
+				}
+				this.nodePath = '';
+				this.selectedNode = {};
+			} else {
+				this.nodePath = this.highlightedNodePath;
+			}
 		},
 		refit() {
 			this.debounce('refit', function () {

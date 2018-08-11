@@ -31,6 +31,40 @@ Navigator through object with treelike datastructure.
 				@apply --cosmoz-treenode-button-view-dialog-container;
 			}
 
+			#chips {
+				@apply --layout-horizontal;
+				@apply --layout-end;
+				@apply --layout-wrap;
+				max-width: 90%;
+			}
+			.chip {
+				border-radius: 500px;
+				background-color: #e0e0e0;
+				margin: 1px 4px 1px 0;
+				white-space: nowrap;
+				overflow: hidden;
+				@apply --layout-horizontal;
+				@apply --layout-center;
+			}
+			.chip > span {
+				color: #424242;
+				margin-left: 10px;
+				font-size: 13px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			.chip iron-icon {
+				margin: 2px 4px;
+				color: #cdcdcd;
+				background-color: #a6a6a6;
+				border-radius: 500px;
+				cursor: pointer;
+				min-width: 16px;
+				width: 16px;
+				min-height: 16px;
+				height: 16px;
+			}
+
 			#dialogTree {
 				min-width: 250px !important;
 				width: 450px;
@@ -42,12 +76,19 @@ Navigator through object with treelike datastructure.
 			}
 
 		</style>
+
 		<div class="horizontal layout actions">
 			<paper-button class="flex" raised on-tap="openDialogTree">
 				<div class="pathToNode">[[ _getButtonLabel(nodesOnNodePath, buttonTextPlaceholder) ]]</div>
 			</paper-button>
+			<div id="chips" class="row">
+				<template is="dom-repeat" items="[[ selectedNodes ]]">
+					<div class="chip"><span>[[ _getChipText(item,tree) ]]</span><iron-icon icon="clear" on-click="_clearItemSelection"></iron-icon></div>
+				</template>
+			</div>
 			<paper-icon-button icon="clear" on-tap="reset" hidden$="[[ !_enableReset(nodePath, noReset) ]]"></paper-icon-button>
 		</div>
+
 		<cosmoz-dialog id="dialogTree" class="treeDialog" on-iron-overlay-opened="focusSearch" modal prerender>
 			<template>
 				<h2>[[ dialogText ]]</h2>
@@ -69,6 +110,7 @@ Navigator through object with treelike datastructure.
 				</div>
 			</template>
 		</cosmoz-dialog>
+
 	</template>
 	<script type="text/javascript" src="cosmoz-treenode-button-view.js"></script>
 </dom-module>
