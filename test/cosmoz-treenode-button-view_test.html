@@ -66,6 +66,16 @@
 				}, 100);
 			});
 
+			test('search input gets focused when dialog opens', done => {
+				treeButton.$$('.pathToNode').click();
+				Polymer.Base.async(() => {
+					assert.equal(document.activeElement.shadowRoot.activeElement.id, 'searchInput');
+					if (treeButton.$.dialogTree != null) {
+						treeButton.$.dialogTree.close();
+					}
+					done();
+				}, 50);
+			});
 		});
 	}());
 	</script>
