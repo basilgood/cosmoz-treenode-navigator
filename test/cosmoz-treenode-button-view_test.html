@@ -69,7 +69,12 @@
 			test('search input gets focused when dialog opens', done => {
 				treeButton.$$('.pathToNode').click();
 				Polymer.Base.async(() => {
-					assert.equal(window.document.activeElement.shadowRoot.activeElement.id, 'searchInput');
+					if (window.document.activeElement.shadowRoot != null && window.document.activeElement.shadowRoot.activeElement != null) {
+						assert.equal(window.document.activeElement.shadowRoot.activeElement.id, 'searchInput');
+					} else {
+						assert.equal(window.document.activeElement.id, 'searchInput');
+					}
+
 					if (treeButton.$.dialogTree != null) {
 						treeButton.$.dialogTree.close();
 					}
