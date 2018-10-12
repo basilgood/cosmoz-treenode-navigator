@@ -66,15 +66,24 @@
 				}, 100);
 			});
 
-			test('search input gets focused when dialog opens', done => {
+			function isIdActiveElement(id, element, idPreviouslyFound) {
+				let idFound = idPreviouslyFound || element && element.id === id;
+
+				if (element != null && element.shadowRoot != null) {
+					return isIdActiveElement(id, element.shadowRoot.activeElement, idFound);
+				}
+
+				// active element not null means that it has focus
+				return element != null && idFound;
+			}
+
+			test('search input has focus when dialog has opened', done => {
 				treeButton.$$('.pathToNode').click();
 				Polymer.Base.async(() => {
-					if (window.document.activeElement.shadowRoot != null && window.document.activeElement.shadowRoot.activeElement != null) {
-						assert.equal(window.document.activeElement.shadowRoot.activeElement.id, 'searchInput');
-					} else {
-						assert.equal(window.document.activeElement.id, 'searchInput');
+					// real focus can only be tested here, not valid outside test()
+					if (window.document.hasFocus()) {
+						assert.equal(isIdActiveElement('searchInput', window.document.activeElement), true);
 					}
-
 					if (treeButton.$.dialogTree != null) {
 						treeButton.$.dialogTree.close();
 					}
