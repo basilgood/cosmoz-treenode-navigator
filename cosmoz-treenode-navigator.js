@@ -131,7 +131,7 @@
 		 * @return {undefined}
 		 */
 		focus() {
-			this.$.searchInput.inputElement.focus();
+			this.$.searchInput.focus();
 		},
 		/**
 		 * Returns the found nodes based on a search string and a given tree to be searched
