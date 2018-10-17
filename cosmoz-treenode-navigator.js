@@ -341,7 +341,7 @@
 		 * @return {Boolean} - If the path should be visible
 		 */
 		_renderSection(searching, index, dataPlane, node) {
-			if (!searching || index >= dataPlane.length || !node || !node.sectionName) {
+			if (!searching || index == null || dataPlane == null || index >= dataPlane.length || node == null || node.sectionName == null) {
 				return false;
 			}
 			if (index === 0) {
