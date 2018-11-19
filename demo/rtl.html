@@ -49,17 +49,17 @@
 	 </div>
 	<script>
 		window.addEventListener('WebComponentsReady', () => {
-			const getTree = (data => {
+			const getTree = data => {
 				if (data) {
 					return new Cosmoz.DefaultTree(data);
 				}
-			});
-			const initTemplate = (id => {
+			},
+			initTemplate = id => {
 				let tpl = document.getElementById(id);
 				tpl = !tpl.set ? tpl.firstElementChild : tpl;
 				tpl.getTree = getTree;
 				tpl.set('doRequest', true);
-			});
+			};
 			initTemplate('demo1');
 		});
 	</script>
