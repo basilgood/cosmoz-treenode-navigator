@@ -4,18 +4,18 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 	<title>cosmoz-treenode-navigator demo</title>
-
+	
 	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
+	
 	<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
 	<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
+	
 	<link rel="import" href="../../iron-ajax/iron-ajax.html">
 	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
-
+	
 	<link rel="import" href="../cosmoz-treenode-navigator.html">
 	<link rel="import" href="../cosmoz-treenode-button-view.html">
-
+	
 	<custom-style>
 		<style is="custom-style" include="demo-pages-shared-styles"></style>
 	</custom-style>
@@ -33,69 +33,66 @@
 				<dom-bind id="demo1">
 					<template is="dom-bind">
 						<iron-ajax
-							url="data/adminFiles.json"
-							handle-as="json"
-							last-response="{{ treeData1 }}"
-							auto="[[ doRequest ]]">
-						</iron-ajax>
-						<cosmoz-treenode-button-view id="navigator"
-							button-text-placeholder="Click to select a node"
-							node-path="{{ path1 }}"
-							selected-node="{{ selectedNode1 }}"
-							tree="[[ getTree(treeData1) ]]">
-						</cosmoz-treenode-button-view>
-					</template>
-				</dom-bind>
+						url="data/adminFiles.json"
+						handle-as="json"
+						last-response="{{ treeData1 }}"
+						auto="[[ doRequest ]]">
+					</iron-ajax>
+					<cosmoz-treenode-button-view id="navigator"
+					button-text-placeholder="Click to select a node"
+					node-path="{{ path1 }}"
+					selected-node="{{ selectedNode1 }}"
+					tree="[[ getTree(treeData1) ]]">
+				</cosmoz-treenode-button-view>
 			</template>
-		</demo-snippet>
-	 </div>
+		</dom-bind>
+	</template>
+</demo-snippet>
+</div>
 
-	 <div class="vertical-section-container">
-		<h3>Navigator with multiple root tree data structure and missing ancestor nodes</h3>
-		<p>
-			The tree data structure is based on the one in the demo above, but showing only files accessible to a specific user.
-		</p>
-		<demo-snippet>
-			<template>
-				<dom-bind id="demo2">
-					<template is="dom-bind">
-						<iron-ajax url="data/johnFiles.json"
-							handle-as="json"
-							last-response="{{ treeData2 }}"
-							auto="[[ doRequest ]]">
-						</iron-ajax>
-						<cosmoz-treenode-button-view id="navigator"
-							button-text-placeholder="Click to select a node"
-							node-path="{{ path2 }}"
-							selected-node="{{ selectedNode2 }}"
-							tree="[[ getTree(treeData2) ]]">
-						</cosmoz-treenode-button-view>
-					</template>
-				</dom-bind>
-			</template>
-		</demo-snippet>
-	 </div>
+<div class="vertical-section-container">
+	<h3>Navigator with multiple root tree data structure and missing ancestor nodes</h3>
+	<p>
+		The tree data structure is based on the one in the demo above, but showing only files accessible to a specific user.
+	</p>
+	<demo-snippet>
+		<template>
+			<dom-bind id="demo2">
+				<template is="dom-bind">
+					<iron-ajax url="data/johnFiles.json"
+					handle-as="json"
+					last-response="{{ treeData2 }}"
+					auto="[[ doRequest ]]">
+				</iron-ajax>
+				<cosmoz-treenode-button-view id="navigator"
+				button-text-placeholder="Click to select a node"
+				node-path="{{ path2 }}"
+				selected-node="{{ selectedNode2 }}"
+				tree="[[ getTree(treeData2) ]]">
+			</cosmoz-treenode-button-view>
+		</template>
+	</dom-bind>
+</template>
+</demo-snippet>
+</div>
 
-	<script>
+<script>
 	window.addEventListener('WebComponentsReady', () => {
-
 		const getTree = data => {
-			if (data) {
-				return new Cosmoz.DefaultTree(data);
-			}
-		},
-		initTemplate = id => {
-			let tpl = document.getElementById(id);
-			tpl = !tpl.set ? tpl.firstElementChild : tpl;
-			tpl.getTree = getTree;
-			tpl.set('doRequest', true);
-		};
-
+				if (data) {
+					return new Cosmoz.DefaultTree(data);
+				}
+			},
+			initTemplate = id => {
+				let tpl = document.getElementById(id);
+				tpl = !tpl.set ? tpl.firstElementChild : tpl;
+				tpl.getTree = getTree;
+				tpl.set('doRequest', true);
+			};
 		setTimeout(() => {
 			initTemplate('demo1');
 			initTemplate('demo2');
 		});
-
 	});
-	</script>
+</script>
 </body></html>

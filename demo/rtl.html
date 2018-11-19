@@ -4,18 +4,18 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 	<title>cosmoz-treenode-navigator demo</title>
-
+	
 	<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-
+	
 	<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
 	<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
+	
 	<link rel="import" href="../../iron-ajax/iron-ajax.html">
-
+	
 	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
 	<link rel="import" href="../cosmoz-treenode-navigator.html">
 	<link rel="import" href="../cosmoz-treenode-button-view.html">
-
+	
 	<custom-style>
 		<style is="custom-style" include="demo-pages-shared-styles"></style>
 	</custom-style>
@@ -31,25 +31,25 @@
 				<dom-bind id="demo1">
 					<template is="dom-bind">
 						<iron-ajax
-							url="../test/data/rtlTest.json"
-							handle-as="json"
-							last-response="{{ treeData1 }}"
-							auto="[[ doRequest ]]">
-						</iron-ajax>
-						<cosmoz-treenode-button-view id="navigator"
-							button-text-placeholder="Click to select a node"
-							node-path="{{ path1 }}"
-							selected-node="{{ selectedNode1 }}"
-							tree="[[ getTree(treeData1) ]]">
-						</cosmoz-treenode-button-view>
-					</template>
-				</dom-bind>
+						url="../test/data/rtlTest.json"
+						handle-as="json"
+						last-response="{{ treeData1 }}"
+						auto="[[ doRequest ]]">
+					</iron-ajax>
+					<cosmoz-treenode-button-view id="navigator"
+					button-text-placeholder="Click to select a node"
+					node-path="{{ path1 }}"
+					selected-node="{{ selectedNode1 }}"
+					tree="[[ getTree(treeData1) ]]">
+				</cosmoz-treenode-button-view>
 			</template>
-		</demo-snippet>
-	 </div>
-	<script>
-		window.addEventListener('WebComponentsReady', () => {
-			const getTree = data => {
+		</dom-bind>
+	</template>
+</demo-snippet>
+</div>
+<script>
+	window.addEventListener('WebComponentsReady', () => {
+		const getTree = data => {
 				if (data) {
 					return new Cosmoz.DefaultTree(data);
 				}
@@ -60,7 +60,7 @@
 				tpl.getTree = getTree;
 				tpl.set('doRequest', true);
 			};
-			initTemplate('demo1');
-		});
-	</script>
+		initTemplate('demo1');
+	});
+</script>
 </body></html>
