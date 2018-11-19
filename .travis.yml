@@ -1,10 +1,9 @@
 language: node_js
-node_js: 6
-dist: trusty
-sudo: required
 env:
   global:
     - CC_TEST_REPORTER_ID=36a0219f9323e138cae8767b9b4a34a34ab33ec39027888c1c7c4d7da9c4ac44
+    - SAUCE_USERNAME=nomego
+    - secure: kwtgS2aIwXL3CgoYq8rTWq9ad4NGaJHGn4LjHo1RR+ay0zcrfcLiakpa7xHjIGzlttwRDiPlAORemm9/3cQl2d4G0MhV9cyRUBnT5vntbjR69oYuTqRZgemr4/Vxjw9mC184A7qNOh9Er2lPcMBQ98KG+SY8HxC0GjFklaOg/FEcOsjQz2WR2IeNBsOYLpVs6xmtyEXF9VOrzoVqmgv0IVtknJfjn05CFyXmakV0Y6HcbDrMgNVWy7iuwc33++kQiPcMU2SoyQF94iiv7G9olNirze027dPjJxYxGUGiziBV4A6C3hKZ4dWhF0sen72c0KGVIQJgbP0GAKl56mZ+FYhlmINpzCsfnO4urlQOvj89htXGyQjlzLpqxp3HDw7TCCmmOvXN0tmeF/2Ym1WFnAdtkguOfg1apn8rEsL/X1wrjLwVUHicw/hqdkrBnTcI7shrV1LwJ8Uhs5fcrWrqP9AdsrWuO9Z0hAl6CL3uV2LDuzuS6n1fv4kULrtiryh+9f4YJIwuppk6BHLvXaAIxSwR7lhZ2s1HZlESu9MZUrrSEuPleaw2copWGXARwX0mAFlCQ0sVplqnJDFAsn2rNqcGMBDri0Hj7JWiFhFIFCgzBRQJctjxQr5OOnaHZ+a/TK+5eHlBWdkfw5uZThuqmUnWBu4vgaSjA7SIcq4F65g=
 addons:
   firefox: latest
   apt:
@@ -26,7 +25,7 @@ before_script:
   - ./cc-test-reporter before-build
   - yarn run lint
 script:
-  - xvfb-run yarn test
+  - yarn test
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 notifications:

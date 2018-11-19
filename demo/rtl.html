@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 	<title>cosmoz-treenode-navigator demo</title>
 
-	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
 
 	<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
 	<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
@@ -48,18 +48,18 @@
 		</demo-snippet>
 	 </div>
 	<script>
-		window.addEventListener('WebComponentsReady', function () {
-			function getTree(data) {
+		window.addEventListener('WebComponentsReady', () => {
+			const getTree = (data => {
 				if (data) {
 					return new Cosmoz.DefaultTree(data);
 				}
-			}
-			function initTemplate(id) {
-				var tpl = document.getElementById(id);
+			});
+			const initTemplate = (id => {
+				let tpl = document.getElementById(id);
 				tpl = !tpl.set ? tpl.firstElementChild : tpl;
 				tpl.getTree = getTree;
 				tpl.set('doRequest', true);
-			}
+			});
 			initTemplate('demo1');
 		});
 	</script>

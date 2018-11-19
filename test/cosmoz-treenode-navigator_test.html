@@ -4,11 +4,11 @@
 <head>
 	<title>cosmoz-treenode-navigator test</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
 	<title>cosmoz-treenode-navigator test</title>
 
-	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
 	<script src="../../web-component-tester/browser.js"></script>
 	<script src="../../test-fixture/test-fixture-mocha.js"></script>
 
@@ -22,7 +22,7 @@
 <body>
 	<test-fixture id="basic">
 		<template>
-			<cosmoz-treenode-navigator id="navigator"></cosmoz-treenode-navigator>
+			<cosmoz-treenode-navigator></cosmoz-treenode-navigator>
 			<iron-ajax auto
 				url="data/basicTree.json"
 				handle-as="json"
@@ -31,42 +31,38 @@
 		</template>
 	</test-fixture>
 
-	<script>
-	(function () {
-		'use strict';
-
-		suite('cosmoz-treenode-navigator', function () {
-			var basicFixture,
+	<script type="text/javascript">	
+		suite('cosmoz-treenode-navigator', () => {
+			let basicFixture,
 				basicTree,
 				navigator;
 
-			suiteSetup(function (done) {
-				var ajax;
+			suiteSetup(done => {
+				let ajax;
 				basicFixture = fixture('basic');
-				ajax = basicFixture.find(function (n) {
+				ajax = basicFixture.find(n => {
 					return n.is === 'iron-ajax';
 				});
-				navigator = basicFixture.find(function (n) {
-					return n.is === 'cosmoz-treenode-navigator';
+				navigator = basicFixture.find(n => {
+					return n.tagName === 'COSMOZ-TREENODE-NAVIGATOR';
 				});
 
-				ajax.addEventListener('response', function () {
+				ajax.addEventListener('response', () => {
 					basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
 					navigator.tree = basicTree;
 					done();
 				});
 			});
 
-			test('instantiating the element', function () {
-				assert.equal(navigator.is, 'cosmoz-treenode-navigator');
+			test('instantiating the element', () => {
+				assert.equal(navigator.tagName, 'COSMOZ-TREENODE-NAVIGATOR');
 			});
 
-			test('dataPlane initialised with tree', function () {
+			test('dataPlane initialised with tree', () => {
 				assert.equal(navigator.dataPlane[0].name, 'Root');
 				assert.equal(navigator.dataPlane.length, navigator.tree._roots.length);
 			});
 
 		});
-	}());
 	</script>
 </body></html>

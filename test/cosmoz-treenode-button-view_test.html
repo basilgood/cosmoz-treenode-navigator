@@ -4,11 +4,11 @@
 	<head>
 	<title>cosmoz-treenode-navigator test</title>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
 	<title>cosmoz-treenode-navigator test</title>
 
-	<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+	<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
 	<script src="../../web-component-tester/browser.js"></script>
 	<script src="../../test-fixture/test-fixture-mocha.js"></script>
 
@@ -18,6 +18,8 @@
 	<link rel="import" href="../cosmoz-treenode-button-view.html">
 	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
 	<link rel="import" href="../../iron-ajax/iron-ajax.html">
+
+	<link rel="import" href="../bower_components/polymer/lib/utils/async.html">
 </head>
 <body>
 	<test-fixture id="rtl">
@@ -30,40 +32,38 @@
 		</template>
 	</test-fixture>
 
-	<script>
-	(function () {
-		'use strict';
-
-		suite('rtl', function () {
-			var buttonFixture,
+	<script type="text/javascript">	
+		suite('rtl', () => {
+			let buttonFixture,
 				tree,
 				treeButton;
 
-			suiteSetup(function (done) {
-				var ajax;
+			suiteSetup(done => {
+				let ajax;
 				buttonFixture = fixture('rtl');
-				ajax = buttonFixture.find(function (n) {
+				ajax = buttonFixture.find(n => {
 					return n.is === 'iron-ajax';
 				});
-				treeButton = buttonFixture.find(function (n) {
-					return n.is === 'cosmoz-treenode-button-view';
+				treeButton = buttonFixture.find(n => {
+					return n.tagName === 'COSMOZ-TREENODE-BUTTON-VIEW';
 				});
 
-				ajax.addEventListener('response', function () {
+				ajax.addEventListener('response', () => {
 					tree = new Cosmoz.DefaultTree(ajax.lastResponse);
 					treeButton.tree = tree;
 					done();
 				});
 			});
 
-			test('button renders selected path', function () {
+			test('button renders selected path', done => {
 				treeButton.nodePath = '1.2.3';
 				// Button view label depends on a binding in a cosmoz-treenode-navigator
 				// stamped asynchronously, so we need to wait a bit.
-				Polymer.Base.async(function () {
-					var buttonLabel = treeButton.$$('.pathToNode').textContent;
+				setTimeout(() => {
+					const buttonLabel = treeButton.shadowRoot.querySelector('.pathToNode').textContent;
 					assert.equal(buttonLabel, '1 / 2 / 3');
-				}, 100);
+					done();
+				}, 500);
 			});
 
 /*
@@ -94,6 +94,5 @@
 			});
 */
 		});
-	}());
 	</script>
 </body></html>

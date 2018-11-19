@@ -77,18 +77,19 @@
 	 </div>
 
 	<script>
-	window.addEventListener('WebComponentsReady', function () {
-		function getTree(data) {
-			if (data) {
-				return new Cosmoz.DefaultTree(data);
-			}
-		}
-		function initTemplate(id) {
-			var tpl = document.getElementById(id);
+	window.addEventListener('WebComponentsReady', () => {
+
+		const getTree = (data => {
+				if (data) {
+					return new Cosmoz.DefaultTree(data);
+				}
+			});
+		const initTemplate = (id => {
+			let tpl = document.getElementById(id);
 			tpl = !tpl.set ? tpl.firstElementChild : tpl;
 			tpl.getTree = getTree;
 			tpl.set('doRequest', true);
-		}
+		});
 
 		setTimeout(() => {
 			initTemplate('demo1');
