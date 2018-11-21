@@ -1,8 +1,6 @@
 (() => {
 	'use strict';
 
-
-
 	class CosmozTreenodeButtonView extends Polymer.mixinBehaviors([Cosmoz.TranslatableBehavior], Polymer.Element) {
 		static get is() {
 			return 'cosmoz-treenode-button-view';
