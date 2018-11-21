@@ -1,138 +1,136 @@
 (() => {
 	'use strict';
 
-	Polymer({
+	class CosmozTreenodeNavigator extends Polymer.mixinBehaviors([Cosmoz.TranslatableBehavior], Polymer.Element) {
+		static get is() {
+			return 'cosmoz-treenode-navigator';
+		}
+		static get properties() {
+			return {
+				/*
+				* The main node structure
+				*/
+				tree: {
+					type: Cosmoz.tree
+				},
+				/*
+				* The currently displayed node list
+				*/
+				dataPlane: {
+					type: Array,
+					notify: true,
+					computed: '_computeDataPlane(_search, searchValue, _renderedLevel, tree)'
+				},
+				/*
+				* The selected node
+				*/
+				selectedNode: {
+					type: Object,
+					computed: '_getNode(nodePath, tree)',
+					notify: true
+				},
+				/*
+				* The path of the selected node
+				* This is the node which was highlighted and after the user tapped the select button
+				*/
+				nodePath: {
+					type: String,
+					value: '',
+					notify: true,
+					observer: '_nodePathChanged'
+				},
+				/*
+				* The nodes on the path of the selected node
+				*/
+				nodesOnNodePath: {
+					type: Array,
+					computed: '_getTreePathParts(nodePath, tree)',
+					notify: true
+				},
+				/*
+				* The highlighted (focused) node
+				* This is the node which is currently selected in the list
+				*/
+				highlightedNode: {
+					type: Object,
+					observer: '_highlightedNodeChanged',
+				},
+				/*
+				* The path string of highlighted (focused) node
+				*/
+				highlightedNodePath: {
+					type: String,
+					notify: true
+				},
+				/*
+				* The search string
+				*/
+				searchValue: {
+					type: String,
+					value: ''
+				},
+				/*
+				* Placeholder for search field.
+				*/
+				searchPlaceholder: {
+					type: String,
+					value: 'Search'
+				},
+				/*
+				* Text displayed when local search has finished
+				* to suggest a search on the entire tree
+				*/
+				searchGlobalPlaceholder: {
+					type: String,
+					value: 'Click to search again but globally.'
+				},
+				/*
+				* Minimum length of searchValue to trigger a search
+				*/
+				searchMinLength: {
+					type: Number,
+					value: 1
+				},
 
-		behaviors: [
-			Cosmoz.TranslatableBehavior
-		],
+				/** PRIVATE */
 
-		is: 'cosmoz-treenode-navigator',
-
-		properties: {
-			/*
-			 * The main node structure
-			 */
-			tree: {
-				type: Cosmoz.tree
-			},
-			/*
-			 * The currently displayed node list
-			 */
-			dataPlane: {
-				type: Array,
-				notify: true,
-				computed: '_computeDataPlane(_search, searchValue, _renderedLevel, tree)'
-			},
-			/*
-			 * The selected node
-			 */
-			selectedNode: {
-				type: Object,
-				computed: '_getNode(nodePath, tree)',
-				notify: true
-			},
-			/*
-			 * The path of the selected node
-			 * This is the node which was highlighted and after the user tapped the select button
-			 */
-			nodePath: {
-				type: String,
-				value: '',
-				notify: true,
-				observer: '_nodePathChanged'
-			},
-			/*
-			 * The nodes on the path of the selected node
-			 */
-			nodesOnNodePath: {
-				type: Array,
-				computed: '_getTreePathParts(nodePath, tree)',
-				notify: true
-			},
-			/*
-			 * The highlighted (focused) node
-			 * This is the node which is currently selected in the list
-			 */
-			highlightedNode: {
-				type: Object,
-				observer: '_highlightedNodeChanged',
-			},
-			/*
-			 * The path string of highlighted (focused) node
-			 */
-			highlightedNodePath: {
-				type: String,
-				notify: true
-			},
-			/*
-			 * The search string
-			 */
-			searchValue: {
-				type: String,
-				value: ''
-			},
-			/*
-			 * Placeholder for search field.
-			 */
-			searchPlaceholder: {
-				type: String,
-				value: 'Search'
-			},
-			/*
-			 * Text displayed when local search has finished
-			 * to suggest a search on the entire tree
-			 */
-			searchGlobalPlaceholder: {
-				type: String,
-				value: 'Click to search again but globally.'
-			},
-			/*
-			 * Minimum length of searchValue to trigger a search
-			 */
-			searchMinLength: {
-				type: Number,
-				value: 1
-			},
-
-			/** PRIVATE */
-
-			/*
-			 * Nodes (children) to be displayed when opening a node
-			 */
-			_renderedLevel: {
-				type: Array,
-				computed: '_renderLevel(_openNodePath, tree)'
-			},
-			/*
-			 * The path of the opened node
-			 */
-			_openNodePath: {
-				type: String,
-				value: ''
-			},
-			/*
-			 * The nodes on the path of the opened node
-			 */
-			_nodesOnOpenNodePath: {
-				type: Array,
-				computed: '_getTreePathParts(_openNodePath, tree)'
-			},
-			/*
-			 * Whether a search should be executed
-			 */
-			_search: {
-				type: Boolean,
-				computed: '_computeSearching(searchValue, searchMinLength)'
-			}
-		},
+				/*
+				* Nodes (children) to be displayed when opening a node
+				*/
+				_renderedLevel: {
+					type: Array,
+					computed: '_renderLevel(_openNodePath, tree)'
+				},
+				/*
+				* The path of the opened node
+				*/
+				_openNodePath: {
+					type: String,
+					value: ''
+				},
+				/*
+				* The nodes on the path of the opened node
+				*/
+				_nodesOnOpenNodePath: {
+					type: Array,
+					computed: '_getTreePathParts(_openNodePath, tree)'
+				},
+				/*
+				* Whether a search should be executed
+				*/
+				_search: {
+					type: Boolean,
+					computed: '_computeSearching(searchValue, searchMinLength)'
+				}
+			};
+		}
 		/**
 		 * Focusses the search input.
 		 * @return {undefined}
 		 */
 		focus() {
 			this.$.searchInput.focus();
-		},
+		}
 		/**
 		 * Returns the found nodes based on a search string and a given tree to be searched
 		 * @param {Boolean} searching - If true, a search should be executed
@@ -147,7 +145,7 @@
 				return this._normalizeNodes(results);
 			}
 			return renderedLevel;
-		},
+		}
 		/**
 		 * Returns a node array with the children of a node on the given path
 		 * If the node doesn't have children, the node gets returned
@@ -185,7 +183,7 @@
 				};
 
 			return this._normalizeNodes(level).sort(sortFunc);
-		},
+		}
 		/**
 		 * Normalizes and returns an Array of nodes
 		 * with the properties name, path, sectionName, children
@@ -203,12 +201,12 @@
 				const path = node.pathLocator || node.path;
 				return {
 					name: node[this.tree.searchProperty],
-					path: path,
+					path,
 					sectionName: this.tree.getPathString(path, this.tree.searchProperty),
 					children: node[this.tree.childProperty]
 				};
 			});
-		},
+		}
 		/**
 		 * Returns a node based on a given path locator.
 		 * If pathLocator is empty or not defined, null gets returned.
@@ -229,7 +227,7 @@
 				nodes = tree.getPathNodes(pathLocator).filter(n => n != null);
 			}
 			return nodes && nodes.length > 0 ? nodes.pop() : node;
-		},
+		}
 		/**
 		 * Returns the nodes on a path specified by a given path locator
 		 * @param {String} pathLocator - The separated address parts of a node
@@ -241,7 +239,7 @@
 				return [];
 			}
 			return this._normalizeNodes(tree.getPathNodes(pathLocator));
-		},
+		}
 		/**
 		 * Clears the search input
 		 * @param {Event} e - The trigger event
@@ -251,7 +249,7 @@
 			e.preventDefault();
 			e.stopPropagation();
 			this.searchValue = '';
-		},
+		}
 		/**
 		 * Returns the name of a given node
 		 * @param {Object} node - The node
@@ -259,7 +257,7 @@
 		 */
 		_getNodeName(node) {
 			return node[this.tree.searchProperty];
-		},
+		}
 		/**
 		 * Sets the highlightedNodePath when highlightedNode changed
 		 * @param {Object} node - The highlighted node
@@ -271,7 +269,7 @@
 				return;
 			}
 			this.highlightedNodePath = node.path;
-		},
+		}
 		/**
 		 * Returns true if a given node has children
 		 * @param {Object} node - The node
@@ -279,7 +277,7 @@
 		 */
 		hasChildren(node) {
 			return this.tree.hasChildren(node);
-		},
+		}
 		/**
 		 * Opens a node (renderLevel) based on a given path
 		 * @param {Event} e - The triggering event
@@ -294,7 +292,7 @@
 			// stop event propagation to prevent iron-list trying to select the current item while it will be removed
 			e.preventDefault();
 			e.stopPropagation();
-		},
+		}
 		/**
 		 * Gets called if the selected node (path) has changed
 		 * @param {String} path - The path of the newly selected node
@@ -306,7 +304,7 @@
 				return;
 			}
 			this.highlightedNodePath = path;
-		},
+		}
 		/**
 		 * Returns true, if the button should be visible
 		 * @param {Boolean} searching - If a search is currently executed
@@ -315,14 +313,14 @@
 		 */
 		_showGlobalSearchBtn(searching, openNodeLevelPath) {
 			return searching && openNodeLevelPath !== '';
-		},
+		}
 		/**
 		 * Triggers a global search
 		 * @return {undefined}
 		 */
 		tryGlobalSearch() {
 			this._openNodePath = '';
-		},
+		}
 		/**
 		 * Returns true, if a search string is eligable to trigger a search
 		 * @param {String} value - The search string
@@ -331,7 +329,7 @@
 		 */
 		_computeSearching(value, searchMinLength) {
 			return value && value.length >= searchMinLength && value !== '';
-		},
+		}
 		/**
 		 * Returns true, if the path of a node should be visible in the view
 		 * @param {Boolean} searching - If a search is currently executed
@@ -352,7 +350,7 @@
 				return false;
 			}
 			return true;
-		},
+		}
 		/**
 		 * Triggers a click event on the currentTarget
 		 * if space or enter key was pressed
@@ -367,7 +365,7 @@
 					fn = new Function('target', 'fnName', 'return target.' + fnName + '()');
 				fn(target, fnName);
 			}
-		},
+		}
 		/**
 		 * Returns the classes of a row based its selection state
 		 * @param {String} classes - The default classes
@@ -377,5 +375,6 @@
 		_computeRowClass(classes, selected) {
 			return selected ? classes + ' selected' : classes;
 		}
-	});
+	}
+	customElements.define(CosmozTreenodeNavigator.is, CosmozTreenodeNavigator);
 })();
