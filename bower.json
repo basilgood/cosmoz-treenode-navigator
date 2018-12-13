@@ -18,7 +18,7 @@
 		"iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
 		"iron-list": "PolymerElements/iron-list#^2.0.0",
 		"cosmoz-i18next": "Neovici/cosmoz-i18next#^1.0.0",
-		"cosmoz-dialog": "Neovici/cosmoz-dialog#^1.0.0",
+		"cosmoz-dialog": "Neovici/cosmoz-dialog#^2.0.1",
 		"cosmoz-tree": "Neovici/cosmoz-tree#^1.0.0"
 	},
 	"devDependencies": {
