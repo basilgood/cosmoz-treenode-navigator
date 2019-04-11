@@ -192,6 +192,14 @@
 			}
 		}
 		/**
+		 * Selects node and closes the dialog
+		 * @returns {void}
+		 */
+		_selectNodeAndCloseDialog() {
+			this.selectNode();
+			this.$.dialogTree.close();
+		}
+		/**
 		 * Determine if selected nodes container should be visible or not.
 		 * @param {boolean} multiSelection Multi selection setting.
 		 * @param {number} selectedNodesLength Selected nodes quantity.

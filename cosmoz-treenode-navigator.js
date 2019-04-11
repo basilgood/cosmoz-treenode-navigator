@@ -125,6 +125,21 @@
 			};
 		}
 		/**
+		 * Selects the doubled clicked node and dispatches an node-dblclicked event.
+		 * @param {Event} event The triggering event
+		 * @return {undefined}
+		 */
+		_onNodeDblClicked(event) {
+			this.$.ironList.selectIndex(event.model.index);
+			this.dispatchEvent(new CustomEvent('node-dblclicked', {
+				composed: true,
+				bubbles: false,
+				detail: {
+					model: event.model
+				}
+			}));
+		}
+		/**
 		 * Focusses the search input.
 		 * @return {undefined}
 		 */
