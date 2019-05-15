@@ -1,7 +1,8 @@
+/*global Cosmoz,Polymer*/
 (() => {
 	'use strict';
 
-	class CosmozTreenodeNavigator extends Polymer.mixinBehaviors([Cosmoz.TranslatableBehavior], Polymer.Element) {
+	class CosmozTreenodeNavigator extends Cosmoz.Mixins.translatable(Polymer.Element) {
 		static get is() {
 			return 'cosmoz-treenode-navigator';
 		}
