@@ -5,16 +5,15 @@
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 	<title>cosmoz-treenode-navigator demo</title>
 
-	<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+	<script src="/components/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
-	<link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-	<link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-	
-	<link rel="import" href="../../iron-ajax/iron-ajax.html">
+	<script type="module" src="/components/@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+	<script type="module" src="/components/@polymer/iron-demo-helpers/demo-snippet.js"></script>
 
-	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
-	<link rel="import" href="../cosmoz-treenode-navigator.html">
-	<link rel="import" href="../cosmoz-treenode-button-view.html">
+	<script type="module" src="/components/@polymer/iron-ajax/iron-ajax.js"></script>
+
+	<script type="module" src="../cosmoz-treenode-navigator.js"></script>
+	<script type="module" src="../cosmoz-treenode-button-view.js"></script>
 
 	<custom-style>
 		<style is="custom-style" include="demo-pages-shared-styles"></style>
@@ -23,35 +22,28 @@
 
 <body>
 	<h1>Cosmoz-treenode-button-view rtl test</h1>
+
 	<div class="vertical-section-container">
 		<h3>Demonstrate issue caused by using direction: rtl to render the button label</h3>
-		<p>Select node 1/2/3, and watch the button  label</p>
+		<p>Select node 1/2/3, and watch the button	label</p>
 		<demo-snippet>
 			<template>
 				<dom-bind id="demo1">
 					<template is="dom-bind">
-						<iron-ajax
-						url="../test/data/rtlTest.json"
-						handle-as="json"
-						last-response="{{ treeData1 }}"
-						auto="[[ doRequest ]]">
-					</iron-ajax>
-					<cosmoz-treenode-button-view id="navigator"
-					button-text-placeholder="Click to select a node"
-					node-path="{{ path1 }}"
-					selected-node="{{ selectedNode1 }}"
-					tree="[[ getTree(treeData1) ]]">
-				</cosmoz-treenode-button-view>
+						<iron-ajax url="../test/data/rtlTest.json" handle-as="json" last-response="{{ treeData1 }}" auto="[[ doRequest ]]">
+						</iron-ajax>
+						<cosmoz-treenode-button-view id="navigator" button-text-placeholder="Click to select a node" node-path="{{ path1 }}" selected-node="{{ selectedNode1 }}" tree="[[ getTree(treeData1) ]]">
+						</cosmoz-treenode-button-view>
+					</template>
+				</dom-bind>
 			</template>
-		</dom-bind>
-	</template>
-</demo-snippet>
-</div>
-<script>
-	window.addEventListener('WebComponentsReady', () => {
+		</demo-snippet>
+	</div>
+	<script type="module">
+		import { DefaultTree } from '@neovici/cosmoz-tree/cosmoz-default-tree';
 		const getTree = data => {
 				if (data) {
-					return new Cosmoz.DefaultTree(data);
+					return new DefaultTree(data);
 				}
 			},
 			initTemplate = id => {
@@ -61,6 +53,5 @@
 				tpl.set('doRequest', true);
 			};
 		initTemplate('demo1');
-	});
-</script>
+	</script>
 </body></html>
