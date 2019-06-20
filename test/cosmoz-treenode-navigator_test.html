@@ -8,16 +8,17 @@
 
 	<title>cosmoz-treenode-navigator test</title>
 
-	<script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-	<script src="../../web-component-tester/browser.js"></script>
-	<script src="../../test-fixture/test-fixture-mocha.js"></script>
+	<script src="/components/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+	<script src="/components/mocha/mocha.js"></script>
+	<script src="/components/wct-mocha/wct-mocha.js"></script>
+	<script src="/components/chai/chai.js"></script>
+	<script src="/components/@polymer/test-fixture/test-fixture-mocha.js"></script>
 
-	<link rel="import" href="../../test-fixture/test-fixture.html">
-	<link rel="import" href="../../iron-test-helpers/iron-test-helpers.html">
+	<script type="module" src="/components/@polymer/test-fixture/test-fixture.js"></script>
+	<script type="module" src="/components/@polymer/iron-test-helpers/iron-test-helpers.js"></script>
 
-	<link rel="import" href="../cosmoz-treenode-navigator.html">
-	<link rel="import" href="../../cosmoz-tree/cosmoz-default-tree.html">
-	<link rel="import" href="../../iron-ajax/iron-ajax.html">
+	<script type="module" src="../cosmoz-treenode-navigator.js"></script>
+	<script type="module" src="/components/@polymer/iron-ajax/iron-ajax.js"></script>
 </head>
 <body>
 	<test-fixture id="basic">
@@ -31,16 +32,16 @@
 		</template>
 	</test-fixture>
 
-	<script type="text/javascript">
+	<script type="module">
+		import { DefaultTree } from '@neovici/cosmoz-tree/cosmoz-default-tree';
 		suite('cosmoz-treenode-navigator', () => {
 			let basicFixture,
 				basicTree,
 				navigator;
 
 			suiteSetup(done => {
-				let ajax;
 				basicFixture = fixture('basic');
-				ajax = basicFixture.find(n => {
+				const ajax = basicFixture.find(n => {
 					return n.is === 'iron-ajax';
 				});
 				navigator = basicFixture.find(n => {
@@ -48,7 +49,7 @@
 				});
 
 				ajax.addEventListener('response', () => {
-					basicTree = new Cosmoz.DefaultTree(ajax.lastResponse);
+					basicTree = new DefaultTree(ajax.lastResponse);
 					navigator.tree = basicTree;
 					done();
 				});

@@ -17,10 +17,7 @@
 			"dir": "./coverage",
 			"reporters": ["text-summary", "lcov"],
 			"include": [
-				"cosmoz-treenode-button-view.html",
-				"cosmoz-treenode-button-view.js",
-				"cosmoz-treenode-navigator.html",
-				"cosmoz-treenode-navigator.js"
+				"**/cosmoz-*.js"
 			],
 			"exclude": []
 		},
@@ -32,7 +29,7 @@
 		  }, {
 			"browserName": "chrome",
 			"platform": "Windows 10",
-			"version": "dev"
+			"version": "latest"
 		  }, {
 			"browserName": "chrome",
 			"platform": "Windows 10",
