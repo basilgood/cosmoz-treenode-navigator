@@ -1,6 +1,6 @@
 {
 	"name": "@neovici/cosmoz-treenode-navigator",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "[![Build Status](https://travis-ci.org/Neovici/cosmoz-treenode-navigator.svg?branch=master)](https://travis-ci.org/Neovici/cosmoz-treenode-navigator)",
 	"keywords": [
 		"polymer",
