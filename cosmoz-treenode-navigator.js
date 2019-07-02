@@ -90,28 +90,28 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 				<paper-icon-button data-path on-tap="openNode" icon="home"></paper-icon-button>
 				<template is="dom-repeat" items="[[ _nodesOnOpenNodePath ]]" as="node">
 					<span class="slash">/</span>
-					<span class="pointer" tabindex="0" data-path\$="[[ node.path ]]" on-tap="openNode" on-keydown="_clickOnEnterOrSpace">[[ _getNodeName(node) ]]
+					<span class="pointer" tabindex="0" data-path$="[[ node.path ]]" on-tap="openNode" on-keydown="_clickOnEnterOrSpace">[[ _getNodeName(node) ]]
 					</span>
 				</template>
 			</h3>
-			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title\$="[[ searchPlaceholder ]]" value="{{ searchValue }}">
-				<paper-icon-button icon="clear" slot="suffix" hidden\$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
+			<paper-input tabindex="0" id="searchInput" class="flex" label="[[ searchPlaceholder ]]" title$="[[ searchPlaceholder ]]" value="{{ searchValue }}">
+				<paper-icon-button icon="clear" slot="suffix" hidden$="[[ !_search ]]" on-tap="_clearSearch"></paper-icon-button>
 			</paper-input>
 		</div>
 		<iron-list id="ironList" items="[[ dataPlane ]]" as="node" selected-item="{{ highlightedNode }}" selection-enabled>
 			<template>
-				<div tabindex\$="[[ tabIndex ]]">
-					<div hidden\$="[[ !_renderSection(_search, index, dataPlane, node) ]]" class="section">[[ node.sectionName ]]
+				<div tabindex$="[[ tabIndex ]]">
+					<div hidden$="[[ !_renderSection(_search, index, dataPlane, node) ]]" class="section">[[ node.sectionName ]]
 					</div>
-					<div class\$="[[_computeRowClass('node-item pointer layout horizontal center', selected)]]">
+					<div class$="[[_computeRowClass('node-item pointer layout horizontal center', selected)]]">
 						<div class="flex" on-dblclick="_onNodeDblClicked">[[ node.name ]]</div>
-						<paper-icon-button hidden\$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" data-path\$="[[ node.path ]]" on-tap="openNode">
+						<paper-icon-button hidden$="[[ !hasChildren(node) ]]" icon="icons:arrow-forward" data-path$="[[ node.path ]]" on-tap="openNode">
 						</paper-icon-button>
 					</div>
 				</div>
 			</template>
 		</iron-list>
-		<paper-button hidden\$="[[ !_showGlobalSearchBtn(_search, _openNodePath) ]]" on-tap="tryGlobalSearch">[[ searchGlobalPlaceholder ]]
+		<paper-button hidden$="[[ !_showGlobalSearchBtn(_search, _openNodePath) ]]" on-tap="tryGlobalSearch">[[ searchGlobalPlaceholder ]]
 		</paper-button>
 `;
 	}
