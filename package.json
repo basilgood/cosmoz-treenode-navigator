@@ -1,7 +1,7 @@
 {
 	"name": "@neovici/cosmoz-treenode-navigator",
 	"version": "3.0.1",
-	"description": "[![Build Status](https://travis-ci.org/Neovici/cosmoz-treenode-navigator.svg?branch=master)](https://travis-ci.org/Neovici/cosmoz-treenode-navigator)",
+	"description": "A Polymer component that lets you navigate and search through hierarchically structured data-nodes and select one of them.",
 	"keywords": [
 		"polymer",
 		"web-components"
@@ -23,15 +23,37 @@
 	"scripts": {
 		"analyze": "polymer analyze --input cosmoz-*.js  > analysis.json",
 		"lint": "eslint --cache --ext .js,.html . && polymer lint cosmoz-*.js",
-		"preversion": "npm run lint && npm run test -- --skip-plugin sauce",
-		"postversion": "git push && git push --tags",
 		"start": "polymer serve -o",
 		"test": "polymer test"
 	},
+	"release": {
+		"plugins": [
+			"@semantic-release/commit-analyzer",
+			"@semantic-release/release-notes-generator",
+			"@semantic-release/changelog",
+			"@semantic-release/github",
+			"@semantic-release/npm",
+			"@semantic-release/git"
+		],
+		"branch": "master"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"commitlint": {
+		"extends": [
+			"@commitlint/config-conventional"
+		]
+	},
+	"husky": {
+		"hooks": {
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+		}
+	},
 	"dependencies": {
-		"@neovici/cosmoz-dialog": "github:neovici/cosmoz-dialog#semver:^3.0.1",
-		"@neovici/cosmoz-i18next": "github:neovici/cosmoz-i18next#semver:^3.0.1",
-		"@neovici/cosmoz-tree": "github:neovici/cosmoz-tree#semver:^3.0.1",
+		"@neovici/cosmoz-dialog": "^3.0.2",
+		"@neovici/cosmoz-i18next": "^3.0.2",
+		"@neovici/cosmoz-tree": "^3.0.3",
 		"@polymer/iron-flex-layout": "^3.0.0",
 		"@polymer/iron-icons": "^3.0.0",
 		"@polymer/iron-list": "^3.0.0",
@@ -42,12 +64,17 @@
 		"@webcomponents/shadycss": "^1.9.1"
 	},
 	"devDependencies": {
-		"@neovici/eslint-config": "github:neovici/eslint-config#semver:^1.0.0",
+		"@commitlint/cli": "^8.2.0",
+		"@commitlint/config-conventional": "^8.2.0",
+		"@neovici/eslint-config": "^1.1.7",
+		"@neovici/github-actions-eslint-annotator": "^0.2.0",
 		"@polymer/iron-ajax": "^3.0.0",
 		"@polymer/iron-component-page": "^4.0.0",
 		"@polymer/iron-demo-helpers": "^3.0.0",
 		"@polymer/iron-test-helpers": "^3.0.0",
 		"@polymer/test-fixture": "^4.0.2",
+		"@semantic-release/changelog": "^3.0.4",
+		"@semantic-release/git": "^7.0.16",
 		"@webcomponents/webcomponentsjs": "^2.0.0",
 		"babel-eslint": "^10.0.2",
 		"chai": "^4.2.0",
@@ -55,8 +82,10 @@
 		"eslint-plugin-html": "^5.0.3",
 		"eslint-plugin-import": "^2.17.3",
 		"eslint-plugin-mocha": "^5.3.0",
+		"husky": "^3.0.8",
 		"mocha": "^5.0.0",
 		"polymer-cli": "^1.9.1",
+		"semantic-release": "^16.0.0-beta.25",
 		"wct-istanbul": "^0.14.3",
 		"wct-mocha": "^1.0.1"
 	}
