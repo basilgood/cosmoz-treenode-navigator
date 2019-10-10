@@ -1,6 +1,6 @@
 {
 	"name": "@neovici/cosmoz-treenode-navigator",
-	"version": "3.0.1",
+	"version": "3.0.3",
 	"description": "A Polymer component that lets you navigate and search through hierarchically structured data-nodes and select one of them.",
 	"keywords": [
 		"polymer",
