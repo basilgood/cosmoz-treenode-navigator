@@ -1,73 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html>
 	<head>
-	<title>cosmoz-treenode-navigator test</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+		<title>cosmoz-treenode-navigator test</title>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes"
+		/>
 
-	<title>cosmoz-treenode-navigator test</title>
+		<title>cosmoz-treenode-navigator test</title>
 
-	<script src="/components/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-	<script src="/components/mocha/mocha.js"></script>
-	<script src="/components/wct-mocha/wct-mocha.js"></script>
-	<script src="/components/chai/chai.js"></script>
-	<script src="/components/@polymer/test-fixture/test-fixture-mocha.js"></script>
+		<script src="/components/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+		<script src="/components/mocha/mocha.js"></script>
+		<script src="/components/wct-mocha/wct-mocha.js"></script>
+		<script src="/components/chai/chai.js"></script>
+		<script src="/components/@polymer/test-fixture/test-fixture-mocha.js"></script>
 
-	<script type="module" src="/components/@polymer/test-fixture/test-fixture.js"></script>
-	<script type="module" src="/components/@polymer/iron-test-helpers/iron-test-helpers.js"></script>
+		<script
+			type="module"
+			src="/components/@polymer/test-fixture/test-fixture.js"
+		></script>
+		<script
+			type="module"
+			src="/components/@polymer/iron-test-helpers/iron-test-helpers.js"
+		></script>
 
-	<script type="module" src="../cosmoz-treenode-button-view.js"></script>
-	<script type="module" src="/components/@polymer/iron-ajax/iron-ajax.js"></script>
+		<script type="module" src="../cosmoz-treenode-button-view.js"></script>
+		<script
+			type="module"
+			src="/components/@polymer/iron-ajax/iron-ajax.js"
+		></script>
 
-	<script type="module" src="/components/@polymer/polymer/lib/utils/async.js"></script>
-</head>
-<body>
-	<test-fixture id="rtl">
-		<template>
-			<cosmoz-treenode-button-view></cosmoz-treenode-button-view>
-			<iron-ajax auto
-				url="data/rtlTest.json"
-				handle-as="json">
-			</iron-ajax>
-		</template>
-	</test-fixture>
+		<script
+			type="module"
+			src="/components/@polymer/polymer/lib/utils/async.js"
+		></script>
+	</head>
+	<body>
+		<test-fixture id="rtl">
+			<template>
+				<cosmoz-treenode-button-view></cosmoz-treenode-button-view>
+				<iron-ajax auto url="data/rtlTest.json" handle-as="json"> </iron-ajax>
+			</template>
+		</test-fixture>
 
-	<script type="module">
-		import { DefaultTree } from '@neovici/cosmoz-tree/cosmoz-default-tree';
-		suite('rtl', () => {
-			let buttonFixture,
-				tree,
-				treeButton;
+		<script type="module">
+			import { DefaultTree } from "@neovici/cosmoz-tree/cosmoz-default-tree";
+			suite("rtl", () => {
+				let buttonFixture, tree, treeButton;
 
-			suiteSetup(done => {
-				buttonFixture = fixture('rtl');
-				const ajax = buttonFixture.find(n => {
-					return n.is === 'iron-ajax';
+				suiteSetup(done => {
+					buttonFixture = fixture("rtl");
+					const ajax = buttonFixture.find(n => {
+						return n.is === "iron-ajax";
+					});
+					treeButton = buttonFixture.find(n => {
+						return n.tagName === "COSMOZ-TREENODE-BUTTON-VIEW";
+					});
+
+					ajax.addEventListener("response", () => {
+						tree = new DefaultTree(ajax.lastResponse);
+						treeButton.tree = tree;
+						done();
+					});
 				});
-				treeButton = buttonFixture.find(n => {
-					return n.tagName === 'COSMOZ-TREENODE-BUTTON-VIEW';
+
+				test("button renders selected path", done => {
+					treeButton.nodePath = "1.2.3";
+					// Button view label depends on a binding in a cosmoz-treenode-navigator
+					// stamped asynchronously, so we need to wait a bit.
+					setTimeout(() => {
+						const buttonLabel = treeButton.shadowRoot.querySelector(
+							".pathToNode"
+						).textContent;
+						assert.equal(buttonLabel, "1 / 2 / 3");
+						done();
+					}, 500);
 				});
 
-				ajax.addEventListener('response', () => {
-					tree = new DefaultTree(ajax.lastResponse);
-					treeButton.tree = tree;
-					done();
-				});
-			});
-
-			test('button renders selected path', done => {
-				treeButton.nodePath = '1.2.3';
-				// Button view label depends on a binding in a cosmoz-treenode-navigator
-				// stamped asynchronously, so we need to wait a bit.
-				setTimeout(() => {
-					const buttonLabel = treeButton.shadowRoot.querySelector('.pathToNode').textContent;
-					assert.equal(buttonLabel, '1 / 2 / 3');
-					done();
-				}, 500);
-			});
-
-		/*
+				/*
 			// commented out because test is unstable
 			function isIdActiveElement(id, element, idPreviouslyFound) {
 				let idFound = idPreviouslyFound || element && element.id === id;
@@ -94,6 +106,7 @@
 				}, 50);
 			});
 		*/
-		});
-	</script>
-</body></html>
+			});
+		</script>
+	</body>
+</html>
