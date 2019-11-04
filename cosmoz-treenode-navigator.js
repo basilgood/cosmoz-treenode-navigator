@@ -288,6 +288,7 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 		if (!tree) {
 			return;
 		}
+
 		const node = tree.getNodeByPathLocator(pathLocator),
 			children = tree.getChildren(node),
 			level = tree.hasChildren(node) ? children : node,
@@ -307,9 +308,11 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 				if (val1 > val2) {
 					return 1;
 				}
+
 				if (val1 < val2) {
 					return -1;
 				}
+
 				return 0;
 			};
 
@@ -325,15 +328,21 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 		if (!Array.isArray(nodes)) {
 			return [];
 		}
+
 		return nodes.map(node => {
 			if (!node) {
 				return node;
 			}
-			const path = node.pathLocator || node.path;
+
+			const
+				path = node.pathLocator || node.path,
+				name = node[this.tree.searchProperty],
+				sectionName = this.tree.getPathString(path, this.tree.searchProperty, ' / ').replace(new RegExp(name + '$', 'u'), '');
+
 			return {
-				name: node[this.tree.searchProperty],
+				name,
 				path,
-				sectionName: this.tree.getPathString(path, this.tree.searchProperty),
+				sectionName,
 				children: node[this.tree.childProperty]
 			};
 		});
@@ -357,6 +366,7 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 		if (!node) {
 			nodes = tree.getPathNodes(pathLocator).filter(n => n != null);
 		}
+
 		return nodes && nodes.length > 0 ? nodes.pop() : node;
 	}
 	/**
@@ -369,6 +379,7 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 		if (!tree || !pathLocator) {
 			return [];
 		}
+
 		return this._normalizeNodes(tree.getPathNodes(pathLocator));
 	}
 	/**
@@ -432,6 +443,7 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 	_nodePathChanged(path) {
 		if (!path) {
 			this.highlightedNodePath = '';
+
 			return;
 		}
 		this.highlightedNodePath = path;
@@ -473,13 +485,16 @@ class CosmozTreenodeNavigator extends translatable(PolymerElement) {
 		if (!searching || index == null || dataPlane == null || index >= dataPlane.length || node == null || node.sectionName == null) {
 			return false;
 		}
+
 		if (index === 0) {
 			return true;
 		}
+
 		const prevItem = dataPlane[index - 1];
-		if (prevItem.sectionName === node) {
+		if (prevItem.sectionName === node.sectionName) {
 			return false;
 		}
+
 		return true;
 	}
 	/**
