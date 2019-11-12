@@ -43,21 +43,24 @@
 		</test-fixture>
 
 		<script type="module">
-			import { DefaultTree } from "@neovici/cosmoz-tree/cosmoz-default-tree";
-			import { flush } from "@polymer/polymer/lib/utils/flush";
-			suite("cosmoz-treenode-navigator", () => {
-				let basicFixture, basicTree, navigator;
+			import { DefaultTree } from '@neovici/cosmoz-tree/cosmoz-default-tree';
+			import { flush } from '@polymer/polymer/lib/utils/flush';
+			/* eslint-disable-next-line max-lines-per-function */
+			suite('cosmoz-treenode-navigator', () => {
+				let basicFixture,
+					basicTree,
+					navigator;
 
 				setup(done => {
-					basicFixture = fixture("basic");
+					basicFixture = fixture('basic');
 					const ajax = basicFixture.find(n => {
-						return n.is === "iron-ajax";
+						return n.is === 'iron-ajax';
 					});
 					navigator = basicFixture.find(n => {
-						return n.tagName === "COSMOZ-TREENODE-NAVIGATOR";
+						return n.tagName === 'COSMOZ-TREENODE-NAVIGATOR';
 					});
 
-					ajax.addEventListener("response", () => {
+					ajax.addEventListener('response', () => {
 						basicTree = new DefaultTree(ajax.lastResponse);
 						navigator.tree = basicTree;
 						flush();
@@ -65,34 +68,57 @@
 					});
 				});
 
-				test("instantiating the element", () => {
-					assert.equal(navigator.tagName, "COSMOZ-TREENODE-NAVIGATOR");
+				test('instantiating the element', () => {
+					assert.equal(navigator.tagName, 'COSMOZ-TREENODE-NAVIGATOR');
 				});
 
-				test("dataPlane initialised with tree", () => {
-					assert.equal(navigator.dataPlane[0].name, "Root");
+				test('dataPlane initialised with tree', () => {
+					assert.equal(navigator.dataPlane[0].name, 'Root');
 					assert.equal(
 						navigator.dataPlane.length,
 						navigator.tree._roots.length
 					);
 				});
 
-				test("tree length and sort", () => {
+				test('tree length and sort', () => {
 					// given a node navigator with some data
 
 					// when I enter the first node
 					navigator.shadowRoot
-						.querySelector("#ironList paper-icon-button")
+						.querySelector('#ironList paper-icon-button')
 						.click();
 					flush();
 
 					// then I can see the contents of the node
 					// and it is ordered folder-first, then alphabetically
-					assert.equal(navigator.dataPlane[0].name, "Node2");
-					assert.equal(navigator.dataPlane[1].name, "Node4");
-					assert.equal(navigator.dataPlane[2].name, "Node");
-					assert.equal(navigator.dataPlane[3].name, "Node");
+					assert.equal(navigator.dataPlane[0].name, 'Node2');
+					assert.equal(navigator.dataPlane[1].name, 'Node4');
+					assert.equal(navigator.dataPlane[2].name, 'Node');
+					assert.equal(navigator.dataPlane[3].name, 'Node');
 					assert.equal(navigator.dataPlane.length, 4);
+				});
+
+				test('match search string', () => {
+					// given a node navigator with some data
+					// when I search for 'ode2'
+					navigator.searchValue = 'ode2';
+					flush();
+
+					//then I can see only 1 item matching 'ode2'
+					assert.lengthOf(navigator.dataPlane, 1);
+					assert.equal(navigator.dataPlane[0].name, 'Node2');
+
+				});
+
+				test('not match search string', () => {
+					// given a node navigator with some data
+					// when I search for a not matching 'A'
+					navigator.searchValue = 'A';
+					flush();
+
+					//then I can see that is no contents
+					assert.lengthOf(navigator.dataPlane, 0);
+
 				});
 			});
 		</script>
